@@ -1,0 +1,32 @@
+<!--From https://oncampus.oberlin.edu/webteam/2012/09/architecture-django-templates-->
+{% load static i18n %}
+<!DOCTYPE html>
+
+<html>
+    <head>
+        {% block meta_tags %}{% endblock %}
+        <title>
+            {% block title %}{% trans "Scipion" %}{% endblock %}
+        </title>
+        {% block css %}
+            <link rel="stylesheet" href="{% static 'web/css/bootstrap.min.css' %}" type="text/css" />
+            <link rel="stylesheet" href="{% static 'web/css/general_style.css' %}" type="text/css" />
+        {% endblock %}
+        {% block js %}
+            <script src="{% static 'web/js/vendor/jquery-1.11.2.min.js' %}" type="text/javascript"></script>
+            <script src="{% static 'web/js/vendor/bootstrap.min.js' %}" type="text/javascript"></script>
+        {% endblock %}
+        {% block extra_head %}{% endblock %}
+    </head>
+    <body>
+        {% block header %}{% endblock %}
+        <div id="main" role="main">
+            <div class="container">
+                {% block content %}
+                {% endblock %}
+                {% block footer %}{% endblock %}
+            </div>
+        </div>
+
+    </body>
+</html>
