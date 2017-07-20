@@ -1,0 +1,550 @@
+/* CSS Document */
+
+/* GENERAL */
+* {
+	margin: 0px;
+	padding: 0px;
+	font-family: Helvetica;
+} /* Reset default margin and padding for all element */
+
+font {
+	font-family: Monospace;
+}
+
+header,section,footer,aside,nav,article,hgroup {
+	display: block;
+} /* For html5 unsupported browsers */
+
+html, body, #mainContainer { 
+/* 	height: 100%;  */
+	}
+#mainContainer{
+	height: auto; 
+	min-height: 100%; 
+	}
+/* .layout-outer {padding-bottom: 110px;} */
+
+/* body > #mainContainer { height: auto; min-height: 100%; } */
+/* section, aside { height: auto; min-height: 100%;} */
+a{
+	color:#000000;
+	text-decoration: underline;
+	border:none;
+}
+img{
+	border: none;
+}
+
+a:hover {
+	color: Firebrick;
+}
+
+.floatRight{
+	float: right;
+}
+.floatLeft{
+	float: left;
+}
+
+textarea {
+	padding: 4px;
+	resize: vertical;
+	background: #F2F2F2;
+	max-height: 30em;
+	width: 26em;
+	height: 20em;
+	font-size: 0.9em;
+}
+
+/* HEADER */
+header {
+	/* height: 100px; */
+	
+	display: -webkit-box;      /* OLD - iOS 6-, Safari 3.1-6 */
+  	display: -moz-box;         /* OLD - Firefox 19- (buggy but mostly works) */
+  	display: -ms-flexbox;      /* TWEENER - IE 10 */
+	display: -moz-flex;
+	display: -webkit-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: flex;
+	
+	-webkit-flex-flow: row;
+	-moz-flex-flow: row;
+	-ms-flex-flow: row;
+	-o-flex-flow: row;
+	flex-flow: row;
+	
+	-webkit-flex-wrap: wrap;
+	-moz-flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	-o-flex-wrap: wrap;
+	flex-wrap: wrap;
+	
+	margin-bottom: 2px;
+}
+
+header #headerMainContainer{
+	width:100%;
+	height:50px;
+	padding: 10px 0px 10px 0px;
+}
+header #headerLogoContainer{
+	float:left;
+}
+
+header .projectHeader{
+	font-size:1.6em;
+	float:left;
+	padding-top:10px;
+	color:#6e6e6e;
+}
+header #backToProject{
+	/* float:right; */
+	color:#6e6e6e;
+	/* padding:25px 30px 0px 0px; */
+}
+header #headerLine{
+	width:100%;
+	height:10px;
+	background: #d2a7a7; /* Old browsers */
+	background: -moz-linear-gradient(left, #d2a7a7 0%, #820808 50%, #d2a7a7 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#d2a7a7), color-stop(50%,#820808), color-stop(100%,#d2a7a7)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(left, #d2a7a7 0%,#820808 50%,#d2a7a7 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(left, #d2a7a7 0%,#820808 50%,#d2a7a7 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(left, #d2a7a7 0%,#820808 50%,#d2a7a7 100%); /* IE10+ */
+	background: linear-gradient(to right, #d2a7a7 0%,#820808 50%,#d2a7a7 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2a7a7', endColorstr='#d2a7a7',GradientType=1 ); /* IE6-9 */
+}
+header .logo{
+	max-height:40px;
+	margin: 2px 10px 0px 20px;
+}
+
+header #headerRightContainer{
+	float: right;
+	padding: 25px 20px 0px 0px;
+	color:#6e6e6e;
+}
+header .headerLink{
+	text-decoration: none;
+	/* color: #6F3232; */
+	color: firebrick;
+}
+header .headerLinkSelected{
+	color: #000000;
+	font-weight: bold;
+}
+header #tube{
+	margin: 0px 15px;
+}
+
+/* ASIDE (BOTTOM MENU) */
+aside {
+	height: 68px;
+/*  	background: #e3e3e3; Old browsers
+	background: -moz-linear-gradient(top, #e3e3e3 0%, #cccccc 100%); FF3.6+
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e3e3e3), color-stop(100%,#cccccc)); Chrome,Safari4+
+	background: -webkit-linear-gradient(top, #e3e3e3 0%,#cccccc 100%); Chrome10+,Safari5.1+
+	background: -o-linear-gradient(top, #e3e3e3 0%,#cccccc 100%); Opera 11.10+
+	background: -ms-linear-gradient(top, #e3e3e3 0%,#cccccc 100%); IE10+
+	background: linear-gradient(to bottom, #e3e3e3 0%,#cccccc 100%); W3C
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e3e3e3', endColorstr='#cccccc',GradientType=0 ); IE6-9
+	
+	padding-left: 20px; */
+	
+	/* display: -webkit-box;      OLD - iOS 6-, Safari 3.1-6
+  	display: -moz-box;         OLD - Firefox 19- (buggy but mostly works)
+  	display: -ms-flexbox;      TWEENER - IE 10
+	display: -moz-flex;
+	display: -ms-flex;
+	display: -o-flex;
+	display: -webkit-flex;
+	display: flex;
+	
+	-webkit-flex-flow: row;
+	-moz-flex-flow: row;
+	-ms-flex-flow: row;
+	-o-flex-flow: row;
+	flex-flow: row;
+	
+	-webkit-flex-wrap: wrap;
+	-moz-flex-wrap: wrap;
+	-o-flex-wrap: wrap;
+	-ms-flex-wrap: wrap;
+	flex-wrap: wrap;*/ 
+} 
+
+/* FOOTER */
+footer{
+ 	clear: both;
+ 	position: relative;
+ 	z-index: 10;
+ 	height: 110px;
+ 	text-align: center;
+ 	font-size: 0.8em;
+ 	margin-top: 20px;
+ 	/* This shoulb be uncommented if we want the footer to be displayed initially*/ 
+ 	/* margin-top: -110px;  */
+}
+footer #footerLine{
+	height:6px;
+	background-color: #cccccc;
+}
+footer #footerMainContainer{
+	width: 100%;
+	height: 100px;
+	background: #ffffff; /* Old browsers */
+	background: -moz-linear-gradient(top, #ffffff 0%, #cccccc 100%); /* FF3.6+ */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ffffff), color-stop(100%,#cccccc)); /* Chrome,Safari4+ */
+	background: -webkit-linear-gradient(top, #ffffff 0%,#cccccc 100%); /* Chrome10+,Safari5.1+ */
+	background: -o-linear-gradient(top, #ffffff 0%,#cccccc 100%); /* Opera 11.10+ */
+	background: -ms-linear-gradient(top, #ffffff 0%,#cccccc 100%); /* IE10+ */
+	background: linear-gradient(to bottom, #ffffff 0%,#cccccc 100%); /* W3C */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#cccccc',GradientType=0 ); /* IE6-9 */
+}
+footer #footerLeftContainer{
+	width: 50%;
+	float:left;
+	padding: 20px 0px 0px 20px;	
+}
+footer #footerLogoContainer{
+	
+	
+}
+footer #footerRightContainer{
+	float: right;
+	padding: 50px 20px 0px 0px;
+}
+footer #footerText{
+	display: block;
+	color: #6e6e6e;
+}
+footer #tube{
+	color: #6e6e6e;
+}
+footer .footerLink{
+	text-decoration: none;
+	margin: 0px 15px;
+	/* color: #6F3232; */
+	color: firebrick;
+}
+footer .footerLink a {
+    color: gray;
+    text-decoration: none;
+}
+footer .footerLink a:hover {
+    color: firebrick;
+}
+footer .logoLine {
+    float: right;
+    margin-top: 0px;
+}
+footer .logo{
+	max-height:30px;
+	margin-right:5px;
+}
+
+.project_name {
+	/* 	font-size: 1.5em; */
+	font-weight: bold;
+	margin-left: 12%;
+	float: left;
+	padding-top: 10px;
+	padding-right: 10px;
+}
+
+/* .generalButton {
+		margin: 1em 0.5em 0 0;
+	font-size: 0.8em;
+	color: black;
+	height: 2em;
+	background-color: LightGray;
+		border: 1px solid #000066;
+	padding: 2px;
+	font-weight: bold;
+	letter-spacing: 0.2em;
+	text-align: center;
+	font-weight: bold;
+}
+
+.generalButton:hover {
+	background-color: white;
+}
+
+.priorityButton {
+	color: white;
+	width: auto;
+	height: 25px;
+	background-color: DarkRed;
+	background-color: FireBrick;
+	border: 1px solid #000066;
+	padding: 1px;
+	font-weight: bold;
+	letter-spacing: 0.3em;
+	text-align: center;
+}
+
+.priorityButton:hover {
+	background-color: FireBrick;
+} */
+
+.required {
+	font-weight: bold;
+}
+.generalInput {
+	background: #f2f2f2;
+}
+
+.generalInput.hide2 {
+	position: relative;
+	filter: alpha(opacity : 0);
+	width: 9.7em;
+	cursor: pointer;
+}
+
+.generalInput.hide {
+	position: fixed;
+	-moz-opacity: 0;
+	filter: alpha(opacity : 0);
+	opacity: 0;
+	margin: 0.5em;
+	width: 1.5em;
+	height: 2em;
+	cursor: pointer;
+}
+/**************** Table CSS *******************/
+table#data a:link {
+	font-size: 0.85em;
+}
+
+table#data a:active,table a:hover {
+	color: Firebrick;
+}
+
+table#data {
+	width: 100%;
+	overflow-x: auto;
+	font-size: 0.9em;
+	/* background-color: #eaebec; */
+	border-spacing: 0;
+	overflow-x: auto;
+	clear:both;
+}
+
+table#data th {
+	font-size: 1em;
+	background-color: #eaebec;
+	padding: 3px 0px
+}
+
+table#data th:first-child {
+	
+	text-align: left;
+	padding-left: 20px;
+}
+
+table#data tr {
+	text-align: center;
+}
+
+table#data tr td:first-child {
+	text-align: left;
+	border-left: 0;
+}
+
+table#data tr td {
+	padding: 0.3em 0.3em 0.3em 1.5em;
+}
+
+table#data tr:last-child td {
+	border-bottom: 0;
+}
+
+table#data tr:hover td {
+	background-color: #f2f2f2;
+}
+table#data tr.selected td{
+	background-color: #F3CBCB;
+	font-weight: bold;
+}
+
+table#data tr.selected:hover td {
+	/* background-color: LightSteelBlue; */
+}
+table#data tr:nth-child(odd) {
+	background-color: #EAEBFF;
+}	
+table#data tr:nth-child(even) {
+	background-color: #FFF;
+}
+/* ICONS */
+
+
+/* BUTTONS */
+.button2 {
+
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    padding: 7px 19px;
+    border: 0px;
+    border-radius: 3px;
+
+    font: normal normal normal 16px arial;
+    text-decoration: none;
+}
+
+.button2:hover,
+.button2:focus {
+    opacity: 0.8
+}
+.button2:active {
+    opacity: 0.8
+}
+
+/* Fixed size buttons */
+.btn_wide{
+	min-width:12em;
+}
+
+/* COLORS */
+
+.primary {
+    color: firebrick
+}
+
+.primary_inv {
+    color: white;
+    background: firebrick;
+}
+
+.validation {
+    color: goldenRod;
+}
+
+.validation_inv {
+    color: white;
+    background: goldenRod;
+}
+
+.secondary {
+    color: #F2F2F2;
+
+}
+
+.secondary_inv {
+    color: black;
+    background: #F2F2F2;
+}
+
+
+
+/* TOOLBAR*/
+#toolbar{
+	font-size: 0.9em;
+	margin: 3px 0px 7px 5px ;
+}
+#toolbar a {
+	margin-right: 7px;
+}
+
+#toolbar a:hover {
+	color: FireBrick;
+}
+
+
+span #analyzeTool{
+	float: right;
+	margin: 0.25em 0.25em 0em 0.35em;
+	color:white;
+}
+
+span #downloadTool{
+	float: right;
+	margin: 0.25em 0.25em 0em 0.35em;
+	color:white;
+}
+
+span #externalTool{
+	float: right;
+	margin: 0em 0.5em 0em 0.35em;
+	color:black;
+}
+
+span #externalTool:hover{
+	color:Firebrick;
+}
+
+/* FOR The webtools entry pages */
+div#box {
+    padding: 2.2em;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+    background-color: #E8E8E8;
+    border-radius: 5px;
+    text-align: center;
+    margin-top: 1em ;
+    margin-bottom: 1em ;
+}
+
+div#minibox {
+    width:90%;
+    padding: 1em;
+    background-color: white;
+    border: 1px solid black;
+    border-radius: 5px;
+    display: inline-table;
+    margin: 1em ;
+}
+
+div#steps{
+    text-align:left;
+    width:100%;
+}
+div#lineOpt {
+    display:flex
+}
+
+#lineOpt p {
+    width:60%;
+    font-size: large;
+}
+
+
+/* Progress bar*/
+progress[value] {
+  /* Reset the default appearance */
+  -webkit-appearance: none;
+  appearance: none;
+  -moz-appearance: none;
+
+  border: none;
+
+  width: 250px;
+  height: 20px;
+  color: firebrick;
+}
+
+progress[value]::-webkit-progress-bar {
+  background-color: lightgray;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25) inset;
+}
+
+progress[value]::-moz-progress-bar {
+  background-image:
+    -moz-linear-gradient(left, firebrick, firebrick);
+
+  border-radius: 2px;
+  background-size: 35px 20px, 100% 100%, 100% 100%;
+}
+
+progress[value]::-webkit-progress-value {
+ background-image:
+	   -webkit-linear-gradient(left, firebrick, firebrick);
+ border-radius: 2px;
+ background-size: 35px 20px, 100% 100%, 100% 100%;
+ border-radius: 4px;
+}
