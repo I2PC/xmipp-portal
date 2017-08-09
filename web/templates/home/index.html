@@ -35,8 +35,23 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="icon" href="{% static "favicon.ico" %}">
-    <title>Scipion Web</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="{% static "apple-icon-57x57.png" %}">
+    <link rel="apple-touch-icon" sizes="60x60" href="{% static "apple-icon-60x60.png" %}">
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static "apple-icon-72x72.png" %}">
+    <link rel="apple-touch-icon" sizes="76x76" href="{% static "apple-icon-76x76.png" %}">
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static "apple-icon-114x114.png" %}">
+    <link rel="apple-touch-icon" sizes="120x120" href="{% static "apple-icon-120x120.png" %}">
+    <link rel="apple-touch-icon" sizes="144x144" href="{% static "apple-icon-144x144.png" %}">
+    <link rel="apple-touch-icon" sizes="152x152" href="{% static "apple-icon-152x152.png" %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "apple-icon-180x180.png" %}">
+    <link rel="icon" type="image/png" sizes="192x192"  href="{% static "android-icon-192x192.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{% static "favicon-96x96.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "favicon-16x16.png" %}">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="{% static "ms-icon-144x144.png" %}">
+    <meta name="theme-color" content="#ffffff">
+    <title>Xmipp</title>
     <!-- Bootstrap core CSS -->
     <link href="{% static "css/bootstrap.min.css" %}" rel="stylesheet">
     <!-- Custom styles for this template -->
@@ -52,55 +67,60 @@
   </head>
 
   <body>
-
     {% include "_navigation.html" %}
     <!-- Main jumbotron for a primary marketing message or call to action -->
     <div class="jumbotron backimage">
       <div class="container mainHead">
-        <h2>Integration, Reproducibility and Analysis</h2>
-        <p>Scipion is an image processing framework to obtain 3D models<br>
-           of macromolecular complexes using Electron Microscopy. 
+        <h2>X-Window-based Microscopy Image Processing Package</h2>
+        <p>Xmipp is a suite of image processing programs, primarily aimed at single-particle 3D electron microscopy.<br /> If you have used Xmipp in your work, please cite our papers as given in the List Of References.
         </p>
-        <p><a class="btn btn-lg button2 primary_inv" href="#" role="button">
-			<span class="glyphicon glyphicon-download" aria-hidden="true"></span>&nbsp;&nbsp;Download&nbsp;&nbsp;</a>
 		</p>
       </div>
     </div>
 
-    <div class="container">
-      <!-- Example row of columns -->
-      <div class="row">
-        <div class="col-md-4">
-          <h3><a href="http://scipion.cnb.csic.es/docs/" ><span class="glyphicon glyphicon-book" aria-hidden="true"></span> Documentation</a></h3>
-          <p>Find  out more information about Scipion for both users and developers.
-          Check how to install Scipion, the list of integrated protocols
-          and some introductory tutorials. Learn how to extend Scipion with new
-          protocols, its API or description of our development tools.
-          </p>
-        </div>
-        <div class="col-md-4">
-          <h3><a href="http://scipion.cnb.csic.es/m/services/" ><span class="glyphicon glyphicon-cloud" aria-hidden="true"></span> Web Tools</a></h3>
-          <p>Give a try to our online processing workflows, which are a subset
-          of the protocols in Scipion to provide a first try without any local installation.
-          Current web-tools include initial volume estimation, movie alignment and 
-          local resolution (ResMap).
-          </p>
-       </div>
-        <div class="col-md-4">
-          <h3><a href="https://github.com/biocompwebs/scipion/wiki/News-and-events"><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> News and Events</a></h3>
-          <p>Keep an eye on latest Scipion news. Check out about bugfixes, new features and 
-          release plan. Don't miss the next Scipion workshop or any related event. Don't hesitate to contact
-          us for any feedback or if you want to organize a workshop at your institution.
-          </p>
-        </div>
-      </div>
+    <div id="wrapMain">
+      <div class="container">
+            <!-- Example row of columns -->
+            <div class="row">
+              <div class="col-md-4">
+                <h3><a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/GettingStarted" ><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Getting started</a></h3>
+                <p>Quick introduction to Xmipp. Good starting point to try out the new version. You will know the first steps to create a project and an overview of the whole workflow
+                </p>
+              </div>
+              <div class="col-md-4">
+                <h3><a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/Tutorials" ><span class="glyphicon glyphicon-book" aria-hidden="true"></span> Tutorials</a></h3>
+                <p>Follow the more educationally oriented introductory courses. You can complete processing tasks with different datasets and find short video tutorials.
+                </p>
+             </div>
+              <div class="col-md-4">
+                <h3><a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/HowToInstall"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> How to Install</a></h3>
+                <p>See instructions on how to install Xmipp on your machine, with description of dependencies and a list of tested platforms.
+                </p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2">
+              </div>        
+              <div class="col-md-4">
+                <h3><a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/ListOfProgramsv3" ><span class="glyphicon glyphicon-list" aria-hidden="true"></span> List of Programs</a></h3>
+                <p>Complete reference to all programs describing parameters, behaviour and output.
+                </p>
+              </div>
+              <div class="col-md-4">
+                <h3><a href="http://xmipp.cnb.csic.es/twiki/bin/view/Xmipp/DevelopersStuff" ><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Developing Xmipp</a></h3>
+                <p>Documentation and resources for development. Learn how to use Xmipp from Python and Java.
+                </p>
+             </div>
+              <div class="col-md-2">
+              </div>
+            </div>
 
-      <hr>
+          </div> <!-- /container -->
+    </div> <!-- /wrap -->
 
-      <footer>
+      <footer id="footer" class="footerStyle">
         {% include "_footer.html" %}
       </footer>
-    </div> <!-- /container -->
 
 
     <!-- Bootstrap core JavaScript
