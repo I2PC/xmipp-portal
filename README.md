@@ -44,6 +44,22 @@ $ env/bin/python manage.py runserver
 
 ```
 
+## Wiki
+
+The old XMIPP wiki uses TWiki. To convert it to a Github wiki we may use [twiki2markdown](https://github.com/jcodagnone/twiki2markdown).
+
+First, locate the root directory of the TWiki, a directory usually named `TWiki` that contains one `txt`/`txt.v` file per page. Copy this directory to your machine and then run:
+
+```
+$ org=ORGANISATION; repo=REPO
+$ git clone https://github.com/jcodagnone/twiki2markdown
+$ cd twiki2markdown
+$ git clone git@github.com:$org/$repo.wiki.git
+# tested with Ruby 2.3.0
+$ ruby -I lib bin/twiki2markdown -v -f /path/to/TWiki -t $repo.wiki/
+$ cd $repo.wiki/
+$ git push
+```
 ## Admin interface (requires password)
 
 > http://scipion.i2pc.es/admin/
