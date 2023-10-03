@@ -45,7 +45,7 @@ $ env/bin/python manage.py runserver
 
 ## Admin interface (requires password)
 
-> http://scipion.i2pc.es/admin/
+> http://xmipp.i2pc.es/admin/
 
 ## Wiki
 
