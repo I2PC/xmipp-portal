@@ -1,4 +1,6 @@
-Django==1.9
-django-extensions==1.7.9
+Django==4
 static3==0.7.0
 gunicorn==19.6.0
+django-extensions==3
+dj-database-url==2
+djangorestframework==3

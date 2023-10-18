@@ -1,6 +1,6 @@
-from django.conf.urls import url
+from django.urls import re_path
 from web import views_home
 
 urlpatterns = [
-    url(r'^$', views_home.home),
+    re_path(r'^$', views_home.home),
 ]
