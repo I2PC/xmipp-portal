@@ -52,6 +52,22 @@ MIDDLEWARE = [
     #'django.middleware.clickjacking.XContentOptionsMiddleware'
 ]
 
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'mydatabase',
+        'USER': 'myuser',
+        'PASSWORD': 'mypassword',
+        'HOST': 'localhost',   # Set to the address of your database
+        'PORT': '',            # Leave as an empty string to use the default port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    }
+}
+
+
+
 ROOT_URLCONF = 'main.urls'
 TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 

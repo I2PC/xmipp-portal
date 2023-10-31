@@ -4,3 +4,5 @@ gunicorn==19.6.0
 django-extensions==3
 dj-database-url==2
 djangorestframework==3
+mysqlclient
+geocoder
