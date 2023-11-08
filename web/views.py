@@ -1,5 +1,5 @@
 from rest_framework.views import APIView
-from .serializer import AttemptSerializer
+from .serializers import AttemptSerializer
 from geocoder import ip
 from .models import User, Xmipp, Version, Attempt
 from rest_framework.response import Response
@@ -8,8 +8,10 @@ from rest_framework import status
 
 class AttemptsView(APIView):
     serializer_class = AttemptSerializer()
-    def get(self):
-        pass
+    def get(self, request):
+        json = {}
+
+        return Response(json)
 
     def post(self, request, format='json'):
         serializer = self.serializer_class(data=request.data)
@@ -23,6 +25,7 @@ class AttemptsView(APIView):
             cmake = data.cmake
             gcc = data.gcc
             gpp = data.gpp
+            scons = data.scons
             branch = data.branch
             updated = data.updated
             returnCode = data.returnCode
@@ -41,7 +44,8 @@ class AttemptsView(APIView):
                 cuda=cuda,
                 cmake=cmake,
                 gpp=gpp,
-                gcc=gcc)
+                gcc=gcc,
+                scons=scons)
 
 
             attempt = Attempt(user=userObj,
@@ -82,6 +86,7 @@ request json example:
       'cmake': cmake,
       'gcc': gcc,
       'gpp': gpp,
+      'scons': scons,
       'branch': branch,
       'updated': updated,
       'returnCode': returnCode,

@@ -11,6 +11,7 @@ class Version(models.Model):
     cmakeVersion = models.CharField(max_length=20)
     gccVersion = models.CharField(max_length=20)
     gppVersion = models.CharField(max_length=20)
+    sconsVersion = models.CharField(max_length=20, default='')
 
 class Xmipp(models.Model):
     branch = models.CharField(max_length=50) #XMIPP_VERNAME
