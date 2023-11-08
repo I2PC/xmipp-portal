@@ -3,15 +3,17 @@ from .serializers import AttemptSerializer
 from geocoder import ip
 from .models import User, Xmipp, Version, Attempt
 from rest_framework.response import Response
+from django.http import JsonResponse
 from rest_framework import status
 
 
 class AttemptsView(APIView):
-    serializer_class = AttemptSerializer()
-    def get(self, request):
-        json = {}
+    serializer_class = AttemptSerializer
 
-        return Response(json)
+
+    def get(self, request, format=None):
+        attempts = [attempt.user for attempt in Attempt.objects.all()]
+        return JsonResponse({'Attempt': attempts})
 
     def post(self, request, format='json'):
         serializer = self.serializer_class(data=request.data)
@@ -56,8 +58,12 @@ class AttemptsView(APIView):
                               logTail=logTail)
             attempt.save()
 
-            return Response(AttemptSerializer(attempt).data, status=status.HTTP_201_CREATED)
 
+            return Response({'data': AttemptSerializer(attempt).data})
+            #return JsonResponse(AttemptSerializer(attempt).data, status=status.HTTP_201_CREATED)
+
+        else:
+            return Response({'Holi ': 0}, status=status.HTTP_400_BAD_REQUEST)
 
 
 #########UTILS
