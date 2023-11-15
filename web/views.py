@@ -17,12 +17,8 @@ class AttemptsView(APIView):
 
     def post(self, request, format='json'):
         serializer = self.serializer_class(data=request.data)
-        print('serializer.is_valid(): {}'.format(serializer.is_valid()))
-        print('''format == 'json': {}'''.format(format == 'json'))
-
+        print(serializer.errors['user']['ID'][0])
         if serializer.is_valid() and format == 'json':
-            print('serializer.errors: {}'.format(serializer.errors))
-
             validated_data = serializer.validated_data
             user_data = validated_data.get('user')
             version_data = validated_data.get('version')
@@ -30,33 +26,13 @@ class AttemptsView(APIView):
             returnCode = validated_data.get('returnCode')
             logTail = validated_data.get('logTail')
 
-            print('Espabila')
-
-
-            #userID = serializer.user.ID
-            #date = data.date TODO manage date from django
-            #country = data.user.country TODO manage country from django
-            #os = serializer.version.os
-            #cuda = serializer.version.cudaVersion
-            #cmake = serializer.version.cmakeVersion
-            #gcc = serializer.version.gccVersion
-            #gpp = serializer.version.gppVersion
-            #scons = serializer.version.sconsVersion
-            #branch = serializer.xmipp.branch
-            #updated = serializer.xmipp.updated
-            #returnCode = serializer.attempt.returnCode
-            #logTail = serializer.attempt.logTail
-
             userObj, created = User.objects.get_or_create(
                 ID=user_data['ID'],
                 country='CoreaDelNorte')
 
-            print('Hello2')
-
             xmippObj, created = Xmipp.objects.get_or_create(
                 branch=xmipp_data['branch'],
                 updated=xmipp_data['updated'])
-            print('Hello3')
 
             versionsObj, created = Version.objects.get_or_create(
                 os=version_data['os'],
@@ -65,8 +41,6 @@ class AttemptsView(APIView):
                 gppVersion=version_data['gppVersion'],
                 gccVersion=version_data['gccVersion'],
                 sconsVersion=version_data['sconsVersion'])
-            print('Hello4')
-
 
             attempt = Attempt(user=userObj,
                               version=versionsObj,
@@ -75,13 +49,9 @@ class AttemptsView(APIView):
                               returnCode=returnCode,
                               logTail=logTail)
             attempt.save()
-
-
             return Response({'data': AttemptSerializer(attempt).data})
-            #return JsonResponse(AttemptSerializer(attempt).data, status=status.HTTP_201_CREATED)
 
         else:
-            print('serializer.errors: {}'.format(serializer.errors))
             return Response({'Holi ': 0}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -101,33 +71,13 @@ def getCountryFromIP(ipAddress):
 
 
 '''
-request json example:
-
-    {
-      'id': id,
-      'date': date,
-      'os': os,
-      'cuda': cuda,
-      'cmake': cmake,
-      'gcc': gcc,
-      'gpp': gpp,
-      'scons': scons,
-      'branch': branch,
-      'updated': updated,
-      'returnCode': returnCode,
-      'logTail': logTail
-    }
-curl --header "Content-Type: application/json" -X POST --data '{"user":"hashMachine","os":"Ubuntur","cuda":"NoSequeeseso","cmake":"3.5.6","gcc":"4.perocentos","gpp":"gepusplas","scons":"4.3.3","branch":"agm_API","updated":"claroMakina","returnCode":"0 con espacio ", "logTail":"muchas lines"}' --request POST http://127.0.0.1:8000/web/attempts/
-
-curl --header "Content-Type: application/json" \
-     -X POST \
-     --data '{
+--data '{
        "user": {
-         "ID": "hashMachine",
+         "ID": "hashMachine5",
          "country": "someCountry"
        },
        "version": {
-         "os": "Ubuntur",
+         "os": "Centor",
          "cudaVersion": "NoSequeeseso",
          "cmakeVersion": "3.5.6",
          "gccVersion": "4.perocentos",
@@ -140,10 +90,7 @@ curl --header "Content-Type: application/json" \
        },
        "returnCode": "0 con espacio",
        "logTail": "muchas lines"
-     }' \
-     http://127.0.0.1:8000/web/attempts/
-
-
+     }'      http://127.0.0.1:8000/web/attempts/ >salida.html
 
 
 '''

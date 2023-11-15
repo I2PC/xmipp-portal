@@ -23,14 +23,24 @@ class AttemptSerializer(ModelSerializer):
         model = Attempt
         fields = ['user', 'version', 'xmipp', 'date', 'returnCode', 'logTail']
 
-    def create(self, validated_data):
-            user_data = validated_data.pop('user')
-            version_data = validated_data.pop('version')
-            xmipp_data = validated_data.pop('xmipp')
+    #def create(self, validated_data):
+    #       print('In create()')
 
-            user, _ = User.objects.get_or_create(**user_data)
-            version, _ = Version.objects.get_or_create(**version_data)
-            xmipp, _ = Xmipp.objects.get_or_create(**xmipp_data)
+    #       user_data = validated_data.pop('user')
+    #       version_data = validated_data.pop('version')
+    #       xmipp_data = validated_data.pop('xmipp')
 
-            attempt = Attempt.objects.create(user=user, version=version, xmipp=xmipp, **validated_data)
-            return attempt
+    #       user, _ = User.objects.get_or_create(**user_data)
+    #       version, _ = Version.objects.get_or_create(**version_data)
+    #       xmipp, _ = Xmipp.objects.get_or_create(**xmipp_data)
+
+    #       attempt = Attempt.objects.create(
+    #           user=user, version=version, xmipp=xmipp, **validated_data)
+    #       return attempt
+
+    def validate_ID(self, value):
+        print('Validate')
+        # Si el usuario ya existe, no lanzar un error
+        #if User.objects.filter(ID=value).exists():
+        #    return value
+        return value
