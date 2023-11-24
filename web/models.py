@@ -42,7 +42,7 @@ class Xmipp(models.Model):
 	updated = models.BooleanField() #git fecth + git status
 
 class Attempt(models.Model):
-	user = models.ForeignKey(User, related_name='attemps', on_delete=models.CASCADE)
+	user = models.ForeignKey(User, related_name='attempts', on_delete=models.CASCADE)
 	version = models.ForeignKey(Version, on_delete=models.CASCADE)
 	xmipp = models.ForeignKey(Xmipp, on_delete=models.CASCADE)
 
