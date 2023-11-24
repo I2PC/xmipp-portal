@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ***************************************************************************
 # * Authors:		Alberto García (alberto.garcia@cnb.csic.es)
 # *							Martín Salinas (martin.salinas@cnb.csic.es)
@@ -25,88 +24,116 @@
 
 from rest_framework.views import APIView
 from .serializers import AttemptSerializer
-from geocoder import ip
 from .models import User, Xmipp, Version, Attempt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
-from .utils import get_client_ip, getCountry
-
+from .utils import getClientIp, getCountryFromIp
 
 class AttemptsView(APIView):
-    serializer_class = AttemptSerializer
+  """
+	### This class performs a custom processing of the requests received.
+	"""
+  serializer_class = AttemptSerializer
 
+  def get(self, request, format: str=None) -> JsonResponse:
+    """
+    ### This function receives a GET request and returns all attempts's info.
 
-    def get(self, request, format=None):
-        attempts = [attempt.user for attempt in Attempt.objects.all()]
-        return JsonResponse({'Attempt': attempts})
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
 
-    def post(self, request, format='json'):
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid() and format == 'json':
-            validated_data = serializer.validated_data
-            user_data = validated_data.get('user')
-            version_data = validated_data.get('version')
-            xmipp_data = validated_data.get('xmipp')
-            returnCode = validated_data.get('returnCode')
-            logTail = validated_data.get('logTail')
+    #### Returns:
+    (JsonResponse): JSON with attempts's info.
+    """
+    # Create a list with all the attempts in database
+    attempts = [attempt.user for attempt in Attempt.objects.all()]
 
+    # Return attempts as JSON
+    return JsonResponse({'Attempt': attempts})
 
-            country = getCountry(get_client_ip(request))
-            userObj, created = User.objects.update_or_create(
-                userId=user_data['userId'],
-                defaults={'country': country})
+  def post(self, request, format: str='json') -> Response:
+    """
+    ### This function receives a POST request and stores the received data in the database.
 
-            xmippObj, created = Xmipp.objects.get_or_create(
-                branch=xmipp_data['branch'],
-                updated=xmipp_data['updated'])
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
 
-            versionsObj, created = Version.objects.get_or_create(
-                os=version_data['os'],
-                cudaVersion=version_data['cudaVersion'],
-                cmakeVersion=version_data['cmakeVersion'],
-                gppVersion=version_data['gppVersion'],
-                gccVersion=version_data['gccVersion'],
-                sconsVersion=version_data['sconsVersion'])
+    #### Returns:
+    (Response): Http response with the appropiate info.
+    """
+    # Get data from serializer
+    serializer = self.serializer_class(data=request.data)
 
-            attempt = Attempt(user=userObj,
-                              version=versionsObj,
-                              xmipp=xmippObj,
-                              #date=date,
-                              returnCode=returnCode,
-                              logTail=logTail)
-            attempt.save()
-            return Response({'data': AttemptSerializer(attempt).data})
+    # We only want to store valid requests, meaning serializer has to
+    # validate and format has to be json (the only one we accept)
+    if serializer.is_valid() and format == 'json':
+      # Get serializer data into variables
+      validatedData = serializer.validatedData
+      userData = validatedData.get('user')
+      versionData = validatedData.get('version')
+      xmippData = validatedData.get('xmipp')
+      returnCode = validatedData.get('returnCode')
+      logTail = validatedData.get('logTail')
 
-        else:
-            print('HOOOOOOOOOOOOOOLA')
-            print('ERRORS: {}\n'.format(serializer.errors['user']))
-            return Response({'Holi ': 0,
-                             'isValid': serializer.is_valid(),
-                             'isJSON': format == 'json'},
-                             status=status.HTTP_400_BAD_REQUEST)
+      # Obtaining country from sender's ip
+      country = getCountryFromIp(getClientIp(request))
 
+      # Creating user object
+      userObj = User.objects.update_or_create(
+        userId=userData['userId'],
+        defaults={'country': country}
+      )[0]
 
-#########UTILS
+      # Creating xmipp object
+      xmippObj = Xmipp.objects.get_or_create(
+        branch=xmippData['branch'],
+        updated=xmippData['updated']
+      )[0]
 
-def getClientIP(request):
-  xForwardedFor = request.META.get('HTTP_X_FORWARDED_FOR')
-  return xForwardedFor.split(',')[0] if xForwardedFor else request.META.get('REMOTE_ADDR')
+      # Creating version object
+      versionsObj = Version.objects.get_or_create(
+        os=versionData['os'],
+        cudaVersion=versionData['cudaVersion'],
+        cmakeVersion=versionData['cmakeVersion'],
+        gppVersion=versionData['gppVersion'],
+        gccVersion=versionData['gccVersion'],
+        sconsVersion=versionData['sconsVersion']
+      )[0]
 
+      # Creating installation attempt object
+      attempt = Attempt(user=userObj,
+        version=versionsObj,
+        xmipp=xmippObj,
+        #date=date,
+        returnCode=returnCode,
+        logTail=logTail
+      )
 
-def getCountryFromIP(ipAddress):
-    ipAddress = ip(ipAddress)
-    if ipAddress is not None:
-        return ipAddress.country
+      # Saving attempt
+      attempt.save()
+
+      # Return a response contaning the attempt data
+      return Response({'data': AttemptSerializer(attempt).data})
     else:
-        return 'Unkown'
-
+      # In case received data does not validate, return a response with some info
+      print('HOOOOOOOOOOOOOOLA')
+      print('ERRORS: {}\n'.format(serializer.errors['user']))
+      return Response(
+        {
+          'Holi ': 0,
+          'isValid': serializer.is_valid(),
+          'isJSON': format == 'json'
+        },
+        status=status.HTTP_400_BAD_REQUEST
+      )
 
 '''
 --data '{
        "user": {
-         "userId": "hashMachine5",
-         "country": "someCountry"
+         "userId": "hashMachine5"
        },
        "version": {
          "os": "Centor",
@@ -126,5 +153,3 @@ def getCountryFromIP(ipAddress):
 
 
 '''
-
-

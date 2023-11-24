@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ***************************************************************************
 # * Authors:		Alberto García (alberto.garcia@cnb.csic.es)
 # *							Martín Salinas (martin.salinas@cnb.csic.es)
@@ -22,75 +21,88 @@
 # * All comments concerning this program package may be sent to the
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
-import requests, sys, concurrent.futures, pycountry
+
+import requests, concurrent.futures, pycountry
 from typing import Union
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-    return ip
+def getClientIp(request) -> str:
+	"""
+	### This function returns the ip of the sender of a Django request.
 
-def fetch(url: str) -> Union[str, None]:
-    """
-    ### This function returns the country from an ip given an url with the ip embedded.
+	#### Params:
+	- request (Any): Django request.
 
-    #### Params:
-    - utl (str): Url to look ip from.
+	#### Returns:
+	(str): Sender ip.
+	"""
+	# Attempting extraction of ip via two methods
+	xForwardedFor = request.META.get('HTTP_X_FORWARDED_FOR')
+	if xForwardedFor:
+		ip = xForwardedFor.split(',')[0]
+	else:
+		ip = request.META.get('REMOTE_ADDR')
+	
+	# Return result id
+	return ip
 
-    #### Returns:
-    (str): Country name. None if there were any errors.
-    """
-    try:
-        # Performing request
-        response = requests.get(url, timeout=5)
-        response.raise_for_status()
-        data = response.json()
+def fetchCountryName(url: str) -> Union[str, None]:
+	"""
+	### This function returns the country from an ip given an url with the ip embedded.
 
-        # Defining possible key names
-        countryKeyList = ['country_name', 'country']
+	#### Params:
+	- utl (str): Url to look ip from.
 
-        # For every key name, check if exists
-        for key in countryKeyList:
-            if key in data:
-                # Check if it is a country code or full country name
-                if len(data[key]) < 4 and data[key]:
-                    # Convert country code to full country name
-                    return pycountry.countries.get(alpha_2=data[key]).name
-                return data[key]
-    # In case of exception, return None
-    except (requests.exceptions.HTTPError, KeyError,
-            requests.exceptions.RequestException,
-            requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        return None
+	#### Returns:
+	(str): Country name. None if there were any errors.
+	"""
+	try:
+		# Performing request
+		response = requests.get(url, timeout=5)
+		response.raise_for_status()
+		data = response.json()
 
-def getCountry(ip: str) -> str:
-    """
-    ### This function returns the country an ip is from.
+		# Defining possible key names
+		countryKeyList = ['country_name', 'country']
 
-    #### Params:
-    - ip (str): Ip to lookup.
+		# For every key name, check if exists
+		for key in countryKeyList:
+			if key in data:
+				# Check if it is a country code or full country name
+				if len(data[key]) < 4 and data[key]:
+					# Convert country code to full country name
+					return pycountry.countries.get(alpha_2=data[key]).name
+				return data[key]
+	# In case of exception, return None
+	except (requests.exceptions.HTTPError, KeyError, AttributeError,
+					requests.exceptions.RequestException,
+					requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+		return None
 
-    #### Returns:
-    (str): Country name. If there were any errors, default is 'Unknown'.
-    """
-    # Defining list of urls to lookup from, for resiliency
-    urls = [
-        f"https://ipapi.co/{ip}/json/",
-        f"https://ipinfo.io/{ip}/json",
-        f"https://ipwhois.app/json/{ip}"
-    ]
+def getCountryFromIp(ip: str) -> str:
+	"""
+	### This function returns the country an ip is from.
 
-    # Sending concurrent requests to all the urls
-    with concurrent.futures.ThreadPoolExecutor() as executor:
-        futureToUrl = {executor.submit(fetch, url): url for url in urls}
-        for future in concurrent.futures.as_completed(futureToUrl):
-            result = future.result()
-            # Checking if result is valid, only valid results return
-            if result is not None and result:
-                return result
+	#### Params:
+	- ip (str): Ip to lookup.
 
-    # If there were errors, return default value
-    return 'Unknown'
+	#### Returns:
+	(str): Country name. If there were any errors, default is 'Unknown'.
+	"""
+	# Defining list of urls to lookup from, for resiliency
+	urls = [
+		f"https://ipapi.co/{ip}/json/",
+		f"https://ipinfo.io/{ip}/json",
+		f"https://ipwhois.app/json/{ip}"
+	]
+
+	# Sending concurrent requests to all the urls
+	with concurrent.futures.ThreadPoolExecutor() as executor:
+		futureToUrl = {executor.submit(fetchCountryName, url): url for url in urls}
+		for future in concurrent.futures.as_completed(futureToUrl):
+			result = future.result()
+			# Checking if result is valid, only valid results return
+			if result is not None and result:
+				return result
+
+	# If there were errors, return default value
+	return 'Unknown'

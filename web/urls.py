@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ***************************************************************************
 # * Authors:		Alberto García (alberto.garcia@cnb.csic.es)
 # *							Martín Salinas (martin.salinas@cnb.csic.es)
@@ -22,12 +21,12 @@
 # * All comments concerning this program package may be sent to the
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
+
 from django.urls import re_path
 from web import views_home
 from .views import AttemptsView
 
-
 urlpatterns = [
-    re_path(r'^$', views_home.home),
-    re_path(r'/attempts/', AttemptsView.as_view())
+	re_path(r'^$', views_home.home),
+	re_path(r'/attempts/', AttemptsView.as_view())
 ]

@@ -1,4 +1,3 @@
-#!/usr/bin/env python3
 # ***************************************************************************
 # * Authors:		Alberto García (alberto.garcia@cnb.csic.es)
 # *							Martín Salinas (martin.salinas@cnb.csic.es)
@@ -27,7 +26,6 @@ from django.contrib import admin
 from web import models
 
 # Register your models here.
-
 admin.site.register(models.User)
 admin.site.register(models.Version)
 admin.site.register(models.Xmipp)

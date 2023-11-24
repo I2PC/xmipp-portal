@@ -5,5 +5,4 @@ django-extensions==3
 dj-database-url==2
 djangorestframework>=3.14
 mysqlclient
-geocoder
 pycountry
