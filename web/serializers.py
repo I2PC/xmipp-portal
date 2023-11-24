@@ -4,7 +4,7 @@ from rest_framework.serializers import ModelSerializer
 class UserSerializer(ModelSerializer):
     class Meta:
         model = User
-        fields = ['ID', 'country']
+        fields = ['userId', 'country']
 class XmippSerializer(ModelSerializer):
     class Meta:
         model = Xmipp

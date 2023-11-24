@@ -2,7 +2,7 @@ from __future__ import unicode_literals
 from django.db import models
 
 class User(models.Model):
-    ID = models.CharField(max_length=100, primary_key=True)
+    userId = models.CharField(max_length=100, primary_key=False)
     country = models.CharField(max_length=100)
 
 class Version(models.Model):

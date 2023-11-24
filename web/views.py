@@ -17,7 +17,6 @@ class AttemptsView(APIView):
 
     def post(self, request, format='json'):
         serializer = self.serializer_class(data=request.data)
-        print(serializer.errors['user']['ID'][0])
         if serializer.is_valid() and format == 'json':
             validated_data = serializer.validated_data
             user_data = validated_data.get('user')
@@ -26,9 +25,9 @@ class AttemptsView(APIView):
             returnCode = validated_data.get('returnCode')
             logTail = validated_data.get('logTail')
 
-            userObj, created = User.objects.get_or_create(
-                ID=user_data['ID'],
-                country='CoreaDelNorte')
+            userObj, created = User.objects.update_or_create(
+                userId=user_data['userId'],
+                defaults={'country': user_data['country']})
 
             xmippObj, created = Xmipp.objects.get_or_create(
                 branch=xmipp_data['branch'],
@@ -52,7 +51,12 @@ class AttemptsView(APIView):
             return Response({'data': AttemptSerializer(attempt).data})
 
         else:
-            return Response({'Holi ': 0}, status=status.HTTP_400_BAD_REQUEST)
+            print('HOOOOOOOOOOOOOOLA')
+            print('ERRORS: {}\n'.format(serializer.errors['user']))
+            return Response({'Holi ': 0,
+                             'isValid': serializer.is_valid(),
+                             'isJSON': format == 'json'},
+                             status=status.HTTP_400_BAD_REQUEST)
 
 
 #########UTILS
@@ -73,7 +77,7 @@ def getCountryFromIP(ipAddress):
 '''
 --data '{
        "user": {
-         "ID": "hashMachine5",
+         "userId": "hashMachine5",
          "country": "someCountry"
        },
        "version": {
