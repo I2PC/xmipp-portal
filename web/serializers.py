@@ -46,10 +46,3 @@ class AttemptSerializer(ModelSerializer):
 	class Meta:
 		model = Attempt
 		fields = ['user', 'version', 'xmipp', 'date', 'returnCode', 'logTail']
-
-	def validateId(self, value):
-		print('Validate')
-		# Si el usuario ya existe, no lanzar un error
-		#if User.objects.filter(ID=value).exists():
-		#    return value
-		return value
