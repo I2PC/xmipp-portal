@@ -52,7 +52,6 @@ class AttemptsView(APIView):
             logTail = validated_data.get('logTail')
 
 
-            IP = get_client_ip(request)
             country = getCountry(get_client_ip(request))
             userObj, created = User.objects.update_or_create(
                 userId=user_data['userId'],
