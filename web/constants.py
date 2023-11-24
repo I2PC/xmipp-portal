@@ -22,33 +22,27 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
-# General imports
-from rest_framework.serializers import ModelSerializer
+####################### FIELD CONSTANTS #######################
+# User fields
+USER_ID = 'userId'
+USER_COUNTRY = 'country'
 
-# Self imports
-from .models import Attempt, User, Version, Xmipp
-from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
-	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_DATE, ATTEMPT_RETCODE, ATTEMPT_LOGTAIL
+# Xmipp fields
+XMIPP_BRANCH = 'branch'
+XMIPP_UPDATED = 'updated'
 
-class UserSerializer(ModelSerializer):
-	class Meta:
-		model = User
-		fields = [USER_ID, USER_COUNTRY]
-class XmippSerializer(ModelSerializer):
-	class Meta:
-		model = Xmipp
-		fields = [XMIPP_BRANCH, XMIPP_UPDATED]
+# Version fields
+VERSION_OS = 'os'
+VERSION_CUDA = 'cuda'
+VERSION_CMAKE = 'cmake'
+VERSION_GCC = 'gcc'
+VERSION_GPP = 'gpp'
+VERSION_SCONS = 'scons'
 
-class VersionsSerializer(ModelSerializer):
-	class Meta:
-		model = Version
-		fields = [VERSION_OS, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS]
-
-class AttemptSerializer(ModelSerializer):
-	user = UserSerializer()
-	xmipp = XmippSerializer()
-	version = VersionsSerializer()
-	class Meta:
-		model = Attempt
-		fields = [ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP, ATTEMPT_DATE, ATTEMPT_RETCODE, ATTEMPT_LOGTAIL]
+# Attempt fields
+ATTEMPT_USER = 'user'
+ATTEMPT_VERSION = 'version'
+ATTEMPT_XMIPP = 'xmipp'
+ATTEMPT_DATE = 'date'
+ATTEMPT_RETCODE = 'returnCode'
+ATTEMPT_LOGTAIL = 'logTail'

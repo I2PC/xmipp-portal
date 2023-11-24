@@ -22,13 +22,19 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
+# General imports
 from rest_framework.views import APIView
-from .serializers import AttemptSerializer
-from .models import User, Xmipp, Version, Attempt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
+
+# Self imports
+from .models import User, Xmipp, Version, Attempt
+from .serializers import AttemptSerializer
 from .utils import getClientIp, getCountryFromIp
+from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
+	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
+	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL
 
 class AttemptsView(APIView):
   """
@@ -72,35 +78,35 @@ class AttemptsView(APIView):
     if serializer.is_valid() and format == 'json':
       # Get serializer data into variables
       validatedData = serializer.validatedData
-      userData = validatedData.get('user')
-      versionData = validatedData.get('version')
-      xmippData = validatedData.get('xmipp')
-      returnCode = validatedData.get('returnCode')
-      logTail = validatedData.get('logTail')
+      userData = validatedData.get(ATTEMPT_USER)
+      versionData = validatedData.get(ATTEMPT_VERSION)
+      xmippData = validatedData.get(ATTEMPT_XMIPP)
+      returnCode = validatedData.get(ATTEMPT_RETCODE)
+      logTail = validatedData.get(ATTEMPT_LOGTAIL)
 
       # Obtaining country from sender's ip
       country = getCountryFromIp(getClientIp(request))
 
       # Creating user object
       userObj = User.objects.update_or_create(
-        userId=userData['userId'],
-        defaults={'country': country}
+        userId=userData[USER_ID],
+        defaults={USER_COUNTRY: country}
       )[0]
 
       # Creating xmipp object
       xmippObj = Xmipp.objects.get_or_create(
-        branch=xmippData['branch'],
-        updated=xmippData['updated']
+        branch=xmippData[XMIPP_BRANCH],
+        updated=xmippData[XMIPP_UPDATED]
       )[0]
 
       # Creating version object
       versionsObj = Version.objects.get_or_create(
-        os=versionData['os'],
-        cudaVersion=versionData['cudaVersion'],
-        cmakeVersion=versionData['cmakeVersion'],
-        gppVersion=versionData['gppVersion'],
-        gccVersion=versionData['gccVersion'],
-        sconsVersion=versionData['sconsVersion']
+        os=versionData[VERSION_OS],
+        cudaVersion=versionData[VERSION_CUDA],
+        cmakeVersion=versionData[VERSION_CMAKE],
+        gccVersion=versionData[VERSION_GCC],
+        gppVersion=versionData[VERSION_GPP],
+        sconsVersion=versionData[VERSION_SCONS]
       )[0]
 
       # Creating installation attempt object
@@ -120,7 +126,7 @@ class AttemptsView(APIView):
     else:
       # In case received data does not validate, return a response with some info
       print('HOOOOOOOOOOOOOOLA')
-      print('ERRORS: {}\n'.format(serializer.errors['user']))
+      print('ERRORS: {}\n'.format(serializer.errors[ATTEMPT_USER]))
       return Response(
         {
           'Holi ': 0,
