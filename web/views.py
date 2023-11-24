@@ -1,3 +1,28 @@
+#!/usr/bin/env python3
+# ***************************************************************************
+# * Authors:		Alberto García (alberto.garcia@cnb.csic.es)
+# *							Martín Salinas (martin.salinas@cnb.csic.es)
+# *             Carolina Simón (carolina.simon@cnb.csic.es)
+# *
+# * This program is free software; you can redistribute it and/or modify
+# * it under the terms of the GNU General Public License as published by
+# * the Free Software Foundation; either version 2 of the License, or
+# * (at your option) any later version.
+# *
+# * This program is distributed in the hope that it will be useful,
+# * but WITHOUT ANY WARRANTY; without even the implied warranty of
+# * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# * GNU General Public License for more details.
+# *
+# * You should have received a copy of the GNU General Public License
+# * along with this program; if not, write to the Free Software
+# * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
+# * 02111-1307 USA
+# *
+# * All comments concerning this program package may be sent to the
+# * e-mail address 'scipion@cnb.csic.es'
+# ***************************************************************************/
+
 from rest_framework.views import APIView
 from .serializers import AttemptSerializer
 from geocoder import ip
@@ -5,6 +30,7 @@ from .models import User, Xmipp, Version, Attempt
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
+from .utils import get_client_ip, getCountry
 
 
 class AttemptsView(APIView):
@@ -25,9 +51,12 @@ class AttemptsView(APIView):
             returnCode = validated_data.get('returnCode')
             logTail = validated_data.get('logTail')
 
+
+            IP = get_client_ip(request)
+            country = getCountry(get_client_ip(request))
             userObj, created = User.objects.update_or_create(
                 userId=user_data['userId'],
-                defaults={'country': user_data['country']})
+                defaults={'country': country})
 
             xmippObj, created = Xmipp.objects.get_or_create(
                 branch=xmipp_data['branch'],
