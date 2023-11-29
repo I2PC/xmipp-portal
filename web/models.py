@@ -27,15 +27,16 @@ from django.db import models
 
 class User(models.Model):
 	userId = models.CharField(max_length=100, primary_key=False)
-	country = models.CharField(max_length=100)
+	country = models.CharField(max_length=100, blank=True)
 
 class Version(models.Model):
 	os = models.CharField(max_length=100) # cat /etc/os-release
-	cudaVersion = models.CharField(max_length=20)
-	cmakeVersion = models.CharField(max_length=20)
-	gccVersion = models.CharField(max_length=20)
-	gppVersion = models.CharField(max_length=20)
-	sconsVersion = models.CharField(max_length=20, default='')
+	cuda = models.CharField(max_length=20)
+	cmake = models.CharField(max_length=20)
+	gcc = models.CharField(max_length=20)
+	gpp = models.CharField(max_length=20)
+	scons = models.CharField(max_length=20, default='')
+	architecture = models.CharField(max_length=40, default='')
 
 class Xmipp(models.Model):
 	branch = models.CharField(max_length=50) #XMIPP_VERNAME

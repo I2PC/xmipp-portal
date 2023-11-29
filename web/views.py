@@ -34,7 +34,7 @@ from .serializers import AttemptSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL
+	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
 
 class AttemptsView(APIView):
   """
@@ -77,7 +77,7 @@ class AttemptsView(APIView):
     # validate and format has to be json (the only one we accept)
     if serializer.is_valid() and format == 'json':
       # Get serializer data into variables
-      validatedData = serializer.validatedData
+      validatedData = serializer.validated_data
       userData = validatedData.get(ATTEMPT_USER)
       versionData = validatedData.get(ATTEMPT_VERSION)
       xmippData = validatedData.get(ATTEMPT_XMIPP)
@@ -102,11 +102,12 @@ class AttemptsView(APIView):
       # Creating version object
       versionsObj = Version.objects.get_or_create(
         os=versionData[VERSION_OS],
-        cudaVersion=versionData[VERSION_CUDA],
-        cmakeVersion=versionData[VERSION_CMAKE],
-        gccVersion=versionData[VERSION_GCC],
-        gppVersion=versionData[VERSION_GPP],
-        sconsVersion=versionData[VERSION_SCONS]
+        architecture=versionData[VERSION_ARCHITECTURE],
+        cuda=versionData[VERSION_CUDA],
+        cmake=versionData[VERSION_CMAKE],
+        gcc=versionData[VERSION_GCC],
+        gpp=versionData[VERSION_GPP],
+        scons=versionData[VERSION_SCONS]
       )[0]
 
       # Creating installation attempt object
@@ -125,8 +126,7 @@ class AttemptsView(APIView):
       return Response({'data': AttemptSerializer(attempt).data})
     else:
       # In case received data does not validate, return a response with some info
-      print('HOOOOOOOOOOOOOOLA')
-      print('ERRORS: {}\n'.format(serializer.errors[ATTEMPT_USER]))
+      print('ERRORS: {}\n'.format(serializer.errors))
       return Response(
         {
           'Holi ': 0,
@@ -143,11 +143,12 @@ class AttemptsView(APIView):
        },
        "version": {
          "os": "Centor",
-         "cudaVersion": "NoSequeeseso",
-         "cmakeVersion": "3.5.6",
-         "gccVersion": "4.perocentos",
-         "gppVersion": "gepusplas",
-         "sconsVersion": "4.3.3"
+         "architecrture": "skylaque"
+         "cuda": "NoSequeeseso",
+         "cmake": "3.5.6",
+         "gcc": "4.perocentos",
+         "gpp": "gepusplas",
+         "scons": "4.3.3"
        },
        "xmipp": {
          "branch": "agm_API",

@@ -33,6 +33,7 @@ XMIPP_UPDATED = 'updated'
 
 # Version fields
 VERSION_OS = 'os'
+VERSION_ARCHITECTURE = 'architecture'
 VERSION_CUDA = 'cuda'
 VERSION_CMAKE = 'cmake'
 VERSION_GCC = 'gcc'
