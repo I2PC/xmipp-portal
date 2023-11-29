@@ -137,26 +137,26 @@ class AttemptsView(APIView):
       )
 
 '''
---data '{
-       "user": {
-         "userId": "hashMachine5"
-       },
-       "version": {
-         "os": "Centor",
-         "architecrture": "skylaque"
-         "cuda": "NoSequeeseso",
-         "cmake": "3.5.6",
-         "gcc": "4.perocentos",
-         "gpp": "gepusplas",
-         "scons": "4.3.3"
-       },
-       "xmipp": {
-         "branch": "agm_API",
-         "updated": true
-       },
-       "returnCode": "0 con espacio",
-       "logTail": "muchas lines"
-     }'      http://127.0.0.1:8000/web/attempts/ >salida.html
+curl --header "Content-Type: application/json" -X POST --data '{
+        "user": {
+        "userId": "hashMachine5", "country": ""
+        },
+        "version": {
+        "os": "Centor",
+        "architecture": "skylaque",
+        "cuda": "NoSequeeseso",
+        "cmake": "3.5.6",
+        "gcc": "4.perocentos",
+        "gpp": "gepusplas",
+        "scons": "4.3.3"
+        },
+        "xmipp": {
+        "branch": "agm_API",
+        "updated": true
+        },
+        "returnCode": "0 con espacio",
+        "logTail": "muchas lines"
+        }' --request POST http://127.0.0.1:8000/web/attempts/ > file.html
 
 
 '''
