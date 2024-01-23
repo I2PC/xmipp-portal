@@ -58,6 +58,7 @@ class AttemptsView(APIView):
 
     # Return attempts as JSON
     return JsonResponse({'Attempt': attempts})
+    #return Response({'data': AttemptSerializer(attempt).data})
 
   def post(self, request, format: str='json') -> Response:
     """
@@ -156,7 +157,7 @@ curl --header "Content-Type: application/json" -X POST --data '{
         },
         "returnCode": "0 con espacio",
         "logTail": "muchas lines"
-        }' --request POST http://127.0.0.1:8000/web/attempts/ > file.html
+        }' --request POST http://127.0.0.1:8000/api/attempts/ > file.html
 
 
 '''

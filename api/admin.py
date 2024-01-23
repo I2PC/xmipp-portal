@@ -22,9 +22,11 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
-from django.urls import re_path
-from web import views_home
+from django.contrib import admin
+from .models import User, Version, Xmipp, Attempt
 
-urlpatterns = [
-	re_path(r'^$', views_home.home),
-]
+# Register your models here.
+admin.site.register(User)
+admin.site.register(Version)
+admin.site.register(Xmipp)
+admin.site.register(Attempt)
