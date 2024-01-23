@@ -92,3 +92,6 @@ ENV/
 # Text editor settings folders
 .idea/
 .vscode/
+
+# Migrations
+migrations/
