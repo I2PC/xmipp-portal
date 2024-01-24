@@ -48,5 +48,5 @@ class Attempt(models.Model):
 	xmipp = models.ForeignKey(Xmipp, on_delete=models.CASCADE)
 
 	date = models.DateTimeField(auto_now_add=True)
-	returnCode = models.CharField(max_length=300)
+	returnCode = models.IntegerField()
 	logTail = models.TextField(max_length=10000)
