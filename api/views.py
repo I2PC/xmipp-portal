@@ -30,7 +30,7 @@ from rest_framework import status
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
-from .serializers import AttemptSerializer
+from .serializers import AttemptSerializer, UserSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
@@ -42,7 +42,7 @@ class AttemptsView(APIView):
 	"""
   serializer_class = AttemptSerializer
 
-  def get(self, request, format: str=None) -> JsonResponse:
+  def get(self, request, format: str=None) -> Response:
     """
     ### This function receives a GET request and returns all attempts's info.
 
@@ -51,14 +51,13 @@ class AttemptsView(APIView):
     - format (str): Optional. Request format.
 
     #### Returns:
-    (JsonResponse): JSON with attempts's info.
+    (Response): HTTP response with attempts's info.
     """
     # Create a list with all the attempts in database
-    attempts = [attempt.user for attempt in Attempt.objects.all()]
+    attempts = [AttemptSerializer(attempt).data for attempt in Attempt.objects.all()]
 
     # Return attempts as JSON
-    return JsonResponse({'Attempt': attempts})
-    #return Response({'data': AttemptSerializer(attempt).data})
+    return Response({'Attempt': attempts})
 
   def post(self, request, format: str='json') -> Response:
     """
