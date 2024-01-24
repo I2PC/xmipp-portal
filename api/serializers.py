@@ -29,7 +29,7 @@ from rest_framework.serializers import ModelSerializer
 from .models import Attempt, User, Version, Xmipp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_DATE, ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
+	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE
 
 class UserSerializer(ModelSerializer):
 	class Meta:
@@ -51,4 +51,4 @@ class AttemptSerializer(ModelSerializer):
 	version = VersionsSerializer()
 	class Meta:
 		model = Attempt
-		fields = [ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP, ATTEMPT_DATE, ATTEMPT_RETCODE, ATTEMPT_LOGTAIL]
+		fields = [ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP, ATTEMPT_DATE, ATTEMPT_RETCODE]
