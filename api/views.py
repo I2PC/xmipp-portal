@@ -40,7 +40,7 @@ class AttemptsView(APIView):
   """
 	### This class performs a custom processing of the requests received.
 	"""
-  serializer_class = AttemptSerializer
+  #serializer_class = AttemptSerializer
 
   def get(self, request, format: str=None) -> Response:
     """
@@ -53,11 +53,12 @@ class AttemptsView(APIView):
     #### Returns:
     (Response): HTTP response with attempts's info.
     """
-    # Create a list with all the attempts in database
-    attempts = [AttemptSerializer(attempt).data for attempt in Attempt.objects.all()]
+    # Get queryset with all the attempts in database and serialize it
+    queryset = Attempt.objects.all()
+    serializer = AttemptSerializer(queryset, many = True)
 
     # Return attempts as JSON
-    return Response({'Attempt': attempts})
+    return Response(serializer.data)
 
   def post(self, request, format: str='json') -> Response:
     """
