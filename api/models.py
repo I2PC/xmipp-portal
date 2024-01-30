@@ -29,6 +29,9 @@ class User(models.Model):
 	userId = models.CharField(max_length=100, primary_key=False)
 	country = models.CharField(max_length=100, blank=True)
 
+	def __str__(self):
+		return '%s (%s)' % (self.userId, self.country)
+
 class Version(models.Model):
 	os = models.CharField(max_length=100) # cat /etc/os-release
 	cuda = models.CharField(max_length=20)
@@ -42,6 +45,9 @@ class Xmipp(models.Model):
 	branch = models.CharField(max_length=50) #XMIPP_VERNAME
 	updated = models.BooleanField() #git fecth + git status
 
+	def __str__(self):
+		return '%s (%s)' % (self.branch, self.updated)
+
 class Attempt(models.Model):
 	user = models.ForeignKey(User, related_name='attempts', on_delete=models.CASCADE)
 	version = models.ForeignKey(Version, on_delete=models.CASCADE)
@@ -50,3 +56,6 @@ class Attempt(models.Model):
 	date = models.DateTimeField(auto_now_add=True)
 	returnCode = models.IntegerField()
 	logTail = models.TextField(max_length=10000)
+
+	def __str__(self):
+		return '%s - %s (%s)' % (self.user, self.returnCode, self.date)
