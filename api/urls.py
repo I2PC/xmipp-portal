@@ -22,9 +22,9 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
-from django.urls import re_path
+from django.urls import path
 from .views import AttemptsView
 
 urlpatterns = [
-	re_path(r'attempts/', AttemptsView.as_view())
+	path('attempts/', AttemptsView.as_view()),
 ]
