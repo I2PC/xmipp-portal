@@ -22,9 +22,33 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
-from django.urls import re_path
-from web import views_home
+# General imports
+from rest_framework.serializers import ModelSerializer
 
-urlpatterns = [
-	re_path(r'^$', views_home.home),
-]
+# Self imports
+from .models import Attempt, User, Version, Xmipp
+from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
+	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
+	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE
+
+class UserSerializer(ModelSerializer):
+	class Meta:
+		model = User
+		fields = [USER_ID, USER_COUNTRY]
+class XmippSerializer(ModelSerializer):
+	class Meta:
+		model = Xmipp
+		fields = [XMIPP_BRANCH, XMIPP_UPDATED]
+
+class VersionsSerializer(ModelSerializer):
+	class Meta:
+		model = Version
+		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS]
+
+class AttemptSerializer(ModelSerializer):
+	user = UserSerializer()
+	xmipp = XmippSerializer()
+	version = VersionsSerializer()
+	class Meta:
+		model = Attempt
+		fields = [ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP, ATTEMPT_DATE, ATTEMPT_RETCODE]

@@ -22,9 +22,10 @@
 # * e-mail address 'scipion@cnb.csic.es'
 # ***************************************************************************/
 
-from django.urls import re_path
-from web import views_home
+from django.urls import path
+from .views import AttemptsView, CountryBarChartView
 
 urlpatterns = [
-	re_path(r'^$', views_home.home),
+	path('attempts/', AttemptsView.as_view()),
+    path('users/country-bar-chart/', CountryBarChartView.as_view()),
 ]
