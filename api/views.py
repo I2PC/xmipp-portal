@@ -27,15 +27,36 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
+from django.db.models import Count
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
-from .serializers import AttemptSerializer, UserSerializer
+from .serializers import AttemptSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
 
+class CountryBarChartView(APIView):
+
+  def get(self, request, format: str=None) -> Response:
+    """
+    ### This function receives a GET request and returns all users per country values.
+
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with count info.
+    """
+    # Create a queryset to filter users with successful attempts and 
+    # aggregate them to get users per country
+    queryset = User.objects.filter(attempts__returnCode=0).values("country") \
+      .annotate(users_count=Count('country', distinct=True))
+
+    # Return attempts as JSON
+    return Response(queryset)
 class AttemptsView(APIView):
   """
 	### This class performs a custom processing of the requests received.

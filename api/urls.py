@@ -23,8 +23,9 @@
 # ***************************************************************************/
 
 from django.urls import path
-from .views import AttemptsView
+from .views import AttemptsView, CountryBarChartView
 
 urlpatterns = [
 	path('attempts/', AttemptsView.as_view()),
+    path('users/country-bar-chart/', CountryBarChartView.as_view()),
 ]
