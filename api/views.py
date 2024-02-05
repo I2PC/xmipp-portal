@@ -61,7 +61,7 @@ class AttemptsView(APIView):
   """
 	### This class performs a custom processing of the requests received.
 	"""
-  #serializer_class = AttemptSerializer
+  serializer_class = AttemptSerializer
 
   def get(self, request, format: str=None) -> Response:
     """
