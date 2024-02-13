@@ -105,8 +105,6 @@ class AttemptsView(APIView):
       xmippData = validatedData.get(ATTEMPT_XMIPP)
       returnCode = validatedData.get(ATTEMPT_RETCODE)
       logTail = validatedData.get(ATTEMPT_LOGTAIL)
-      print('Hola soy el logTail:')
-      print(logTail)
 
       # Obtaining country from sender's ip
       country = getCountryFromIp(getClientIp(request))
