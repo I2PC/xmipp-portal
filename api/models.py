@@ -55,7 +55,7 @@ class Attempt(models.Model):
 
 	date = models.DateTimeField(auto_now_add=True)
 	returnCode = models.IntegerField()
-	logTail = models.TextField(max_length=10000)
+	logTail = models.CharField(max_length=10000, default='')
 
 	def __str__(self):
 		return '%s - %s (%s)' % (self.user, self.returnCode, self.date)

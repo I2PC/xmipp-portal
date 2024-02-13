@@ -105,6 +105,8 @@ class AttemptsView(APIView):
       xmippData = validatedData.get(ATTEMPT_XMIPP)
       returnCode = validatedData.get(ATTEMPT_RETCODE)
       logTail = validatedData.get(ATTEMPT_LOGTAIL)
+      print('Hola soy el logTail:')
+      print(logTail)
 
       # Obtaining country from sender's ip
       country = getCountryFromIp(getClientIp(request))
@@ -151,7 +153,6 @@ class AttemptsView(APIView):
       print('ERRORS: {}\n'.format(serializer.errors))
       return Response(
         {
-          'Holi ': 0,
           'isValid': serializer.is_valid(),
           'isJSON': format == 'json'
         },
@@ -176,7 +177,7 @@ curl --header "Content-Type: application/json" -X POST --data '{
         "branch": "agm_API",
         "updated": true
         },
-        "returnCode": "0 con espacio",
+        "returnCode": "0",
         "logTail": "muchas lines"
         }' --request POST http://127.0.0.1:8000/api/attempts/ > file.html
 
