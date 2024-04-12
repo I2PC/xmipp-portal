@@ -19,6 +19,8 @@ from django.urls import re_path, path
 from django.conf.urls import include
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.static import serve
+from django.conf import settings
 
 urlpatterns = [
 	re_path(r'^', include('web.urls')),
@@ -28,3 +30,6 @@ urlpatterns = [
 
 ]
 urlpatterns += staticfiles_urlpatterns()
+#urlpatterns = [
+#    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+#]

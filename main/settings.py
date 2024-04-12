@@ -22,10 +22,10 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'in##hj=!8!%v+%i0f!9a(#eq^bgc6lnz^lkt%rkgql*0=2tm&^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+PRODUCTION = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['xmipp.i2pc.es']
 # Application definition
 
 INSTALLED_APPS = [
@@ -35,15 +35,17 @@ INSTALLED_APPS = [
 	'django.contrib.sessions',
 	'django.contrib.messages',
 	'django.contrib.staticfiles',
+#	'corsheaders',
 	"django_extensions",
 	'web',
     'rest_framework',
-    'api'
+    'api',
 ]
 
 MIDDLEWARE = [
 	'django.middleware.security.SecurityMiddleware',
 	'django.contrib.sessions.middleware.SessionMiddleware',
+#	'corsheaders.middleware.CorsMiddleware',
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -51,6 +53,9 @@ MIDDLEWARE = [
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	#'django.middleware.clickjacking.XContentOptionsMiddleware'
 ]
+
+#CORS_ORIGIN_ALLOW_ALL = True
+#CORS_ALLOW_CREDENTIALS = False
 
 DATABASES = {
 	'default': {

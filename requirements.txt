@@ -6,3 +6,4 @@ dj-database-url==2
 djangorestframework>=3.14
 mysqlclient
 pycountry
+django-cors-headers
