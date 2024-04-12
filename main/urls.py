@@ -29,7 +29,7 @@ urlpatterns = [
 	path('api/', include('api.urls'))
 
 ]
-urlpatterns += staticfiles_urlpatterns()
-#urlpatterns = [
-#    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
-#]
+#urlpatterns += staticfiles_urlpatterns()
+urlpatterns += [
+    re_path(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
+]
