@@ -26,7 +26,7 @@ SECRET_KEY = 'in##hj=!8!%v+%i0f!9a(#eq^bgc6lnz^lkt%rkgql*0=2tm&^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ["IS_DEV"]
 
-ALLOWED_HOSTS = ['xmipp.i2pc.es']
+ALLOWED_HOSTS = ['xmipp.i2pc.es', '127.0.0.1']
 # Application definition
 
 INSTALLED_APPS = [
