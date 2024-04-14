@@ -61,11 +61,11 @@ MIDDLEWARE = [
 DATABASES = {
 	'default': {
 		'ENGINE': 'django.db.backends.mysql',
-		'NAME': 'mydatabase',
-		'USER': 'myuser',
-		'PASSWORD': 'mypassword',
-		'HOST': 'localhost',   # Set to the address of your database
-		'PORT': '',            # Leave as an empty string to use the default port
+		'NAME': os.environ["DB_NAME"],
+		'USER': os.environ["DB_USER_NAME"],
+		'PASSWORD': os.environ["DB_USER_PASSWD"],
+		'HOST': os.environ["DB_HOST"],   # Set to the address of your database
+		'PORT': os.environ["DB_PORT"],            # Leave as an empty string to use the default port
 		'OPTIONS': {
 			'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
 		},
