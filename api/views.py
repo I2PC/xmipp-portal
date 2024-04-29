@@ -53,7 +53,7 @@ class CountryBarChartView(APIView):
     # Create a queryset to filter users with successful attempts and 
     # aggregate them to get users per country
     queryset = User.objects.filter(attempts__returnCode=0).values("country") \
-      .annotate(users_count=Count('country', distinct=True))
+      .annotate(users_count=Count('id', distinct=True))
 
     # Return attempts as JSON
     return Response(queryset)
