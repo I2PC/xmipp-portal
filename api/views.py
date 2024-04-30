@@ -27,7 +27,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
-from django.db.models import Count
+from django.db.models import Count, OuterRef, Subquery, F
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
@@ -37,6 +37,34 @@ from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSI
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
 
+class ReleasePieChartView(APIView):
+
+  def get(self, request, format: str=None) -> Response:
+    """
+    ### This function receives a GET request and returns xmipp releases of successful installations (one per user).
+
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with count info.
+    """
+    # Get more recent attempt per user
+    subquery = Attempt.objects.filter(user=OuterRef('user')).order_by('-date')
+
+    # Filter attempts that match those latest dates
+    latest_attempts = Attempt.objects.annotate(
+      latest_date=Subquery(subquery.values('date')[:1])
+      ).filter(date=F('latest_date'))
+    
+    # Filter last attempts per user with returnCode 0 (successful)
+    queryset = latest_attempts.filter(returnCode=0) \
+      .values("xmipp__branch").annotate(release_count=Count('id'))
+    
+    # Return attempts as JSON
+    return Response(queryset)
+  
 class CountryBarChartView(APIView):
 
   def get(self, request, format: str=None) -> Response:
@@ -55,7 +83,7 @@ class CountryBarChartView(APIView):
     queryset = User.objects.filter(attempts__returnCode=0).values("country") \
       .annotate(users_count=Count('id', distinct=True))
 
-    # Return attempts as JSON
+    # Return users as JSON
     return Response(queryset)
 class AttemptsView(APIView):
   """
