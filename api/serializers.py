@@ -28,7 +28,7 @@ from rest_framework.serializers import ModelSerializer, CharField
 # Self imports
 from .models import Attempt, User, Version, Xmipp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
-	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
+	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE, ATTEMPT_LOGTAIL
 
 class UserSerializer(ModelSerializer):
@@ -47,14 +47,13 @@ class XmippSerializer(ModelSerializer):
 class VersionsSerializer(ModelSerializer):
 	class Meta:
 		model = Version
-		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS]
+		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP]
 
 	os = CharField(allow_null=True, required=False)
 	cuda = CharField(allow_null=True, required=False)
 	cmake = CharField(allow_null=True, required=False)
 	gcc = CharField(allow_null=True, required=False)
 	gpp = CharField(allow_null=True, required=False)
-	scons = CharField(allow_null=True, required=False)
 	architecture = CharField(allow_null=True, required=False)
 
 class AttemptSerializer(ModelSerializer):

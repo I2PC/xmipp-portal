@@ -38,7 +38,6 @@ class Version(models.Model):
 	cmake = models.CharField(max_length=20, null=True, blank=True)
 	gcc = models.CharField(max_length=20, null=True, blank=True)
 	gpp = models.CharField(max_length=20, null=True, blank=True)
-	scons = models.CharField(max_length=20, default='', null=True, blank=True) #TODO quitar
 	architecture = models.CharField(max_length=40, default='', null=True, blank=True)
 
 class Xmipp(models.Model):

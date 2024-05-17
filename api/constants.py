@@ -38,7 +38,6 @@ VERSION_CUDA = 'cuda'
 VERSION_CMAKE = 'cmake'
 VERSION_GCC = 'gcc'
 VERSION_GPP = 'gpp'
-VERSION_SCONS = 'scons'
 
 # Attempt fields
 ATTEMPT_USER = 'user'

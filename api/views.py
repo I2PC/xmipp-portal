@@ -34,7 +34,7 @@ from .models import User, Xmipp, Version, Attempt
 from .serializers import AttemptSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
-	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
+	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
 
 class ReleasePieChartView(APIView):
@@ -157,7 +157,6 @@ class AttemptsView(APIView):
         cmake=versionData[VERSION_CMAKE],
         gcc=versionData[VERSION_GCC],
         gpp=versionData[VERSION_GPP],
-        scons=versionData[VERSION_SCONS]
       )[0]
 
       # Creating installation attempt object
@@ -197,7 +196,6 @@ curl --header "Content-Type: application/json" -X POST --data '{
         "cmake": "3.5.6",
         "gcc": "4.perocentos",
         "gpp": "gepusplas",
-        "scons": "4.3.3"
         },
         "xmipp": {
         "branch": "agm_API",
