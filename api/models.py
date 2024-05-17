@@ -27,23 +27,23 @@ from django.db import models
 
 class User(models.Model):
 	userId = models.CharField(max_length=100, primary_key=False)
-	country = models.CharField(max_length=100, blank=True)
+	country = models.CharField(max_length=100, null=True, blank=True)
 
 	def __str__(self):
 		return '%s (%s)' % (self.userId, self.country)
 
 class Version(models.Model):
-	os = models.CharField(max_length=100) # cat /etc/os-release
-	cuda = models.CharField(max_length=20)
-	cmake = models.CharField(max_length=20)
-	gcc = models.CharField(max_length=20)
-	gpp = models.CharField(max_length=20)
-	scons = models.CharField(max_length=20, default='')
-	architecture = models.CharField(max_length=40, default='')
+	os = models.CharField(max_length=100, null=True, blank=True) # cat /etc/os-release
+	cuda = models.CharField(max_length=20, null=True, blank=True)
+	cmake = models.CharField(max_length=20, null=True, blank=True)
+	gcc = models.CharField(max_length=20, null=True, blank=True)
+	gpp = models.CharField(max_length=20, null=True, blank=True)
+	scons = models.CharField(max_length=20, default='', null=True, blank=True) #TODO quitar
+	architecture = models.CharField(max_length=40, default='', null=True, blank=True)
 
 class Xmipp(models.Model):
 	branch = models.CharField(max_length=50) #XMIPP_VERNAME
-	updated = models.BooleanField() #git fecth + git status
+	updated = models.BooleanField(null=True, blank=True) #git fecth + git status
 
 	def __str__(self):
 		return '%s (%s)' % (self.branch, self.updated)
@@ -53,9 +53,11 @@ class Attempt(models.Model):
 	version = models.ForeignKey(Version, on_delete=models.CASCADE)
 	xmipp = models.ForeignKey(Xmipp, on_delete=models.CASCADE)
 
-	date = models.DateTimeField(auto_now_add=True)
+	date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 	returnCode = models.IntegerField()
-	logTail = models.CharField(max_length=10000, default='')
+	logTail = models.CharField(max_length=10000, default='', null=True, blank=True)
 
 	def __str__(self):
 		return '%s - %s (%s)' % (self.user, self.returnCode, self.date)
+	
+	

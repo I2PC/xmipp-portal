@@ -23,7 +23,7 @@
 # ***************************************************************************/
 
 # General imports
-from rest_framework.serializers import ModelSerializer
+from rest_framework.serializers import ModelSerializer, CharField
 
 # Self imports
 from .models import Attempt, User, Version, Xmipp
@@ -35,15 +35,27 @@ class UserSerializer(ModelSerializer):
 	class Meta:
 		model = User
 		fields = [USER_ID, USER_COUNTRY]
+	
+	country = CharField(allow_null=True, required=False)
 class XmippSerializer(ModelSerializer):
 	class Meta:
 		model = Xmipp
 		fields = [XMIPP_BRANCH, XMIPP_UPDATED]
+	
+	updated = CharField(allow_null=True, required=False)
 
 class VersionsSerializer(ModelSerializer):
 	class Meta:
 		model = Version
 		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP, VERSION_SCONS]
+
+	os = CharField(allow_null=True, required=False)
+	cuda = CharField(allow_null=True, required=False)
+	cmake = CharField(allow_null=True, required=False)
+	gcc = CharField(allow_null=True, required=False)
+	gpp = CharField(allow_null=True, required=False)
+	scons = CharField(allow_null=True, required=False)
+	architecture = CharField(allow_null=True, required=False)
 
 class AttemptSerializer(ModelSerializer):
 	user = UserSerializer()
@@ -52,3 +64,6 @@ class AttemptSerializer(ModelSerializer):
 	class Meta:
 		model = Attempt
 		fields = [ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP, ATTEMPT_DATE, ATTEMPT_RETCODE, ATTEMPT_LOGTAIL]
+
+	logTail = CharField(allow_null=True, required=False)
+	date = CharField(allow_null=True, required=False)
