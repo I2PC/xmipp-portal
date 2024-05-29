@@ -39,6 +39,12 @@ class Version(models.Model):
 	gcc = models.CharField(max_length=20, null=True, blank=True)
 	gpp = models.CharField(max_length=20, null=True, blank=True)
 	architecture = models.CharField(max_length=40, default='', null=True, blank=True)
+	mpi = models.CharField(max_length=20, default='', null=True, blank=True)
+	python = models.CharField(max_length=20, default='', null=True, blank=True)
+	sqlite = models.CharField(max_length=20, default='', null=True, blank=True)
+	java = models.CharField(max_length=20, default='', null=True, blank=True)
+	hdf5 = models.CharField(max_length=20, default='', null=True, blank=True)
+	jpeg = models.CharField(max_length=20, default='', null=True, blank=True)
 
 class Xmipp(models.Model):
 	branch = models.CharField(max_length=50) #XMIPP_VERNAME

@@ -29,7 +29,8 @@ from rest_framework.serializers import ModelSerializer, CharField
 from .models import Attempt, User, Version, Xmipp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE, ATTEMPT_LOGTAIL
+	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE, ATTEMPT_LOGTAIL, VERSION_MPI, VERSION_PYTHON,\
+	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
 
 class UserSerializer(ModelSerializer):
 	class Meta:
@@ -47,7 +48,9 @@ class XmippSerializer(ModelSerializer):
 class VersionsSerializer(ModelSerializer):
 	class Meta:
 		model = Version
-		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, VERSION_GCC, VERSION_GPP]
+		fields = [VERSION_OS, VERSION_ARCHITECTURE, VERSION_CUDA, VERSION_CMAKE, \
+			VERSION_GCC, VERSION_GPP, VERSION_MPI, VERSION_PYTHON, VERSION_SQLITE, \
+			VERSION_JAVA, VERSION_HDF5, VERSION_JPEG]
 
 	os = CharField(allow_null=True, required=False)
 	cuda = CharField(allow_null=True, required=False)
@@ -55,6 +58,12 @@ class VersionsSerializer(ModelSerializer):
 	gcc = CharField(allow_null=True, required=False)
 	gpp = CharField(allow_null=True, required=False)
 	architecture = CharField(allow_null=True, required=False)
+	mpi = CharField(allow_null=True, required=False)
+	python = CharField(allow_null=True, required=False)
+	sqlite = CharField(allow_null=True, required=False)
+	java = CharField(allow_null=True, required=False)
+	hdf5 = CharField(allow_null=True, required=False)
+	jpeg = CharField(allow_null=True, required=False)
 
 class AttemptSerializer(ModelSerializer):
 	user = UserSerializer()

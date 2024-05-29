@@ -38,6 +38,12 @@ VERSION_CUDA = 'cuda'
 VERSION_CMAKE = 'cmake'
 VERSION_GCC = 'gcc'
 VERSION_GPP = 'gpp'
+VERSION_MPI = 'mpi'
+VERSION_PYTHON = 'python'
+VERSION_SQLITE = 'sqlite'
+VERSION_JAVA = 'java'
+VERSION_HDF5 = 'hdf5'
+VERSION_JPEG = 'jpeg'
 
 # Attempt fields
 ATTEMPT_USER = 'user'

@@ -35,7 +35,8 @@ from .serializers import AttemptSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE
+	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
+	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
 
 class ReleasePieChartView(APIView):
 
@@ -157,6 +158,12 @@ class AttemptsView(APIView):
         cmake=versionData[VERSION_CMAKE],
         gcc=versionData[VERSION_GCC],
         gpp=versionData[VERSION_GPP],
+        mpi=versionData[VERSION_MPI],
+        python=versionData[VERSION_PYTHON],
+        sqlite=versionData[VERSION_SQLITE],
+        java=versionData[VERSION_JAVA],
+        hdf5=versionData[VERSION_HDF5],
+        jpeg=versionData[VERSION_JPEG],      
       )[0]
 
       # Creating installation attempt object
