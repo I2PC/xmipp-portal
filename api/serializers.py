@@ -23,7 +23,7 @@
 # ***************************************************************************/
 
 # General imports
-from rest_framework.serializers import ModelSerializer, CharField
+from rest_framework.serializers import ModelSerializer, CharField, BooleanField
 
 # Self imports
 from .models import Attempt, User, Version, Xmipp
@@ -43,7 +43,7 @@ class XmippSerializer(ModelSerializer):
 		model = Xmipp
 		fields = [XMIPP_BRANCH, XMIPP_UPDATED]
 	
-	updated = CharField(allow_null=True, required=False)
+	updated = BooleanField(allow_null=True, required=False)
 
 class VersionsSerializer(ModelSerializer):
 	class Meta:
