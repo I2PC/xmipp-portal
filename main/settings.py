@@ -116,3 +116,6 @@ STATIC_PATH = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = (
 	os.path.join(BASE_DIR, 'web', 'static'),
 )
+
+#Configuracion de origenes de confianza en tu proyecto Django.
+CSRF_TRUSTED_ORIGINS = ['https://xmipp.i2pc.es']
