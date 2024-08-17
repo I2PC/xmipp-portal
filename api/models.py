@@ -63,6 +63,6 @@ class Attempt(models.Model):
 	logTail = models.CharField(max_length=10000, default='', null=True, blank=True)
 
 	def __str__(self):
-		return '%s - %s (%s)' % (self.user, self.returnCode, self.date)
+		return '%s - %s (return code: %s) -- %s' % (self.user, self.xmipp, self.returnCode, self.date)
 	
 	
