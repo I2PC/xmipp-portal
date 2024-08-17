@@ -27,7 +27,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
-from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max
+from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
@@ -38,11 +38,12 @@ from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSI
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
 	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
 
-class AllReleasesPieChartView(APIView):
+class InstalledBranchesPieChartView(APIView):
 
   def get(self, request, format: str=None) -> Response:
     """
-    ### This function receives a GET request and returns xmipp releases of successful installations (one per user).
+    ### This function receives a GET request and returns xmipp branches successfully installed (one per user).
+    It exclude branches developers branches (which do not include "release" or "devel" in their name).
 
     #### Params:
     - request (Any): Django request.
@@ -116,6 +117,63 @@ class ReleasePieChartView(APIView):
 
     # Return the result as a JSON response
     return Response(attempt_counts)
+  
+class AllReleasesPieChartView(APIView):
+
+  def get(self, request, format=None):
+    """
+    ### This function receives a GET request and returns xmipp statistics (installations with no errors, 
+    # installation with 1 previous error, ...) for all xmipp releases.
+
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with count info.
+    """
+
+    # Step 1: Get the branches from the query parameters
+    branches = request.query_params.get('branches', '')
+    branches_list = branches.split(',')
+
+    # Step 2: Annotate the latest date of a successful attempt per user per release
+    latest_attempt_dates = Attempt.objects.filter(
+        returnCode=0,
+        xmipp__branch__in=branches_list  # Filter by the list of branches
+    ).values('user', 'xmipp__id').annotate(latest_date=Max('date'))
+
+    # Step 3: Use the annotated latest dates to filter the latest successful attempts
+    latest_attempts = Attempt.objects.filter(
+        Q(date__in=[item['latest_date'] for item in latest_attempt_dates]),
+        returnCode=0,
+        xmipp__branch__in=branches_list  # Filter by the list of branches
+    )
+
+    # Step 4: Count previous failures before each latest successful attempt
+    previous_failures_counts = []
+    for attempt in latest_attempts:
+        previous_failures = Attempt.objects.filter(
+            user=attempt.user,
+            xmipp__id=attempt.xmipp.id,
+            date__lt=attempt.date
+        ).exclude(returnCode=0).count()
+
+        previous_failures_counts.append({
+            'xmipp__id': attempt.xmipp.id,
+            'previous_failures': previous_failures,
+        })
+
+    # Step 5: Aggregate counts across all releases
+    summary = {}
+    for entry in previous_failures_counts:
+        failures = entry['previous_failures']
+        summary[failures] = summary.get(failures, 0) + 1
+
+    # Convert the result to the format expected by the Response
+    formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
+
+    return Response(formatted_result)
   
 
 class CountryBarChartView(APIView):
