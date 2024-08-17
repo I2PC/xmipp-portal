@@ -23,6 +23,10 @@
 # ***************************************************************************/
 
 ####################### FIELD CONSTANTS #######################
+# Generic fields
+ID = 'id'
+
+
 # User fields
 USER_ID = 'userId'
 USER_COUNTRY = 'country'

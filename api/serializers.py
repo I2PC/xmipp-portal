@@ -27,7 +27,7 @@ from rest_framework.serializers import ModelSerializer, CharField, BooleanField
 
 # Self imports
 from .models import Attempt, User, Version, Xmipp
-from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
+from .constants import ID, USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_DATE, ATTEMPT_RETCODE, VERSION_ARCHITECTURE, ATTEMPT_LOGTAIL, VERSION_MPI, VERSION_PYTHON,\
 	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
@@ -41,7 +41,7 @@ class UserSerializer(ModelSerializer):
 class XmippSerializer(ModelSerializer):
 	class Meta:
 		model = Xmipp
-		fields = [XMIPP_BRANCH, XMIPP_UPDATED]
+		fields = [ID, XMIPP_BRANCH, XMIPP_UPDATED]
 	
 	updated = BooleanField(allow_null=True, required=False)
 
