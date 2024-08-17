@@ -59,12 +59,21 @@ class ReleasePieChartView(APIView):
       latest_date=Subquery(subquery.values('date')[:1])
       ).filter(date=F('latest_date'))
     
-    # Filter last attempts per user with returnCode 0 (successful)
-    queryset = latest_attempts.filter(returnCode=0) \
-      .values("xmipp__branch").annotate(release_count=Count('id'))
+    # Separate querysets for 'release' and 'devel'
+    release_attempts = latest_attempts.filter(
+        returnCode=0,
+        xmipp__branch__iregex=r'release'
+    ).values("xmipp__branch").annotate(release_count=Count('id'))
+
+    devel_attempts = latest_attempts.filter(
+        xmipp__branch__iregex=r'devel'
+    ).values("xmipp__branch").annotate(release_count=Count('id'))
+
+    # Combine both querysets into one
+    combined_queryset = release_attempts.union(devel_attempts)
     
     # Return attempts as JSON
-    return Response(queryset)
+    return Response(combined_queryset)
   
 class CountryBarChartView(APIView):
 
