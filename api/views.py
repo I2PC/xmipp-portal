@@ -27,18 +27,18 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
-from django.db.models import Count, OuterRef, Subquery, F
+from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
-from .serializers import AttemptSerializer
+from .serializers import AttemptSerializer, XmippSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
 	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
 
-class ReleasePieChartView(APIView):
+class AllReleasesPieChartView(APIView):
 
   def get(self, request, format: str=None) -> Response:
     """
@@ -75,6 +75,49 @@ class ReleasePieChartView(APIView):
     # Return attempts as JSON
     return Response(combined_queryset)
   
+class ReleasePieChartView(APIView):
+
+  def get(self, request, release_id, format: str=None) -> Response:
+    """
+    ### This function receives a GET request and returns xmipp statistics (installations with no errors, 
+    # installation with 1 previous error, ...) for a specific release branch.
+
+    #### Params:
+    - request (Any): Django request.
+    - release_id (int): Release id. 
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with count info.
+    """
+    # Step 1: Get the latest date for each user for the given release_id
+    latest_dates = Attempt.objects.filter(xmipp__id=release_id).values('user').annotate(latest_date=Max('date'))
+
+    # Step 2: Filter successful attempts that match the latest dates
+    latest_attempts = Attempt.objects.filter(
+        xmipp__id=release_id,
+        returnCode=0,
+        date__in=[item['latest_date'] for item in latest_dates]
+    )
+
+    # Step 3: Annotate the count of previous failures before the successful attempt
+    previous_failures = Attempt.objects.filter(
+        xmipp__id=release_id,
+        user=OuterRef('user'),
+        date__lt=OuterRef('date')
+    ).exclude(returnCode=0).values('user').annotate(count=Count('id')).values('count')
+
+    latest_attempts = latest_attempts.annotate(
+        previous_failures=Subquery(previous_failures, output_field=IntegerField())
+    )
+
+    # Step 4: Group by number of previous failures and count the occurrences
+    attempt_counts = latest_attempts.values('previous_failures').annotate(count=Count('id')).order_by('previous_failures')
+
+    # Return the result as a JSON response
+    return Response(attempt_counts)
+  
+
 class CountryBarChartView(APIView):
 
   def get(self, request, format: str=None) -> Response:
@@ -223,3 +266,27 @@ curl --header "Content-Type: application/json" -X POST --data '{
 
 
 '''
+
+class XmippView(APIView):
+
+  serializer_class = XmippSerializer
+
+  def get(self, request, format: str=None) -> Response:
+    """
+    ### This function receives a GET request and returns all xmipp branches' info.
+
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with xmipp branches' info.
+    """
+    # Get queryset with all the attempts in database and serialize it
+    queryset = Xmipp.objects.all()
+    serializer = XmippSerializer(queryset, many = True)
+
+    # Return attempts as JSON
+    return Response(serializer.data)
+  
+  

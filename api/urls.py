@@ -23,12 +23,12 @@
 # ***************************************************************************/
 
 from django.urls import path
-from .views import AttemptsView, CountryBarChartView, ReleasePieChartView
+from .views import AttemptsView, XmippView, CountryBarChartView, AllReleasesPieChartView, ReleasePieChartView
 
 urlpatterns = [
 	path('attempts/', AttemptsView.as_view()),
-
-    path('installations/release-pie-chart/', ReleasePieChartView.as_view()),
-
+    path('installations/release-pie-chart/', AllReleasesPieChartView.as_view()),
+    path('installations/release-pie-chart/<int:release_id>/', ReleasePieChartView.as_view()),
     path('users/country-bar-chart/', CountryBarChartView.as_view()),
+    path('xmipp-branches/', XmippView.as_view()),
 ]
