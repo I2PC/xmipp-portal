@@ -27,5 +27,5 @@ from django.shortcuts import render
 def index(request):
 	return render(request, 'home/index.html')
 
-def statistics(request):
-	return render(request, 'home/statistics.html')
+def metrics(request):
+	return render(request, 'home/metrics.html')

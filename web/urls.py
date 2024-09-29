@@ -27,5 +27,5 @@ from web import views_home
 
 urlpatterns = [
 	re_path(r'^$', views_home.index),
-    path('statistics', views_home.statistics, name='statistics'),
+    path('metrics', views_home.metrics, name='metrics'),
 ]

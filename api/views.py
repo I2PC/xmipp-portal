@@ -80,7 +80,7 @@ class ReleasePieChartView(APIView):
 
   def get(self, request, release_id, format: str=None) -> Response:
     """
-    ### This function receives a GET request and returns xmipp statistics (installations with no errors, 
+    ### This function receives a GET request and returns xmipp metrics (installations with no errors, 
     # installation with 1 previous error, ...) for a specific release branch.
 
     #### Params:
@@ -122,7 +122,7 @@ class AllReleasesPieChartView(APIView):
 
   def get(self, request, format=None):
     """
-    ### This function receives a GET request and returns xmipp statistics (installations with no errors, 
+    ### This function receives a GET request and returns xmipp metrics (installations with no errors, 
     # installation with 1 previous error, ...) for all xmipp releases.
 
     #### Params:
