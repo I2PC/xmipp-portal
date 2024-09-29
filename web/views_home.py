@@ -24,5 +24,8 @@
 
 from django.shortcuts import render
 
-def home(request):
+def index(request):
 	return render(request, 'home/index.html')
+
+def statistics(request):
+	return render(request, 'home/statistics.html')

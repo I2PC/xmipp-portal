@@ -2,7 +2,8 @@
 <!--
 # **************************************************************************
 # *
-# * Authors:    Airen Zaldivar (azaldivar@cnb.csic.es)
+# * Authors:    Carolina Simón (carolina.simon@cnb.csic.es)
+# *             Alberto García (alberto.garcia@cnb.csic.es)
 # *
 # * Unidad de  Bioinformatica of Centro Nacional de Biotecnologia , CSIC
 # *
@@ -22,7 +23,7 @@
 # * 02111-1307  USA
 # *
 # *  All comments concerning this program package may be sent to the
-# *  e-mail address 'azaldivar@cnb.csic.es'
+# *  e-mail address 'carolina.simon@cnb.csic.es' or 'alberto.garcia@cnb.csic.es'
 # *
 # **************************************************************************
 -->
@@ -68,55 +69,6 @@
 
   <body>
     {% include "_navigation.html" %}
-    <!-- Main jumbotron for a primary marketing message or call to action -->
-    <div class="jumbotron backimage">
-      <div class="container mainHead">
-        <div class="row">
-          <div class="col-xs-12 col-sm-6 col-md-8 col-lg-9 col-xl-12">
-        <p>A suite of image processing programs, primarily aimed at single-particle 3D electron microscopy, designed and managed by the Biocomputing Unit located in Madrid, Spain.</p>
-        <p>If you have used Xmipp in your work, please cite our papers as given in the <a href="https://i2pc.github.io/docs/listOfPublications.html"> List Of References. </a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="wrapMain">
-      <!-- /first container -->
-      <div class="container">
-            <!-- Example row of columns -->
-            <div class="row">
-	          <div class="col-md-4">
-                <h3><a href="https://i2pc.github.io/docs/Installation/Requirements/index.html"><span class="glyphicon glyphicon-download-alt" aria-hidden="true"></span> How to Install</a></h3>
-                <p>See instructions on how to install Xmipp on your machine, with description of dependencies and a list of tested platforms.
-                </p>
-              </div>
-              <div class="col-md-4">
-                <h3><a href="https://i2pc.github.io/docs/index.html" ><span class="glyphicon glyphicon-book" aria-hidden="true"></span> Documentation</a></h3>
-                <p>Complete references we have created to help you so far.
-                </p>
-              </div>
-              <div class="col-md-4">
-                <h3><a href="https://i2pc.github.io/docs/Developers/Guidelines/index.html" ><span class="glyphicon glyphicon-cog" aria-hidden="true"></span> Developing Xmipp</a></h3>
-                <p>The xmipp-team is continuosly enhancing the program, you can visit the specific wiki pages for developers, review the issues.
-                </p>
-             </div>
-
-            </div>
-
-          </div> <!-- /first container -->
-
-
-      <!-- Second container -->
-      <div class="container">
-        <div class="row">
-          <div class="col-md-4">
-            <h3><a href="{% url 'statistics' %}" ><span class="glyphicon glyphicon-stats" aria-hidden="true"></span> Statistics</a></h3>
-            <p>Find data and graphical insights into Xmipp installations.</p>
-          </div>
-        </div>
-      </div> <!-- /Second container -->
-
-    </div> <!-- /wrap -->
 
       <footer id="footer" class="footerStyle">
         {% include "_footer.html" %}
