@@ -67,8 +67,43 @@
     <![endif]-->
   </head>
 
+
+{% block js %}
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/broken-axis.js"></script>
+    <script src='{% static "js/highcharts.utils.js" %}'></script>
+{% endblock js %}
+
+
   <body>
     {% include "_navigation.html" %}
+
+    {#    <h1>Installation based charts</h1>#}
+    {#    <p>Find bellow some charts about our users</p>#}
+        <div id="wrapMain">
+        <br>
+            <div class="container">
+              <h1>Installation based charts</h1>
+            </div>
+
+              <div class="container">
+                    <h3>Number of installations per country</h3>
+
+                  </div>
+              </div>
+
+              <br>
+                  <div class="row">
+                      <div class="chart" id="usersByCountry"></div>
+                      <p>Find bellow some charts about our users</p>
+                  </div>
+              </div>
+
+        </div>
+          <br>
+        <div>
+
 
       <footer id="footer" class="footerStyle">
         {% include "_footer.html" %}
