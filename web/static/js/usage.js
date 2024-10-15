@@ -1,6 +1,6 @@
 function getDataAndDrawCharts(){
     // From: https://xmipp.i2pc.es/api/users/country-bar-chart/
-    var xmippUsageDataURL = "http://127.0.0.1:8000/api/users/country-bar-chart/"; //TODO: change URL to production URL
+    var xmippUsageDataURL = "https://xmipp.i2pc.es/api/users/country-bar-chart/"; //TODO: change URL to production URL
 
     $.getJSON( xmippUsageDataURL).done(function( data ) {
 
