@@ -99,3 +99,6 @@ migrations/
 
 # Static files
 staticfiles/
+
+# Launcher
+launcher
