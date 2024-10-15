@@ -1,12 +1,12 @@
 function getDataAndDrawCharts(){
     // From: https://xmipp.i2pc.es/api/users/country-bar-chart/
-    var xmippUsageDataURL = "https://xmipp.i2pc.es/api/users/country-bar-chart/";
-
-    console.log("HOLA!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+    var xmippUsageDataURL = "http://127.0.0.1:8000/api/users/country-bar-chart/"; //TODO: change URL to production URL
 
     $.getJSON( xmippUsageDataURL).done(function( data ) {
 
-        loadBarChart('#usersByCountry', 'Number of users per country', data);
+        const preparedData = prepareSeriesForBarChart(data, "users by country"); 
+        console.log(preparedData)   
+        loadBarChart('usersByCountry', 'Number of users per country', preparedData);
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
@@ -16,6 +16,6 @@ function getDataAndDrawCharts(){
     });
 };
 
-$(window).ready(function(){
-    getDataAndDrawCharts();
-});
+// $(window).ready(function(){
+//     getDataAndDrawCharts();
+// });

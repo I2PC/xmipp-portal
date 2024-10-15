@@ -1,3 +1,26 @@
+function prepareSeriesForBarChart(data, name){
+
+    const series = {
+        name: name,
+        dataSorting: { enabled: true},
+        data: []
+    };
+
+
+    for (let item of data){
+
+        const pie = {
+            name: item.country,
+            y: item.users_count
+        };
+
+        series.data.push(pie);
+        }
+
+    return series;
+
+}
+
 function loadBarChart(container, title, data){
 
     let options = {
@@ -35,9 +58,10 @@ function loadBarChart(container, title, data){
         },
         series: data
     };
-
+    console.log(options)   
     // Build the bar
-    $(container).highcharts(options);
+    Highcharts.chart(container, {options});
+    // $(container).highcharts(options);
 }
 
 
