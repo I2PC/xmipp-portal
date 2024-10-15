@@ -56,11 +56,11 @@ function loadBarChart(container, title, data){
                 }
             }
         },
-        series: data
+        series: [data]
     };
     console.log(options)   
     // Build the bar
-    Highcharts.chart(container, {options});
+    Highcharts.chart(container, options);
     // $(container).highcharts(options);
 }
 
