@@ -34,7 +34,22 @@ function loadBarChart(container, title, data){
             text: title
         },
         xAxis: {
-            type: "category"
+            type: "category",
+            labels: {
+                style: {
+                    fontSize: '12px', 
+                },
+                rotation: -45
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Number of users',  // Cambia el texto del título del eje Y
+                style: {
+                    fontSize: '12px',  // Cambia el tamaño del título del eje Y aquí
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
         },
         // tooltip: {
         //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
