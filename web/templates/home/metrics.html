@@ -90,32 +90,55 @@
         <br>
             <div class="container">
               <h1>Installation based charts</h1>
-            </div>
-
-              <div class="container">
-                    <h3>Number of installations per country</h3>
-
-                  </div>
-              </div>
-
-              <script>
-                // Esto imprimirá el mensaje en la consola del navegador
-                $(window).ready(function(){
-                getDataAndDrawCharts();
-                });
-      
-            </script>
-
+              <h3>Number of installations per country</h3>
               <br>
+                  <!-- User and installation charts -->
                   <div class="row">
-                      <div class="chart" id="usersByCountry"></div>
+                    <!-- Users by country bar chart -->
+                    <div class="col-md-6">
+                      <div class="chart" id="usersByCountry" style="width: 70%; margin: 0 auto; margin-top: 20px;height: 400px;"></div>
+                      <p id="chartExplanation">The graph shows the number of unique Xmipp installations by country, highlighting the global distribution of users.
+                        <style>
+                            #chartExplanation {
+                            width: 70%;
+                            margin: 10px auto; /* Esto aplica márgenes automáticos a los lados y añade un margen superior */
+                            text-align: center;
+                            font-size: 10px;
+                            color: #555;
+                            }
+                        </style>
+                      </p>
+                    </div>
+
+                    <!-- Installations over time (weeks) line chart-->
+                    <div class="col-md-6"></div>
+                      <div class="chart" id="installationsPerWeek" style="width: 70%; margin: 0 auto; height: 400px;"></div>
+                    </div>
 
                   </div>
+
+                  <!-- Releases and devel charts -->
+                  <div class="row" style="overflow-y: auto;"></div>
+                    <!-- Releases/devel percentage pie chart -->
+                    <div class="col-md-6">
+                      <div class="chart" id="installationsReleasesDevel" style="width: 70%; margin: 0 auto; height: 400px;"></div>
+                    </div>
+
+                    <!-- Installations metrics pie charts (one per releases/devel) -->
+                    <div class="col-md-6"></div> <!-- scroll -->
+                      <div class="chart" id="installationsMetricsPerReleaseDevel" style="width: 70%; margin: 0 auto; height: 400px;"></div>
+                    </div>
+
+                  </div>
+
+
               </div>
 
         </div>
           <br>
-        <div>
+    </div>
+
+          <div>
 
 
       <footer id="footer" class="footerStyle">
@@ -128,5 +151,10 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="{% static "js/vendor/jquery-1.11.2.min.js" %}"></script>
     <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
+
+    <script>
+      $(window).ready(function(){getDataAndDrawCharts();});
+  </script>
+  
   </body>
 </html>

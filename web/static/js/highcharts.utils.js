@@ -41,9 +41,10 @@ function loadBarChart(container, title, data){
         // },
         plotOptions: {
             series: {
+                color: '#8e1919',
                 dataLabels: {
                     enabled: true,
-                    rotation: -45,
+                    rotation: 0,
                     color: '#000000',
                     align: 'left',
                     format: '{point.y}', // one decimal
