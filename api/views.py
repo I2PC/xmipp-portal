@@ -43,7 +43,7 @@ class InstalledBranchesPieChartView(APIView):
   def get(self, request, format: str=None) -> Response:
     """
     ### This function receives a GET request and returns xmipp branches successfully installed (one per user).
-    It exclude branches developers branches (which do not include "release" or "devel" in their name).
+    Developers' branches (which do not include "release" or "devel" in their name) are included in devel count.
 
     #### Params:
     - request (Any): Django request.
@@ -66,15 +66,41 @@ class InstalledBranchesPieChartView(APIView):
         xmipp__branch__iregex=r'release'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
-    devel_attempts = latest_attempts.filter(
-        xmipp__branch__iregex=r'devel'
+    devel_attempts = latest_attempts.exclude(
+        xmipp__branch__iregex=r'release'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
     # Combine both querysets into one
-    combined_queryset = release_attempts.union(devel_attempts)
+    combined_queryset = list(release_attempts) + list(devel_attempts)
+
+
+    # Process combined queryset to include all developers' branches in devel count
+    result = []
+    devel_count = 0
     
-    # Return attempts as JSON
-    return Response(combined_queryset)
+    for attempt in combined_queryset:
+        branch_name = attempt['xmipp__branch']
+        count = attempt['release_count']
+
+        if 'release' in branch_name:
+            # Add release branches as they are
+            result.append({
+                "xmipp__branch": branch_name,
+                "release_count": count
+            })
+        else:
+            # Sum all non-release branches under 'devel'
+            devel_count += count
+
+    # Append the 'devel' branch with the total count of non-release branches
+    if devel_count > 0:
+        result.append({
+            "xmipp__branch": "devel",
+            "release_count": devel_count
+        })
+
+    # Return the final JSON response
+    return Response(result)
   
 class ReleasePieChartView(APIView):
 
