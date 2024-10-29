@@ -23,7 +23,9 @@
 # ***************************************************************************/
 
 from django.urls import path
-from .views import AttemptsView, XmippView, CountryBarChartView, AllReleasesPieChartView, ReleasePieChartView, InstalledBranchesPieChartView
+from .views import AttemptsView, XmippView, CountryBarChartView, AllReleasesPieChartView, ReleasePieChartView, InstalledBranchesPieChartView, \
+    InstalledBranchesTimeChartView
+
 
 urlpatterns = [
 	path('attempts/', AttemptsView.as_view()),
@@ -32,5 +34,6 @@ urlpatterns = [
     path('users/country-bar-chart/', CountryBarChartView.as_view()),
     path('xmipp/', XmippView.as_view()),
     path('xmipp/installed-branches-pie-chart/', InstalledBranchesPieChartView.as_view()),
+    path('xmipp/installed-branches-time-chart/', InstalledBranchesTimeChartView.as_view()),
     
 ]

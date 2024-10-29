@@ -102,6 +102,69 @@ class InstalledBranchesPieChartView(APIView):
     # Return the final JSON response
     return Response(result)
   
+
+
+class InstalledBranchesTimeChartView(APIView):
+
+  def get(self, request, format: str=None) -> Response:
+    """
+    ### This function receives a GET request and returns xmipp branches successfully installed (one per user) over time.
+    Developers' branches (which do not include "release" or "devel" in their name) are included in devel liist.
+
+    #### Params:
+    - request (Any): Django request.
+    - format (str): Optional. Request format.
+
+    #### Returns:
+    (Response): HTTP response with attempts info.
+    """
+    # Get more recent attempt per user
+    subquery = Attempt.objects.filter(user=OuterRef('user')).order_by('-date')
+
+    # Filter attempts that match those latest dates and retrieve attribute date from Attempt
+    latest_attempts = Attempt.objects.annotate(
+      latest_date=Subquery(subquery.values('date')[:1])
+      ).filter(date=F('latest_date')).values('date')
+    
+    # Separate querysets for 'release' and 'devel'
+    release_attempts = latest_attempts.filter(
+        returnCode=0,
+        xmipp__branch__iregex=r'release'
+    ).values("xmipp__branch", "date")
+
+    devel_attempts = latest_attempts.exclude(
+        xmipp__branch__iregex=r'release'
+    ).values("xmipp__branch", "date")
+
+    # Combine both querysets into one
+    combined_queryset = list(release_attempts) + list(devel_attempts)
+
+
+    # Process combined queryset to include all developers' branches in devel list
+    result = []
+    devel_list = []
+    
+    for attempt in combined_queryset:
+        branch_name = attempt['xmipp__branch']
+        attempt_date = attempt['date']
+
+        if 'release' in branch_name:
+            # Add release branches as they are
+            result.append({
+                "xmipp__branch": branch_name,
+                "date": attempt_date
+            })
+        else:
+            # Sum all non-release branches under 'devel'
+            result.append({
+                "xmipp__branch": "devel",
+                "date": attempt_date
+            })
+
+    # Return the final JSON response
+    return Response(result)
+  
+
 class ReleasePieChartView(APIView):
 
   def get(self, request, release_id, format: str=None) -> Response:
