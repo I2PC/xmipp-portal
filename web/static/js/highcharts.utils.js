@@ -81,4 +81,71 @@ function loadBarChart(container, title, data){
 }
 
 
+function prepareSeriesForTimeChart(data, name){
+
+    series = []
+    // Get unique list of xmipp branches
+    // Fill with data processing
+    return series;
+}
+
+function loadTimeChart(container, title, data){
+
+    let options = {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'line',
+            zoomType: 'x',
+        },
+        title: {
+            text: title
+        },
+        xAxis: {
+            type: "datetime",
+            labels: {
+                style: {
+                    fontSize: '12px', 
+                },
+            }
+        },
+        yAxis: {
+            title: {
+                text: 'Installations',  // Cambia el texto del título del eje Y
+                style: {
+                    fontSize: '12px',  // Cambia el tamaño del título del eje Y aquí
+                    fontFamily: 'Verdana, sans-serif'
+                }
+            }
+        },
+        // tooltip: {
+        //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
+        // },
+        plotOptions: {
+            series: {
+                color: '#8e1919',
+                dataLabels: {
+                    enabled: true,
+                    rotation: 0,
+                    color: '#000000',
+                    align: 'left',
+                    format: '{point.y}', // one decimal
+                    y: -10, // 10 pixels down from the top
+                    x: 0, // 0 pixels
+                    style: {
+                        fontSize: '10px',
+                        fontFamily: 'Verdana, sans-serif'
+                    }
+                }
+            }
+        },
+        series: [data]
+    };
+    console.log(options)   
+    // Build the bar
+    Highcharts.chart(container, options);
+    // $(container).highcharts(options);
+}
+
 
