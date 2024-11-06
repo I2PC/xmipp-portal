@@ -74,7 +74,6 @@ function loadBarChart(container, title, data){
         },
         series: [data]
     };
-    console.log(options)   
     // Build the bar
     Highcharts.chart(container, options);
     // $(container).highcharts(options);
@@ -83,7 +82,12 @@ function loadBarChart(container, title, data){
 
 function prepareSeriesForTimeChart(data, name){
 
-    series = []
+    series = {
+        name: name,
+        dataSorting: { enabled: true},
+        data: []
+        }
+    
     // Get unique list of xmipp branches
     // Fill with data processing
     return series;
@@ -149,3 +153,50 @@ function loadTimeChart(container, title, data){
 }
 
 
+function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL){
+    // Get container
+    const chartsContainer = document.getElementById(chartId);
+
+    // Create pie chart per release
+    preparedList.forEach(async (branch, index) => {
+
+        // Call release endpoint
+        const response = await fetch(`${release_pie_chart_URL}${branch.id}`);
+        const releaseData = await response.json();
+
+        // Prepare data for the chart
+        const chartData = releaseData.map(item => ({
+            name: item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures',
+            y: item.count
+        }));
+
+        // Create div to contain the graph
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '300px'; 
+        chartDiv.style.display = 'inline-block'; // All graphs in one row
+        chartDiv.className = 'px-2'; // Space
+        chartDiv.id = `chart-${index}`;
+        chartsContainer.appendChild(chartDiv);
+    
+        // Create graph
+        Highcharts.chart(chartDiv.id, {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: `Branch: ${branch.branch}`
+            },
+            series: [{
+                name: 'Count',
+                colorByPoint: true,
+                data: chartData
+            }]
+        });
+    });
+
+}
+
+function prepareXmippReleasesList(data){
+    const releaseBranches = data.filter(item => item.branch.startsWith("release"));
+    return releaseBranches;
+}
