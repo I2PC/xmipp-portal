@@ -1,5 +1,5 @@
 function getDataAndDrawCharts(){
-    const XMIPP_URL = "http://127.0.0.1:8000/"
+    const XMIPP_URL = "https://xmipp.i2pc.es/"
 
     // Country Bar Chart
     getCountryBarChart(XMIPP_URL);
