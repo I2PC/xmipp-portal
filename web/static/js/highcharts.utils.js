@@ -173,7 +173,7 @@ function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL){
         // Create div to contain the graph
         const chartDiv = document.createElement('div');
         chartDiv.style.width = '300px'; 
-        chartDiv.style.display = 'inline-block'; // All graphs in one row
+        chartDiv.style.display = 'inline-flex'; // All graphs in one row
         chartDiv.className = 'px-2'; // Space
         chartDiv.id = `chart-${index}`;
         chartsContainer.appendChild(chartDiv);
