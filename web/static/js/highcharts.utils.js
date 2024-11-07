@@ -153,38 +153,66 @@ function loadTimeChart(container, title, data){
 }
 
 
-function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL){
+async function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL) {
+    // Group releases per name and consolidate IDs
+    const branchesMap = preparedList.reduce((acc, branch) => {
+        if (!acc[branch.branch]) {
+            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Initialize with IDs list
+        } else {
+            acc[branch.branch].ids.push(branch.id); // Add ID to the list if release already exists
+        }
+        return acc;
+    }, {});
+
     // Get container
     const chartsContainer = document.getElementById(chartId);
 
-    // Create pie chart per release
-    preparedList.forEach(async (branch, index) => {
+    // Create graphs for unique branches
+    for (const branchName in branchesMap) {
+        const branch = branchesMap[branchName];
+        
+        let combinedData = {};
 
-        // Call release endpoint
-        const response = await fetch(`${release_pie_chart_URL}${branch.id}`);
-        const releaseData = await response.json();
+        // Combine date per each release
+        for (const id of branch.ids) {
+            // Llamada al endpoint
+            const response = await fetch(`${release_pie_chart_URL}${id}`);
+            const releaseData = await response.json();
 
-        // Prepare data for the chart
-        const chartData = releaseData.map(item => ({
-            name: item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures',
-            y: item.count
+            // Sumar los datos al `combinedData`
+            releaseData.forEach(item => {
+                const key = item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures';
+                
+                // Sumar el conteo al key correspondiente en `combinedData`
+                if (combinedData[key]) {
+                    combinedData[key] += item.count;
+                } else {
+                    combinedData[key] = item.count;
+                }
+            });
+        }
+
+        // Formatear los datos para el gráfico
+        const chartData = Object.keys(combinedData).map(key => ({
+            name: key,
+            y: combinedData[key]
         }));
 
-        // Create div to contain the graph
+        // Crear div para contener el gráfico
         const chartDiv = document.createElement('div');
-        chartDiv.style.width = '300px'; 
-        chartDiv.style.display = 'inline-flex'; // All graphs in one row
-        chartDiv.className = 'px-2'; // Space
-        chartDiv.id = `chart-${index}`;
+        chartDiv.style.width = '300px';
+        chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
+        chartDiv.className = 'px-2'; // Espacio
+        chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
         chartsContainer.appendChild(chartDiv);
     
-        // Create graph
+        // Crear gráfico
         Highcharts.chart(chartDiv.id, {
             chart: {
                 type: 'pie'
             },
             title: {
-                text: `Branch: ${branch.branch}`
+                text: `Branch: ${branchName}`
             },
             series: [{
                 name: 'Count',
@@ -192,8 +220,7 @@ function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL){
                 data: chartData
             }]
         });
-    });
-
+    }
 }
 
 function prepareXmippReleasesList(data){
