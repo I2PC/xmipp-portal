@@ -4,7 +4,7 @@ function getDataAndDrawCharts(){
     // Country Bar Chart
     getCountryBarChart(XMIPP_URL);
     getInstallationOverTimeChart(XMIPP_URL);
-    //installationsReleasesDevel(XMIPP_URL);
+    installationsReleasesDevel(XMIPP_URL);
     installationsMetricsPerReleaseDevel(XMIPP_URL);
 }
 ;
@@ -46,7 +46,22 @@ function getInstallationOverTimeChart(XMIPP_URL){
     });
 }
 
-//TODO: function installationsReleasesDevel(XMIPP_URL){....}
+function installationsReleasesDevel(XMIPP_URL){
+    // Installations Release and Devel Pie Chart
+    var xmippInstallationsDataURL = XMIPP_URL + "/api/xmipp/installed-branches-pie-chart/";
+
+    $.getJSON(xmippInstallationsDataURL).done(function( data ) {
+
+        const preparedData = prepareSeriesForReleaseDevelPieChart(data, "Successfully Installed branches"); 
+        loadReleaseDevelPieChart('installationsReleasesDevel', 'Number of branches successfully installed', preparedData);
+
+    }).fail(function( jqxhr, textStatus, error ) {
+        var err = textStatus + ", " + error;
+        console.log( "Request Failed: " + err );
+    }).always(function() {
+        console.log( "complete" );
+    });
+}
 
 function installationsMetricsPerReleaseDevel(XMIPP_URL){
 
@@ -58,7 +73,7 @@ function installationsMetricsPerReleaseDevel(XMIPP_URL){
 
         const preparedList = prepareXmippReleasesList(data); // Filter and keep only branches which names start with "release"
         // TODO: sum two version of release counts
-        drawPieChartPerRelease("installationsMetricsPerReleaseDevel", preparedList, release_pie_chart_URL);
+        loadPieChartPerRelease("installationsMetricsPerReleaseDevel", preparedList, release_pie_chart_URL, "Number of successful installations after n failures for: ");
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;

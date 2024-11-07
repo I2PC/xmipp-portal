@@ -44,9 +44,9 @@ function loadBarChart(container, title, data){
         },
         yAxis: {
             title: {
-                text: 'Number of users',  // Cambia el texto del título del eje Y
+                text: 'Number of users',
                 style: {
-                    fontSize: '12px',  // Cambia el tamaño del título del eje Y aquí
+                    fontSize: '12px',
                     fontFamily: 'Verdana, sans-serif'
                 }
             }
@@ -116,9 +116,9 @@ function loadTimeChart(container, title, data){
         },
         yAxis: {
             title: {
-                text: 'Installations',  // Cambia el texto del título del eje Y
+                text: 'Installations',
                 style: {
-                    fontSize: '12px',  // Cambia el tamaño del título del eje Y aquí
+                    fontSize: '12px',
                     fontFamily: 'Verdana, sans-serif'
                 }
             }
@@ -153,7 +153,48 @@ function loadTimeChart(container, title, data){
 }
 
 
-async function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_URL) {
+function prepareSeriesForReleaseDevelPieChart(data, name){
+    const series = {
+        name: name,
+        dataSorting: { enabled: true},
+        data: []
+    };
+
+    for (let item of data){
+
+        const pie = {
+            name: item.xmipp__branch,
+            y: item.release_count
+        };
+
+        series.data.push(pie);
+        }
+
+    return series;
+}
+
+function loadReleaseDevelPieChart(container, title, data){
+
+    let options = {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie',
+            zoomType: 'x',
+        },
+        title: {
+            text: title
+        },
+        colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
+        series: [data]
+    };
+    console.log(options)   
+    // Build the bar
+    Highcharts.chart(container, options);
+}
+
+async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_URL, title) {
     // Group releases per name and consolidate IDs
     const branchesMap = preparedList.reduce((acc, branch) => {
         if (!acc[branch.branch]) {
@@ -212,8 +253,9 @@ async function drawPieChartPerRelease(chartId, preparedList, release_pie_chart_U
                 type: 'pie'
             },
             title: {
-                text: `Branch: ${branchName}`
+                text: `${title}${branchName}`
             },
+            colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
             series: [{
                 name: 'Count',
                 colorByPoint: true,
