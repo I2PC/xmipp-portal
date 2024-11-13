@@ -23,7 +23,7 @@ function getCountryBarChart(XMIPP_URL){
         var err = textStatus + ", " + error;
         console.log( "Request Failed: " + err );
     }).always(function() {
-        console.log( "complete" );
+        console.log( "complete getCountryBarChart" );
     });
 }
 
@@ -34,7 +34,8 @@ function getInstallationOverTimeChart(XMIPP_URL){
 
     $.getJSON( xmippUsageDataURL).done(function( data ) {
 
-        const preparedData = prepareSeriesForTimeChart(data, "Installations over time"); 
+        const preparedData = prepareSeriesForTimeChart(data, "Installations over time");
+        console.log("preparedData: ")
         console.log(preparedData)   
         loadTimeChart('installationsOverTime', 'Installations over time', preparedData);
 
@@ -42,7 +43,7 @@ function getInstallationOverTimeChart(XMIPP_URL){
         var err = textStatus + ", " + error;
         console.log( "Request Failed: " + err );
     }).always(function() {
-        console.log( "complete" );
+        console.log( "complete getInstallationOverTimeChart" );
     });
 }
 
@@ -59,7 +60,7 @@ function installationsReleasesDevel(XMIPP_URL){
         var err = textStatus + ", " + error;
         console.log( "Request Failed: " + err );
     }).always(function() {
-        console.log( "complete" );
+        console.log( "complete installationsReleasesDevel" );
     });
 }
 
@@ -79,6 +80,6 @@ function installationsMetricsPerReleaseDevel(XMIPP_URL){
         var err = textStatus + ", " + error;
         console.log( "Request Failed: " + err );
     }).always(function() {
-        console.log( "complete" );
+        console.log( "complete installationsMetricsPerReleaseDevel" );
     });
 }

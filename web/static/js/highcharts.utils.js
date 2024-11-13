@@ -1,14 +1,10 @@
 function prepareSeriesForBarChart(data, name){
-
     const series = {
         name: name,
         dataSorting: { enabled: true},
         data: []
     };
-
-
     for (let item of data){
-
         const pie = {
             name: item.country,
             y: item.users_count
@@ -16,9 +12,7 @@ function prepareSeriesForBarChart(data, name){
 
         series.data.push(pie);
         }
-
     return series;
-
 }
 
 function loadBarChart(container, title, data){
@@ -80,18 +74,76 @@ function loadBarChart(container, title, data){
 }
 
 
-function prepareSeriesForTimeChart(data, name){
+function prepareSeriesForTimeChart(data, name) {
+    const colorPalette = ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'];
+    let seriesData = {};
 
-    series = {
-        name: name,
-        dataSorting: { enabled: true},
-        data: []
+    // Función para obtener el lunes de la semana de una fecha dada
+    function getStartOfWeek(date) {
+        const d = new Date(date);
+        const day = d.getDay(),
+              diff = d.getDate() - day + (day == 0 ? -6 : 1); // El lunes es el primer día de la semana
+        d.setDate(diff);
+        d.setHours(0, 0, 0, 0);
+        return d.getTime(); // Devolvemos el timestamp del lunes
+    }
+
+    // Recorremos los datos para agruparlos por 'xmipp__branch' y contar las ocurrencias por semana
+    for (let item of data) {
+        const branch = item.xmipp__branch;
+
+        // Si no existe la serie para este branch, la creamos
+        if (!seriesData[branch]) {
+            seriesData[branch] = {
+                name: branch,
+                dataSorting: { enabled: true },
+                data: [],  // Lista que contendrá los contadores por semana
+            };
         }
-    
-    // Get unique list of xmipp branches
-    // Fill with data processing
+
+        // Convertimos la fecha a timestamp del lunes de la semana
+        const weekStart = getStartOfWeek(item.date);
+
+        // **Nuevo enfoque: agrupar por semana (lunes), y aumentar el contador por cada rama**
+        let found = false;
+        for (let entry of seriesData[branch].data) {
+            if (entry[0] === weekStart) {
+                entry[1]++; // Incrementamos el contador para este lunes (semana)
+                found = true;
+                break;
+            }
+        }
+
+        // Si no se encuentra el lunes de esta semana, agregamos una nueva entrada para esta semana
+        if (!found) {
+            seriesData[branch].data.push([weekStart, 1]); // Inicializamos el contador en 1 para la nueva semana
+        }
+    }
+
+    // Convertimos los datos en formato adecuado para Highcharts
+    let colorIndex = 0;
+    let series = [];
+    for (let branch in seriesData) {
+        let branchData = seriesData[branch];
+        branchData.color = colorPalette[colorIndex];
+
+        // Convertimos los contadores en un formato adecuado para Highcharts
+        let dataArray = [];
+        for (let entry of branchData.data) {
+            dataArray.push([entry[0], entry[1]]);  // Cada elemento es [timestamp (lunes de la semana), count]
+        }
+
+        // Asignamos el nuevo formato de datos
+        branchData.data = dataArray;
+        colorIndex = (colorIndex + 1) % colorPalette.length;  // Ciclamos a través de los colores
+        series.push(branchData); // Agregamos la serie a la lista de series
+    }
+
+    console.log("series");
+    console.log(series);
     return series;
 }
+
 
 function loadTimeChart(container, title, data){
 
@@ -108,6 +160,8 @@ function loadTimeChart(container, title, data){
         },
         xAxis: {
             type: "datetime",
+            minRange: 7 * 24 * 3600 * 1000, // Intervalo mínimo de una semana
+            tickInterval: 7 * 24 * 3600 * 1000,
             labels: {
                 style: {
                     fontSize: '12px', 
@@ -121,7 +175,10 @@ function loadTimeChart(container, title, data){
                     fontSize: '12px',
                     fontFamily: 'Verdana, sans-serif'
                 }
-            }
+            },
+            minTickInterval: 1,  // Esto asegura que el intervalo mínimo entre marcas de ticks es 1
+            allowDecimals: false,  // Esto evitará que los valores del eje Y tengan decimales
+
         },
         // tooltip: {
         //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
@@ -144,7 +201,7 @@ function loadTimeChart(container, title, data){
                 }
             }
         },
-        series: [data]
+        series: data
     };
     console.log(options)   
     // Build the bar
