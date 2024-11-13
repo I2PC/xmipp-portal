@@ -78,7 +78,6 @@ function prepareSeriesForTimeChart(data, name) {
     const colorPalette = ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'];
     let seriesData = {};
 
-    // Función para obtener el lunes de la semana de una fecha dada
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay(),
@@ -87,56 +86,40 @@ function prepareSeriesForTimeChart(data, name) {
         d.setHours(0, 0, 0, 0);
         return d.getTime(); // Devolvemos el timestamp del lunes
     }
-
-    // Recorremos los datos para agruparlos por 'xmipp__branch' y contar las ocurrencias por semana
     for (let item of data) {
         const branch = item.xmipp__branch;
-
-        // Si no existe la serie para este branch, la creamos
         if (!seriesData[branch]) {
             seriesData[branch] = {
                 name: branch,
                 dataSorting: { enabled: true },
-                data: [],  // Lista que contendrá los contadores por semana
+                data: [],
             };
         }
-
-        // Convertimos la fecha a timestamp del lunes de la semana
         const weekStart = getStartOfWeek(item.date);
-
-        // **Nuevo enfoque: agrupar por semana (lunes), y aumentar el contador por cada rama**
         let found = false;
         for (let entry of seriesData[branch].data) {
             if (entry[0] === weekStart) {
-                entry[1]++; // Incrementamos el contador para este lunes (semana)
+                entry[1]++;
                 found = true;
                 break;
             }
         }
-
-        // Si no se encuentra el lunes de esta semana, agregamos una nueva entrada para esta semana
         if (!found) {
-            seriesData[branch].data.push([weekStart, 1]); // Inicializamos el contador en 1 para la nueva semana
+            seriesData[branch].data.push([weekStart, 1]);
         }
     }
-
-    // Convertimos los datos en formato adecuado para Highcharts
     let colorIndex = 0;
     let series = [];
     for (let branch in seriesData) {
         let branchData = seriesData[branch];
         branchData.color = colorPalette[colorIndex];
-
-        // Convertimos los contadores en un formato adecuado para Highcharts
         let dataArray = [];
         for (let entry of branchData.data) {
-            dataArray.push([entry[0], entry[1]]);  // Cada elemento es [timestamp (lunes de la semana), count]
+            dataArray.push([entry[0], entry[1]]);
         }
-
-        // Asignamos el nuevo formato de datos
         branchData.data = dataArray;
-        colorIndex = (colorIndex + 1) % colorPalette.length;  // Ciclamos a través de los colores
-        series.push(branchData); // Agregamos la serie a la lista de series
+        colorIndex = (colorIndex + 1) % colorPalette.length;
+        series.push(branchData);
     }
 
     console.log("series");
