@@ -121,9 +121,6 @@ function prepareSeriesForTimeChart(data, name) {
         colorIndex = (colorIndex + 1) % colorPalette.length;
         series.push(branchData);
     }
-
-    console.log("series");
-    console.log(series);
     return series;
 }
 
@@ -186,7 +183,6 @@ function loadTimeChart(container, title, data){
         },
         series: data
     };
-    console.log(options)   
     // Build the bar
     Highcharts.chart(container, options);
     // $(container).highcharts(options);
@@ -229,7 +225,6 @@ function loadReleaseDevelPieChart(container, title, data){
         colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
         series: [data]
     };
-    console.log(options)   
     // Build the bar
     Highcharts.chart(container, options);
 }
