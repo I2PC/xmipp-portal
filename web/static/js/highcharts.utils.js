@@ -80,12 +80,14 @@ function prepareSeriesForTimeChart(data, name) {
 
     function getStartOfWeek(date) {
         const d = new Date(date);
-        const day = d.getDay(),
-              diff = d.getDate() - day + (day == 0 ? -6 : 1); // El lunes es el primer día de la semana
+        const day = d.getDay();
+        const diff = d.getDate() - day + (day == 0 ? -6 : 1);
         d.setDate(diff);
         d.setHours(0, 0, 0, 0);
-        return d.getTime(); // Devolvemos el timestamp del lunes
+        console.log("Date week: ", d); // Ver la fecha en consola
+        return d.getTime();
     }
+
     for (let item of data) {
         const branch = item.xmipp__branch;
         if (!seriesData[branch]) {
@@ -96,6 +98,9 @@ function prepareSeriesForTimeChart(data, name) {
             };
         }
         const weekStart = getStartOfWeek(item.date);
+        console.log("weekStamp")
+        console.log(item.date)
+        console.log(weekStart)
         let found = false;
         for (let entry of seriesData[branch].data) {
             if (entry[0] === weekStart) {
@@ -108,6 +113,7 @@ function prepareSeriesForTimeChart(data, name) {
             seriesData[branch].data.push([weekStart, 1]);
         }
     }
+
     let colorIndex = 0;
     let series = [];
     for (let branch in seriesData) {
@@ -123,7 +129,6 @@ function prepareSeriesForTimeChart(data, name) {
     }
     return series;
 }
-
 
 function loadTimeChart(container, title, data){
 
@@ -189,6 +194,7 @@ function loadTimeChart(container, title, data){
 }
 
 
+
 function prepareSeriesForReleaseDevelPieChart(data, name){
     const series = {
         name: name,
@@ -228,6 +234,8 @@ function loadReleaseDevelPieChart(container, title, data){
     // Build the bar
     Highcharts.chart(container, options);
 }
+
+
 
 async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_URL, title) {
     // Group releases per name and consolidate IDs
