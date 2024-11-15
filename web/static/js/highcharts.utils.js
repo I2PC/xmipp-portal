@@ -73,62 +73,73 @@ function loadBarChart(container, title, data){
     // $(container).highcharts(options);
 }
 
-
 function prepareSeriesForTimeChart(data, name) {
     const colorPalette = ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'];
     let seriesData = {};
 
+    // Función para obtener el timestamp del lunes de la semana
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay();
-        const diff = d.getDate() - day + (day == 0 ? -6 : 1);
+        const diff = d.getDate() - day + (day == 0 ? -6 : 1); // Si es domingo (0), retrocedemos 6 días, sino retrocedemos 1
         d.setDate(diff);
-        d.setHours(0, 0, 0, 0);
-        console.log("Date week: ", d); // Ver la fecha en consola
-        return d.getTime();
+        d.setHours(0, 0, 0, 0); // Establecer la hora a las 00:00:00 para el lunes
+        return d; // Devolvemos el objeto Date del lunes (no el timestamp por ahora)
     }
 
+    // Procesamos los datos de entrada
     for (let item of data) {
-        const branch = item.xmipp__branch;
+        const branch = item.xmipp__branch; // Obtenemos la rama (branch)
         if (!seriesData[branch]) {
+            // Si no existe la rama en seriesData, la creamos
             seriesData[branch] = {
                 name: branch,
                 dataSorting: { enabled: true },
-                data: [],
+                data: [], // Inicializamos un array vacío para almacenar los datos de la rama
             };
         }
-        const weekStart = getStartOfWeek(item.date);
-        console.log("weekStamp")
-        console.log(item.date)
-        console.log(weekStart)
+
+        const weekStart = getStartOfWeek(item.date); // Obtenemos el lunes de la semana de la fecha
+        const weekStamp = weekStart.getTime(); // Convertimos el lunes en un timestamp
+
         let found = false;
         for (let entry of seriesData[branch].data) {
-            if (entry[0] === weekStart) {
-                entry[1]++;
+            // Verificamos si ya existe un dato con el mismo timestamp de la semana
+            if (entry[0] === weekStamp) {
+                entry[1]++; // Si existe, aumentamos el contador
                 found = true;
                 break;
             }
         }
+
         if (!found) {
-            seriesData[branch].data.push([weekStart, 1]);
+            // Si no encontramos el dato, lo agregamos con un contador inicial de 1
+            seriesData[branch].data.push([weekStamp, 1]);
         }
     }
 
+    // Creamos el array final para la serie
     let colorIndex = 0;
     let series = [];
     for (let branch in seriesData) {
         let branchData = seriesData[branch];
-        branchData.color = colorPalette[colorIndex];
+        branchData.color = colorPalette[colorIndex]; // Asignamos un color a la rama
         let dataArray = [];
+
+        // Copiamos los datos de la rama en un nuevo array
         for (let entry of branchData.data) {
-            dataArray.push([entry[0], entry[1]]);
+            console.log(entry); // Verificación: mostramos los datos que se agregan
+            dataArray.push([entry[0], entry[1]]); // [timestampSemana, contador]
         }
-        branchData.data = dataArray;
-        colorIndex = (colorIndex + 1) % colorPalette.length;
-        series.push(branchData);
+
+        branchData.data = dataArray; // Asignamos los datos formateados a la rama
+        colorIndex = (colorIndex + 1) % colorPalette.length; // Rotamos los colores
+        series.push(branchData); // Agregamos la rama a la serie final
     }
-    return series;
+
+    return series; // Retornamos el array de series
 }
+
 
 function loadTimeChart(container, title, data){
 
