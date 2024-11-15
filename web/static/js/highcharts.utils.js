@@ -228,78 +228,103 @@ function loadReleaseDevelPieChart(container, title, data){
     // Build the bar
     Highcharts.chart(container, options);
 }
-
-async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_URL, title) {
-    // Group releases per name and consolidate IDs
+async function loadTimeChartPerRelease(chartId, preparedList, release_pie_chart_URL, title) {
+    // Agrupar los lanzamientos por nombre de la rama y consolidar los IDs
     const branchesMap = preparedList.reduce((acc, branch) => {
         if (!acc[branch.branch]) {
-            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Initialize with IDs list
+            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Inicializar con lista de IDs
         } else {
-            acc[branch.branch].ids.push(branch.id); // Add ID to the list if release already exists
+            acc[branch.branch].ids.push(branch.id); // Agregar ID a la lista si la rama ya existe
         }
         return acc;
     }, {});
 
-    // Get container
+    // Obtener el contenedor de los gráficos
     const chartsContainer = document.getElementById(chartId);
 
-    // Create graphs for unique branches
+    // Crear gráficos para cada rama única
     for (const branchName in branchesMap) {
         const branch = branchesMap[branchName];
-        
+
         let combinedData = {};
 
-        // Combine date per each release
+        // Combinar los datos por cada release
         for (const id of branch.ids) {
-            // Llamada al endpoint
+            // Llamada al endpoint para obtener los datos del release
             const response = await fetch(`${release_pie_chart_URL}${id}`);
             const releaseData = await response.json();
 
-            // Sumar los datos al `combinedData`
+            // Agrupar los datos por semana o fecha
             releaseData.forEach(item => {
-                const key = item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures';
-                
-                // Sumar el conteo al key correspondiente en `combinedData`
-                if (combinedData[key]) {
-                    combinedData[key] += item.count;
+                const weekStart = getStartOfWeek(item.date); // Usamos la misma función para obtener la semana
+
+                // Inicializamos el objeto para esa semana si no existe
+                if (!combinedData[weekStart]) {
+                    combinedData[weekStart] = {};
+                }
+
+                const failureKey = item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures';
+
+                // Sumar el conteo al failureKey correspondiente
+                if (combinedData[weekStart][failureKey]) {
+                    combinedData[weekStart][failureKey] += item.count;
                 } else {
-                    combinedData[key] = item.count;
+                    combinedData[weekStart][failureKey] = item.count;
                 }
             });
         }
 
-        // Formatear los datos para el gráfico
-        const chartData = Object.keys(combinedData).map(key => ({
-            name: key,
-            y: combinedData[key]
-        }));
+        // Crear el conjunto de datos para el gráfico
+        let series = [];
+        for (const weekStart in combinedData) {
+            const weekData = combinedData[weekStart];
 
-        // Crear div para contener el gráfico
+            // Para cada clave de fallo, agregamos una serie
+            for (const failureKey in weekData) {
+                let existingSeries = series.find(s => s.name === failureKey);
+                if (!existingSeries) {
+                    existingSeries = { name: failureKey, data: [] };
+                    series.push(existingSeries);
+                }
+
+                // Agregar el punto de datos (fecha de la semana y el conteo)
+                existingSeries.data.push([weekStart, weekData[failureKey]]);
+            }
+        }
+
+        // Crear un div para contener el gráfico
         const chartDiv = document.createElement('div');
-        chartDiv.style.width = '300px';
-        chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
+        chartDiv.style.width = '100%';
+        chartDiv.style.height = '400px';
         chartDiv.className = 'px-2'; // Espacio
         chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
         chartsContainer.appendChild(chartDiv);
-    
-        // Crear gráfico
+
+        // Crear gráfico de líneas con eje datetime
         Highcharts.chart(chartDiv.id, {
             chart: {
-                type: 'pie'
+                type: 'line'
             },
             title: {
-                text: `${title}${branchName}`
+                text: `${title} - ${branchName}`
             },
-            colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
-            series: [{
-                name: 'Count',
-                colorByPoint: true,
-                data: chartData
-            }]
+            xAxis: {
+                type: 'datetime',  // Usamos un eje datetime
+                title: {
+                    text: 'Fecha'
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Conteo'
+                },
+                min: 0
+            },
+            series: series,
+            colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080']
         });
     }
 }
-
 function prepareXmippReleasesList(data){
     const releaseBranches = data.filter(item => item.branch.startsWith("release"));
     return releaseBranches;
