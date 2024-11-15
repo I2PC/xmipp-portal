@@ -243,7 +243,18 @@ async function loadTimeChartPerRelease(chartId, preparedList, release_pie_chart_
     const chartsContainer = document.getElementById(chartId);
 
     // Crear gráficos para cada rama única
-    for (const braemana o fecha
+    for (const branchName in branchesMap) {
+        const branch = branchesMap[branchName];
+
+        let combinedData = {};
+
+        // Combinar los datos por cada release
+        for (const id of branch.ids) {
+            // Llamada al endpoint para obtener los datos del release
+            const response = await fetch(`${release_pie_chart_URL}${id}`);
+            const releaseData = await response.json();
+
+            // Agrupar los datos por semana o fecha
             releaseData.forEach(item => {
                 const weekStart = getStartOfWeek(item.date); // Usamos la misma función para obtener la semana
 
