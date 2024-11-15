@@ -247,7 +247,19 @@ async function loadTimeChartPerRelease(chartId, preparedList, release_pie_chart_
         const branch = branchesMap[branchName];
 
         let combinedData = {};
-art]) {
+
+        // Combinar los datos por cada release
+        for (const id of branch.ids) {
+            // Llamada al endpoint para obtener los datos del release
+            const response = await fetch(`${release_pie_chart_URL}${id}`);
+            const releaseData = await response.json();
+
+            // Agrupar los datos por semana o fecha
+            releaseData.forEach(item => {
+                const weekStart = getStartOfWeek(item.date); // Usamos la misma función para obtener la semana
+
+                // Inicializamos el objeto para esa semana si no existe
+                if (!combinedData[weekStart]) {
                     combinedData[weekStart] = {};
                 }
 
