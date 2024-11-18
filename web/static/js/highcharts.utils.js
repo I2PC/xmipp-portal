@@ -48,6 +48,15 @@ function loadBarChart(container, title, data){
         // tooltip: {
         //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
         // },
+        legend: {
+            itemStyle: {
+                fontSize: '0px', // Ajusta el tamaño del texto de la leyenda
+                fontFamily: 'Verdana, sans-serif',
+            },
+            itemHoverStyle: {
+                color: '#333333', // Cambia el color al pasar el mouse (opcional)
+            }
+        },
         plotOptions: {
             series: {
                 color: '#8e1919',
@@ -128,7 +137,6 @@ function prepareSeriesForTimeChart(data, name) {
 
 
 function loadTimeChart(container, title, data){
-
     let options = {
         chart: {
             plotBackgroundColor: null,
@@ -165,6 +173,15 @@ function loadTimeChart(container, title, data){
         // tooltip: {
         //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
         // },
+        legend: {
+            itemStyle: {
+                fontSize: '12px', // Ajusta el tamaño del texto de la leyenda
+                fontFamily: 'Verdana, sans-serif',
+            },
+            itemHoverStyle: {
+                color: '#333333', // Cambia el color al pasar el mouse (opcional)
+            }
+        },
         plotOptions: {
             series: {
                 color: '#8e1919',
@@ -177,7 +194,7 @@ function loadTimeChart(container, title, data){
                     y: -10, // 10 pixels down from the top
                     x: 0, // 0 pixels
                     style: {
-                        fontSize: '10px',
+                        fontSize: '12px',
                         fontFamily: 'Verdana, sans-serif'
                     }
                 }
@@ -225,7 +242,22 @@ function loadReleaseDevelPieChart(container, title, data){
         title: {
             text: title
         },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}',
+                    style: {
+                        fontSize: '11px',
+                        fontFamily: 'Verdana, sans-serif',
+                    }
+                }
+            }
+        },
         colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
+
         series: [data]
     };
     // Build the bar
