@@ -75,6 +75,11 @@ function loadBarChart(container, title, data){
 
 function prepareSeriesForTimeChart(data, name) {
     console.log('data', data)
+    data.sort((a, b) => {
+        const dateA = a.date ? new Date(a.date) : null;
+        const dateB = b.date ? new Date(b.date) : null;
+        return dateA - dateB;
+    });
     const colorPalette = ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'];
     let seriesData = {};
     function getStartOfWeek(date) {
