@@ -83,14 +83,34 @@ function loadBarChart(container, title, data){
 }
 
 function prepareSeriesForTimeChart(data, name) {
-    console.log('data', data)
+    console.log(data)
     data.sort((a, b) => {
         const dateA = a.date ? new Date(a.date) : null;
         const dateB = b.date ? new Date(b.date) : null;
         return dateA - dateB;
     });
-    const colorPalette = ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'];
-    let seriesData = {};
+    serieRelease_ok = {
+                name: "Release success",
+                dataSorting: { enabled: false },
+                data: [],
+                color:'#c12e2a'};
+    serieRelease_fails = {
+                name: "Release fails",
+                dataSorting: { enabled: false },
+                data: [],
+                color:'#DBD9D9'};
+    serieDevel_ok = {
+                name: "Devel success",
+                dataSorting: { enabled: false },
+                data: [],
+                color:'#540000'};
+    serieDevel_fails = {
+                name: "Devel fails",
+                dataSorting: { enabled: false },
+                data: [],
+                color:'#808080'};
+
+    let series = [];
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay();
@@ -103,35 +123,89 @@ function prepareSeriesForTimeChart(data, name) {
 
     for (let item of data) {
         const branch = item.xmipp__branch;
-        if (!seriesData[branch]) {
-            seriesData[branch] = {
-                name: branch,
-                dataSorting: { enabled: false },
-                data: [],
-            };
-        }
         const weekStart = getStartOfWeek(item.date);
         const weekStamp = weekStart.getTime();
-        let found = false;
-        for (let [index, entry] of seriesData[branch].data.entries()) {
-            if (entry.x === weekStamp) {
-                seriesData[branch].data[index].y = seriesData[branch].data[index].y + 1
-                found = true;
-                break;
+
+        if (branch.includes('release')) {
+            if (item.returnCode === 0) {
+                if (serieRelease_ok.data.length === 0) {
+                    serieRelease_ok.data.push({ x: weekStamp, y: 1 });
+                } else {
+                    found=false
+                    for (let [index, entry] of serieRelease_ok.data.entries()) {
+                        if (entry.x === weekStamp) {
+                            serieRelease_ok.data[index].y = serieRelease_ok.data[index].y + 1
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                    serieRelease_ok.data.push({ x: weekStamp, y: 1 })
+                        }
+                }
+            } else {
+                if (serieRelease_fails.data.length === 0) {
+                    serieRelease_fails.data.push({ x: weekStamp, y: 1 });
+                } else {
+                    found=false
+                    for (let [index, entry] of serieRelease_fails.data.entries()) {
+                        if (entry.x === weekStamp) {
+                            serieRelease_fails.data[index].y = serieRelease_fails.data[index].y + 1
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                    serieRelease_fails.data.push({ x: weekStamp, y: 1 })
+                    }
+                }
+            }
+        } else {
+            if (item.returnCode === 0) {
+                if (serieDevel_ok.data.length === 0) {
+                    serieDevel_ok.data.push({ x: weekStamp, y: 1 });
+                } else {
+                    found=false
+                    for (let [index, entry] of serieDevel_ok.data.entries()) {
+                        if (entry.x === weekStamp) {
+                            serieDevel_ok.data[index].y = serieDevel_ok.data[index].y + 1
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                    serieDevel_ok.data.push({ x: weekStamp, y: 1 })
+                    }
+                }
+            } else {
+                if (serieDevel_fails.data.length === 0) {
+                    serieDevel_fails.data.push({ x: weekStamp, y: 1 });
+                } else {
+                    found=false
+                    for (let [index, entry] of serieDevel_fails.data.entries()) {
+                        if (entry.x === weekStamp) {
+                            serieDevel_fails.data[index].y = serieDevel_fails.data[index].y + 1
+                            found = true;
+                            break;
+                        }
+                    }
+                    if (!found) {
+                    serieDevel_fails.data.push({ x: weekStamp, y: 1 })
+                    }
+
+                }
             }
         }
-        if (!found) {
-            seriesData[branch].data.push({x : weekStamp, y: 1});
-        }
+
+
     }
-    let colorIndex = 0;
-    let series = [];
-    for (let branch in seriesData) {
-        seriesData[branch].color = colorPalette[colorIndex];
-        colorIndex = (colorIndex + 1) % colorPalette.length;
-        series.push(seriesData[branch]);
-        }
-       console.log(series)
+
+    series.push(serieRelease_ok)
+    series.push(serieRelease_fails)
+    series.push(serieDevel_ok)
+    series.push(serieDevel_fails)
+
+    console.log(series)
     return series;
 }
 

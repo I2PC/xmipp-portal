@@ -124,20 +124,29 @@ class InstalledBranchesTimeChartView(APIView):
     # Filter attempts that match those latest dates and retrieve attribute date from Attempt
     latest_attempts = Attempt.objects.annotate(
       latest_date=Subquery(subquery.values('date')[:1])
-      ).filter(date=F('latest_date')).values('date')
+      )#.filter(date=F('latest_date')).values('date')
     
     # Separate querysets for 'release' and 'devel'
-    release_attempts = latest_attempts.filter(
+    release_attempts_ok = latest_attempts.filter(
         returnCode=0,
         xmipp__branch__iregex=r'release'
-    ).values("xmipp__branch", "date")
-
-    devel_attempts = latest_attempts.exclude(
+    ).values("xmipp__branch", "date", "returnCode")
+    
+    release_attempts_fails = latest_attempts.filter(
         xmipp__branch__iregex=r'release'
-    ).values("xmipp__branch", "date")
+    ).exclude(returnCode=0).values("xmipp__branch", "date", "returnCode")
+
+    devel_attempts_ok = latest_attempts.exclude(
+        xmipp__branch__iregex=r'release'
+    ).filter(returnCode=0).values("xmipp__branch", "date", "returnCode")
+    
+    devel_attempts_fails = latest_attempts.exclude(
+	    returnCode=0,
+	    xmipp__branch__iregex=r'release'
+    ).values("xmipp__branch", "date", "returnCode")
 
     # Combine both querysets into one
-    combined_queryset = list(release_attempts) + list(devel_attempts)
+    combined_queryset = list(release_attempts_ok) + list(release_attempts_fails) + list(devel_attempts_ok) + list(devel_attempts_fails)
 
 
     # Process combined queryset to include all developers' branches in devel list
@@ -147,18 +156,21 @@ class InstalledBranchesTimeChartView(APIView):
     for attempt in combined_queryset:
         branch_name = attempt['xmipp__branch']
         attempt_date = attempt['date']
+        returnCode = attempt['returnCode']
 
         if 'release' in branch_name:
             # Add release branches as they are
             result.append({
                 "xmipp__branch": branch_name,
-                "date": attempt_date
+                "date": attempt_date,
+	            "returnCode": returnCode
             })
         else:
             # Sum all non-release branches under 'devel'
             result.append({
                 "xmipp__branch": "devel",
-                "date": attempt_date
+                "date": attempt_date,
+	            "returnCode": returnCode
             })
 
     # Return the final JSON response
