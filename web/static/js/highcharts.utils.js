@@ -93,22 +93,32 @@ function prepareSeriesForTimeChart(data, name) {
                 name: "Release success",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#c12e2a'};
+                color:'#8e1919',
+                dashStyle: 'Solid',
+                marker: { symbol: 'circle' }};
     serieRelease_fails = {
                 name: "Release fails",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#DBD9D9'};
+                color:'#808080',
+                dashStyle: 'Dash',
+                marker: { symbol: 'triangle-down' }
+                };
     serieDevel_ok = {
                 name: "Devel success",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#540000'};
+                color:'#c12e2a',
+                dashStyle: 'Solid',
+                marker: { symbol: 'circle' }};
     serieDevel_fails = {
                 name: "Devel fails",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#808080'};
+                color:'#DBD9D9',
+                dashStyle: 'Dash',
+                marker: { symbol: 'triangle-down' }
+                };
 
     let series = [];
     function getStartOfWeek(date) {
