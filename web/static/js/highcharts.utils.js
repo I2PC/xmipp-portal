@@ -100,7 +100,7 @@ function prepareSeriesForTimeChart(data, name) {
                 name: "Release fails",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#808080',
+                color:'#540000',
                 marker: { symbol: 'triangle-down' }
                 };
     serieDevel_ok = {
