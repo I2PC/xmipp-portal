@@ -102,8 +102,8 @@
 
         <!-- Installations over time (weeks) line chart -->
         <div class="col-md-6">
-            <div class="chart" id="installationsOverTime" style="width: 80%; margin: 0 auto; height: 400px;"></div>
-            <p id="chartExplanation">The graph shows the number of Xmipp installations (grouped by weeks) for each release (devel refers to any branch different from releases).</p>
+            <div class="chart" id="installationsReleasesDevel" style="width: 80%; margin: 0 auto; height: 400px;"></div>
+            <p id="chartExplanation">This pie chart displays the different installed releases and the devel branch (along with all the work branches derived from devel)..</p>
         </div>
     </div>
 
@@ -112,9 +112,8 @@
     <!-- Releases and devel charts -->
     <div class="row justify-content-center" style="overflow-y: auto;">
         <!-- Releases/devel percentage pie chart -->
-        <div class="col-md-6 d-flex justify-content-center">
-            <div class="chart" id="installationsReleasesDevel" style="width: 100%; max-width: 500px; height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
-        </div>
+            <div class="chart" id="installationsOverTime" style="width: 100%; max-width: 1000px; height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
+            <p id="chartExplanation">The graph shows the number of Xmipp installations (grouped by weeks) for release and devel (devel refers to any branch different from releases).</p>
     </div>
         <br><br>
 
