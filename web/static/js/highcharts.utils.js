@@ -107,7 +107,7 @@ function prepareSeriesForTimeChart(data, name) {
                 name: "Devel success",
                 dataSorting: { enabled: false },
                 data: [],
-                color:'#c12e2a',
+                color:'#808080',
                 dashStyle: 'Solid',
                 marker: { symbol: 'circle' }};
     serieDevel_fails = {
@@ -266,7 +266,7 @@ function loadTimeChart(container, title, data){
         },
         plotOptions: {
             series: {
-                connectNulls: false, // No conecta puntos nulos
+                connectNulls: false,
                 color: '#8e1919',
                 dataLabels: {
                     enabled: true,
