@@ -101,7 +101,6 @@ function prepareSeriesForTimeChart(data, name) {
                 dataSorting: { enabled: false },
                 data: [],
                 color:'#808080',
-                dashStyle: 'Dash',
                 marker: { symbol: 'triangle-down' }
                 };
     serieDevel_ok = {
@@ -116,7 +115,6 @@ function prepareSeriesForTimeChart(data, name) {
                 dataSorting: { enabled: false },
                 data: [],
                 color:'#DBD9D9',
-                dashStyle: 'Dash',
                 marker: { symbol: 'triangle-down' }
                 };
 
@@ -226,7 +224,7 @@ function loadTimeChart(container, title, data){
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            type: 'line',
+            type: 'spline',
             zoomType: 'x',
         },
         title: {
