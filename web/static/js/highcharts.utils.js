@@ -224,7 +224,7 @@ function loadTimeChart(container, title, data){
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            type: 'spline',
+            type: 'line',
             zoomType: 'x',
         },
         title: {
