@@ -266,7 +266,7 @@ function loadTimeChart(container, title, data){
         },
         plotOptions: {
             series: {
-                connectNulls: false // No conecta puntos nulos
+                connectNulls: false, // No conecta puntos nulos
                 color: '#8e1919',
                 dataLabels: {
                     enabled: true,
