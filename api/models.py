@@ -38,7 +38,7 @@ class Version(models.Model):
 	cmake = models.CharField(max_length=20, null=True, blank=True)
 	gcc = models.CharField(max_length=20, null=True, blank=True)
 	gpp = models.CharField(max_length=20, null=True, blank=True)
-	architecture = models.CharField(max_length=40, default='', null=True, blank=True)
+	architecture = models.CharField(max_length=500, default='', null=True, blank=True)
 	mpi = models.CharField(max_length=20, default='', null=True, blank=True)
 	python = models.CharField(max_length=20, default='', null=True, blank=True)
 	sqlite = models.CharField(max_length=20, default='', null=True, blank=True)
