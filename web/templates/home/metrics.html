@@ -102,8 +102,8 @@
 
         <!-- Installations over time (weeks) line chart -->
         <div class="col-md-6">
-            <div class="chart" id="installationsReleasesDevel" style="width: 80%; margin: 0 auto; height: 400px;"></div>
-            <p id="chartExplanation">This pie chart displays the different installed releases and the devel branch (along with all the work branches derived from devel).</p>
+            <div class="chart" id="installationsReleasesDevel" style="width: 80%; margin: 0 auto; margin-top: 20px; height: 400px;"></div>
+            <p id="chartExplanation">This pie chart displays the different installed releases and the devel branch (along with all the work branches derived from devel). There is just one installation per user (always the last one successfully installed).</p>
         </div>
     </div>
 
@@ -112,7 +112,7 @@
     <!-- Releases and devel charts -->
     <div class="row justify-content-center" style="overflow-y: auto;">
         <!-- Releases/devel percentage pie chart -->
-            <div class="chart" id="installationsOverTime" style="width: 100%;  height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
+            <div class="chart" id="installationsOverTime" style="width: 95%;  height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
             <p id="chartExplanation">The graph shows the number of Xmipp installations (grouped by weeks) for release and devel (devel refers to any branch different from releases).</p>
     </div>
         <br><br>
@@ -121,6 +121,8 @@
     <div class="container">
         <div id="charts-scroll-container" class="overflow-scroll" style="width: 100%; overflow-x: auto; white-space: nowrap; margin-top: 30px; margin-bottom: 30px;">
             <div id="installationsMetricsPerReleaseDevel" class="d-flex flex-row"></div>
+            <p id="chartExplanation">Number of successful and failed installations for each release (not grouped by users).</p>
+
         </div>
     </div>
 </div>

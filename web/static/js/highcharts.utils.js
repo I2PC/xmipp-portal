@@ -339,7 +339,7 @@ function loadReleaseDevelPieChart(container, title, data){
                 }
             }
         },
-        colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
+        colors: ['#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
 
         series: [data]
     };
@@ -367,7 +367,10 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
     for (const branchName in branchesMap) {
         const branch = branchesMap[branchName];
         
-        let combinedData = {};
+        let combinedData = { 
+            'Successful Installations': 0,
+            'Failed Installations': 0 
+        };
 
         // Combine date per each release
         for (const id of branch.ids) {
@@ -375,26 +378,24 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
             const response = await fetch(`${release_pie_chart_URL}${id}`);
             const releaseData = await response.json();
 
-            // Sumar los datos al `combinedData`
+            // Sume data
             releaseData.forEach(item => {
-                const key = item.previous_failures !== null ? `Failures: ${item.previous_failures}` : 'No Failures';
-                
-                // Sumar el conteo al key correspondiente en `combinedData`
-                if (combinedData[key]) {
-                    combinedData[key] += item.count;
-                } else {
-                    combinedData[key] = item.count;
+                if (item.successfull_installations !== undefined) {
+                    combinedData['Successful Installations'] += item.successfull_installations;
+                }
+                if (item.failed_installations !== undefined) {
+                    combinedData['Failed Installations'] += item.failed_installations;
                 }
             });
         }
 
-        // Formatear los datos para el gráfico
+        // Formate data
         const chartData = Object.keys(combinedData).map(key => ({
             name: key,
             y: combinedData[key]
         }));
 
-        // Crear div para contener el gráfico
+        // Create div to include graph
         const chartDiv = document.createElement('div');
         chartDiv.style.width = '300px';
         chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
@@ -402,7 +403,7 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
         chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
         chartsContainer.appendChild(chartDiv);
     
-        // Crear gráfico
+        // Create graph
         Highcharts.chart(chartDiv.id, {
             chart: {
                 type: 'pie'
@@ -410,15 +411,22 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
             title: {
                 text: `${title}${branchName}`
             },
-            colors: ['#c12e2a', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
+            colors: ['#c12e2a', '#623CEA'], 
             series: [{
                 name: 'Count',
                 colorByPoint: true,
-                data: chartData
+                data: chartData,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '10px',
+                    }
+                }
             }]
         });
     }
 }
+
 
 function prepareXmippReleasesList(data){
     const releaseBranches = data.filter(item => item.branch.startsWith("release"));

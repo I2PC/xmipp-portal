@@ -192,32 +192,30 @@ class ReleasePieChartView(APIView):
     #### Returns:
     (Response): HTTP response with count info.
     """
-    # Step 1: Get the latest date for each user for the given release_id
-    latest_dates = Attempt.objects.filter(xmipp__id=release_id).values('user').annotate(latest_date=Max('date'))
+    # Step 1: Get all attempts for the given release_id
+    attempts = Attempt.objects.filter(xmipp__id=release_id)
 
-    # Step 2: Filter successful attempts that match the latest dates
-    latest_attempts = Attempt.objects.filter(
+    # Step 2: Get successful attempts
+    successfull_attempts = Attempt.objects.filter(
         xmipp__id=release_id,
         returnCode=0,
-        date__in=[item['latest_date'] for item in latest_dates]
-    )
+    ).count()
 
-    # Step 3: Annotate the count of previous failures before the successful attempt
-    previous_failures = Attempt.objects.filter(
+    fail_attempts = Attempt.objects.filter(
         xmipp__id=release_id,
-        user=OuterRef('user'),
-        date__lt=OuterRef('date')
-    ).exclude(returnCode=0).values('user').annotate(count=Count('id')).values('count')
+    ).exclude(returnCode=0).count()
 
-    latest_attempts = latest_attempts.annotate(
-        previous_failures=Subquery(previous_failures, output_field=IntegerField())
-    )
+    result = []
+    result.append({
+        "successfull_installations": successfull_attempts,
+    })
 
-    # Step 4: Group by number of previous failures and count the occurrences
-    attempt_counts = latest_attempts.values('previous_failures').annotate(count=Count('id')).order_by('previous_failures')
+    result.append({
+        "failed_installations": fail_attempts,
+    })
 
     # Return the result as a JSON response
-    return Response(attempt_counts)
+    return Response(result)
   
 class AllReleasesPieChartView(APIView):
 
