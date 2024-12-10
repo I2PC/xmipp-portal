@@ -34,6 +34,7 @@ USER_COUNTRY = 'country'
 # Xmipp fields
 XMIPP_BRANCH = 'branch'
 XMIPP_UPDATED = 'updated'
+XMIPP_INSTALLED = 'installedByScipion'
 
 # Version fields
 VERSION_OS = 'os'

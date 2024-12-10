@@ -38,7 +38,7 @@ class Version(models.Model):
 	cmake = models.CharField(max_length=20, null=True, blank=True)
 	gcc = models.CharField(max_length=20, null=True, blank=True)
 	gpp = models.CharField(max_length=20, null=True, blank=True)
-	architecture = models.CharField(max_length=500, default='', null=True, blank=True)
+	architecture = models.CharField(max_length=1000, default='', null=True, blank=True)
 	mpi = models.CharField(max_length=20, default='', null=True, blank=True)
 	python = models.CharField(max_length=20, default='', null=True, blank=True)
 	sqlite = models.CharField(max_length=20, default='', null=True, blank=True)
@@ -49,6 +49,7 @@ class Version(models.Model):
 class Xmipp(models.Model):
 	branch = models.CharField(max_length=50) #XMIPP_VERNAME
 	updated = models.BooleanField(null=True, blank=True) #git fecth + git status
+	installedByScipion = models.BooleanField(null=True, blank=True)
 
 	def __str__(self):
 		return '%s (%s)' % (self.branch, self.updated)

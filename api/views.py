@@ -33,7 +33,7 @@ from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
 from .models import User, Xmipp, Version, Attempt
 from .serializers import AttemptSerializer, XmippSerializer
 from .utils import getClientIp, getCountryFromIp
-from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, VERSION_OS, VERSION_CUDA,\
+from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, XMIPP_INSTALLED, VERSION_OS, VERSION_CUDA,\
 	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
 	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
 	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
@@ -358,7 +358,8 @@ class AttemptsView(APIView):
       # Creating xmipp object
       xmippObj = Xmipp.objects.get_or_create(
         branch=xmippData[XMIPP_BRANCH],
-        updated=xmippData[XMIPP_UPDATED]
+        updated=xmippData[XMIPP_UPDATED],
+        installedByScipion=xmippData[XMIPP_INSTALLED]
       )[0]
 
       # Creating version object
@@ -417,7 +418,8 @@ curl --header "Content-Type: application/json" -X POST --data '{
         },
         "xmipp": {
         "branch": "agm_API",
-        "updated": true
+        "updated": true,
+        "installedByScipion": true,
         },
         "returnCode": "0",
         "logTail": "muchas lines"
