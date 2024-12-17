@@ -83,138 +83,84 @@ function loadBarChart(container, title, data){
 }
 
 function prepareSeriesForTimeChart(data, name) {
-    console.log(data)
+    console.log(data);
+    
+    // Sort by date
     data.sort((a, b) => {
         const dateA = a.date ? new Date(a.date) : null;
         const dateB = b.date ? new Date(b.date) : null;
         return dateA - dateB;
     });
-    serieRelease_ok = {
-                name: "Release success",
-                dataSorting: { enabled: false },
-                data: [],
-                color:'#8e1919',
-                dashStyle: 'Solid',
-                marker: { symbol: 'circle' }};
-    serieRelease_fails = {
-                name: "Release fails",
-                dataSorting: { enabled: false },
-                data: [],
-                color:'#c12e2a',
-                marker: { symbol: 'triangle-down' }
-                };
-    serieDevel_ok = {
-                name: "Devel success",
-                dataSorting: { enabled: false },
-                data: [],
-                color:'#808080',
-                dashStyle: 'Solid',
-                marker: { symbol: 'circle' }};
-    serieDevel_fails = {
-                name: "Devel fails",
-                dataSorting: { enabled: false },
-                data: [],
-                color:'#DBD9D9',
-                marker: { symbol: 'triangle-down' }
-                };
 
-    let series = [];
+    // Get start of the week
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay();
         const diff = d.getDate() - day + (day == 0 ? -6 : 1);
         d.setDate(diff);
         d.setHours(0, 0, 0, 0);
-        return d
+        return d;
     }
 
+    let series = {};
 
     for (let item of data) {
         const branch = item.xmipp__branch;
+        const returnCode = item.returnCode;
         const weekStart = getStartOfWeek(item.date);
         const weekStamp = weekStart.getTime();
 
-        if (branch.includes('release')) {
-            if (item.returnCode === 0) {
-                if (serieRelease_ok.data.length === 0) {
-                    serieRelease_ok.data.push({ x: weekStamp, y: 1 });
-                } else {
-                    found=false
-                    for (let [index, entry] of serieRelease_ok.data.entries()) {
-                        if (entry.x === weekStamp) {
-                            serieRelease_ok.data[index].y = serieRelease_ok.data[index].y + 1
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                    serieRelease_ok.data.push({ x: weekStamp, y: 1 })
-                        }
-                }
-            } else {
-                if (serieRelease_fails.data.length === 0) {
-                    serieRelease_fails.data.push({ x: weekStamp, y: 1 });
-                } else {
-                    found=false
-                    for (let [index, entry] of serieRelease_fails.data.entries()) {
-                        if (entry.x === weekStamp) {
-                            serieRelease_fails.data[index].y = serieRelease_fails.data[index].y + 1
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                    serieRelease_fails.data.push({ x: weekStamp, y: 1 })
-                    }
-                }
-            }
-        } else {
-            if (item.returnCode === 0) {
-                if (serieDevel_ok.data.length === 0) {
-                    serieDevel_ok.data.push({ x: weekStamp, y: 1 });
-                } else {
-                    found=false
-                    for (let [index, entry] of serieDevel_ok.data.entries()) {
-                        if (entry.x === weekStamp) {
-                            serieDevel_ok.data[index].y = serieDevel_ok.data[index].y + 1
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                    serieDevel_ok.data.push({ x: weekStamp, y: 1 })
-                    }
-                }
-            } else {
-                if (serieDevel_fails.data.length === 0) {
-                    serieDevel_fails.data.push({ x: weekStamp, y: 1 });
-                } else {
-                    found=false
-                    for (let [index, entry] of serieDevel_fails.data.entries()) {
-                        if (entry.x === weekStamp) {
-                            serieDevel_fails.data[index].y = serieDevel_fails.data[index].y + 1
-                            found = true;
-                            break;
-                        }
-                    }
-                    if (!found) {
-                    serieDevel_fails.data.push({ x: weekStamp, y: 1 })
-                    }
+        const branchKey = branch;
 
+        if (!series[branchKey]) {
+            series[branchKey] = {
+                success: {
+                    name: `${branch} success`,
+                    dataSorting: { enabled: false },
+                    data: [],
+                    color: '#8e1919',  
+                    dashStyle: 'Solid',
+                    marker: { symbol: 'circle' }
+                },
+                fails: {
+                    name: `${branch} fails`,
+                    dataSorting: { enabled: false },
+                    data: [],
+                    color: '#c12e2a', 
+                    marker: { symbol: 'triangle-down' }
                 }
+            };
+        }
+
+        const targetSeries = returnCode === 0 ? series[branchKey].success : series[branchKey].fails;
+
+        let found = false;
+        for (let [index, entry] of targetSeries.data.entries()) {
+            if (entry.x === weekStamp) {
+                targetSeries.data[index].y += 1;
+                found = true;
+                break;
             }
         }
 
-
+        if (!found) {
+            targetSeries.data.push({ x: weekStamp, y: 1 });
+        }
     }
 
-    series.push(serieRelease_ok)
-    series.push(serieRelease_fails)
-    series.push(serieDevel_ok)
-    series.push(serieDevel_fails)
+    for (const branchKey in series) {
+        series[branchKey].success.data.sort((a, b) => a.x - b.x);  // Ordenar por fecha
+        series[branchKey].fails.data.sort((a, b) => a.x - b.x);  // Ordenar por fecha
+    }
 
-    console.log(series)
-    return series;
+    let resultSeries = [];
+    for (const branchKey in series) {
+        resultSeries.push(series[branchKey].success);
+        resultSeries.push(series[branchKey].fails);
+    }
+
+    console.log(resultSeries);
+    return resultSeries;
 }
 
 
