@@ -1,6 +1,7 @@
 name: xmipp-portal
 channels:
   - defaults
+  - conda-forge
 dependencies:
   - python=3.12
   - Django==4
