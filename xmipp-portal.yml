@@ -3,16 +3,17 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python=3.12
+  - python>=3.11
   - Django==4
-  - static3==0.7.0
-  - gunicorn==19.6.0
-  - django-extensions==3
-  - dj-database-url==2
+  - gunicorn>=19.6.0
   - djangorestframework>=3.14
   - mysqlclient
   - pycountry
   - django-cors-headers
   - requests==2.31
   - python-dotenv
+  - pip:
+    - dj-database-url==2
+    - django-extensions==3
+    - static3>=0.7.0
 
