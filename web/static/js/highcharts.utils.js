@@ -140,7 +140,7 @@ function prepareSeriesForTimeChart(data, name) {
                     name: `${branch} fails`,
                     dataSorting: { enabled: false },
                     data: [],
-                    color: lightenColor(successColor, 50);
+                    color: lightenColor(successColor, 50),
                     marker: { symbol: 'triangle-down' }
                 }
             };
