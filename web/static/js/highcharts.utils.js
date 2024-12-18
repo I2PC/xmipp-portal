@@ -300,7 +300,7 @@ function loadReleaseDevelPieChart(container, title, data){
                 }
             }
         },
-        colors: ['#878787', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
+        colors: ['#878787', 'c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
 
         series: [data]
     };
