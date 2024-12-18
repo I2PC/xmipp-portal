@@ -84,7 +84,7 @@ function loadBarChart(container, title, data){
 
 function prepareSeriesForTimeChart(data, name) {
     console.log(data);
-    let colors= ['#DBD9D9','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
+    let colors= ['#878787','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
     let colorIndex = 0;
     // Sort by date
     data.sort((a, b) => {
@@ -300,7 +300,7 @@ function loadReleaseDevelPieChart(container, title, data){
                 }
             }
         },
-        colors: ['#c12e2a', '#DBD9D9', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
+        colors: ['#878787', '#DBD9D9', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
 
         series: [data]
     };
