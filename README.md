@@ -11,7 +11,7 @@ XMIPP-Portal is a web-based application designed for ahving a main portal for xm
 
 ### 1. Clone the Repository
 ```bash
-git clone <repository-url>
+git clone git@github.com:I2PC/xmipp-portal.git
 cd xmipp-portal
 ```
 
