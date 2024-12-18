@@ -84,7 +84,7 @@ function loadBarChart(container, title, data){
 
 function prepareSeriesForTimeChart(data, name) {
     console.log(data);
-    colors: ['#DBD9D9','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
+    let colors= ['#DBD9D9','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
     let colorIndex = 0;
     // Sort by date
     data.sort((a, b) => {
