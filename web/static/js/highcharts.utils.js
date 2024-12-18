@@ -113,11 +113,7 @@ function prepareSeriesForTimeChart(data, name) {
     b = Math.min(255, b + factor);
 
     return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
-}
-
-// Ejemplo de uso: Aclarar el color '#c12e2a' en un 50%
-const lighterColor = lightenColor('#c12e2a', 50);
-console.log(lighterColor);  // Salida: '#D84F3F'
+    }
 
     let series = {};
 
