@@ -84,7 +84,8 @@ function loadBarChart(container, title, data){
 
 function prepareSeriesForTimeChart(data, name) {
     console.log(data);
-    
+    colors: ['#DBD9D9','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
+    let colorIndex = 0;
     // Sort by date
     data.sort((a, b) => {
         const dateA = a.date ? new Date(a.date) : null;
@@ -102,6 +103,22 @@ function prepareSeriesForTimeChart(data, name) {
         return d;
     }
 
+    function lightenColor(hex, factor) {
+    let r = parseInt(hex.slice(1, 3), 16);
+    let g = parseInt(hex.slice(3, 5), 16);
+    let b = parseInt(hex.slice(5, 7), 16);
+
+    r = Math.min(255, r + factor);
+    g = Math.min(255, g + factor);
+    b = Math.min(255, b + factor);
+
+    return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
+}
+
+// Ejemplo de uso: Aclarar el color '#c12e2a' en un 50%
+const lighterColor = lightenColor('#c12e2a', 50);
+console.log(lighterColor);  // Salida: '#D84F3F'
+
     let series = {};
 
     for (let item of data) {
@@ -113,12 +130,13 @@ function prepareSeriesForTimeChart(data, name) {
         const branchKey = branch;
 
         if (!series[branchKey]) {
+            const successColor = colors[colorIndex % colors.length];
             series[branchKey] = {
                 success: {
                     name: `${branch} success`,
                     dataSorting: { enabled: false },
                     data: [],
-                    color: '#8e1919',  
+                    color: successColor,
                     dashStyle: 'Solid',
                     marker: { symbol: 'circle' }
                 },
@@ -126,10 +144,11 @@ function prepareSeriesForTimeChart(data, name) {
                     name: `${branch} fails`,
                     dataSorting: { enabled: false },
                     data: [],
-                    color: '#c12e2a', 
+                    color: lightenColor(successColor, 50);
                     marker: { symbol: 'triangle-down' }
                 }
             };
+            colorIndex++;
         }
 
         const targetSeries = returnCode === 0 ? series[branchKey].success : series[branchKey].fails;
@@ -285,7 +304,7 @@ function loadReleaseDevelPieChart(container, title, data){
                 }
             }
         },
-        colors: ['#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#DBD9D9', '#808080'],
+        colors: ['#c12e2a', '#DBD9D9', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
 
         series: [data]
     };
