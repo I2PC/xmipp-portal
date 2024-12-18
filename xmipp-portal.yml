@@ -3,7 +3,7 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python>=3.11
+  - python=3.12
   - Django==4
   - gunicorn>=19.6.0
   - djangorestframework>=3.14
