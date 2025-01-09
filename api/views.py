@@ -82,7 +82,7 @@ class InstalledBranchesPieChartView(APIView):
         branch_name = attempt['xmipp__branch']
         count = attempt['release_count']
 
-        if 'release' in branch_name:
+        if 'v3.' in branch_name:
             # Add release branches as they are
             result.append({
                 "xmipp__branch": branch_name,
@@ -102,7 +102,6 @@ class InstalledBranchesPieChartView(APIView):
     # Return the final JSON response
     return Response(result)
   
-
 
 class InstalledBranchesTimeChartView(APIView):
 
@@ -271,6 +270,7 @@ class CountryBarChartView(APIView):
 
     # Return users as JSON
     return Response(queryset)
+  
 class AttemptsView(APIView):
   """
 	### This class performs a custom processing of the requests received.
