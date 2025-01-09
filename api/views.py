@@ -134,7 +134,7 @@ class InstalledBranchesTimeChartView(APIView):
         attempt_date = attempt['date']
         returnCode = attempt['returnCode']
 
-        if 'release' in branch_name:
+        if 'v3.' in branch_name:
             # Add release branches as they are
             result.append({
                 "xmipp__branch": branch_name,
