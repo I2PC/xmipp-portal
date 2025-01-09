@@ -63,11 +63,11 @@ class InstalledBranchesPieChartView(APIView):
     # Separate querysets for 'release' and 'devel'
     release_attempts = latest_attempts.filter(
         returnCode=0,
-        xmipp__branch__iregex=r'release'
+        xmipp__branch__iregex=r'v3.'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
     devel_attempts = latest_attempts.exclude(
-        xmipp__branch__iregex=r'release'
+        xmipp__branch__iregex=r'v3.'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
     # Combine both querysets into one
