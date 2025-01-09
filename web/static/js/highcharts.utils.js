@@ -390,6 +390,6 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
 
 
 function prepareXmippReleasesList(data){
-    const releaseBranches = data.filter(item => item.branch.startsWith("release"));
+    const releaseBranches = data.filter(item => item.branch.startsWith("v3."));
     return releaseBranches;
 }
