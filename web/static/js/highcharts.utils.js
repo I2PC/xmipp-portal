@@ -329,8 +329,8 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
         const branch = branchesMap[branchName];
         
         let combinedData = { 
-            'Successful Installations': 0,
-            'Failed Installations': 0 
+            'Successful': 0,
+            'Failed': 0
         };
 
         // Combine date per each release
@@ -342,10 +342,10 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
             // Sume data
             releaseData.forEach(item => {
                 if (item.successfull_installations !== undefined) {
-                    combinedData['Successful Installations'] += item.successfull_installations;
+                    combinedData['Successful'] += item.successfull_installations;
                 }
                 if (item.failed_installations !== undefined) {
-                    combinedData['Failed Installations'] += item.failed_installations;
+                    combinedData['Failed'] += item.failed_installations;
                 }
             });
         }
