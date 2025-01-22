@@ -25,10 +25,11 @@
 # General imports
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from django.http import JsonResponse
 from rest_framework import status
 from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
 import threading
+import logging
+logger=logging.getLogger(__name__)
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
@@ -307,36 +308,47 @@ class AttemptsView(APIView):
     #### Returns:
     (Response): Http response with the appropiate info.
     """
+    logger.info('ATTEMPT RECEIVED')
+
     # Get data from serializer
     serializer = self.serializer_class(data=request.data)
 
     # We only want to store valid requests, meaning serializer has to
     # validate and format has to be json (the only one we accept)
     if serializer.is_valid() and format == 'json':
-      # Get serializer data into variables
-      validatedData = serializer.validated_data
-      userData = validatedData.get(ATTEMPT_USER)
-      versionData = validatedData.get(ATTEMPT_VERSION)
-      xmippData = validatedData.get(ATTEMPT_XMIPP)
-      returnCode = validatedData.get(ATTEMPT_RETCODE)
-      logTail = validatedData.get(ATTEMPT_LOGTAIL)
+      try:
+          # Get serializer data into variables
+          validatedData = serializer.validated_data
+          userData = validatedData.get(ATTEMPT_USER)
+          versionData = validatedData.get(ATTEMPT_VERSION)
+          xmippData = validatedData.get(ATTEMPT_XMIPP)
+          returnCode = validatedData.get(ATTEMPT_RETCODE)
+          logTail = validatedData.get(ATTEMPT_LOGTAIL)
 
-      # Start background thread for additional calculations
-      thread = threading.Thread(target=self.collectObjectsData,
-                                args=(request, userData, versionData, xmippData, returnCode, logTail))
-      thread.start()
+          self.collectObjectsData(request, userData, versionData, xmippData, returnCode, logTail)
 
-      messageToReturn = (f'USER_ID: {userData[USER_ID]}  '
-                         f'XMIPP_BRANCH: {xmippData[XMIPP_BRANCH]} '
-                         f'XMIPP_INSTALLED: {xmippData[XMIPP_INSTALLED]} '
-                         f'VERSION_OS: {versionData[VERSION_OS]}  '
-                         f'VERSION_GCC: {versionData[VERSION_GCC]}  '
-                         f'VERSION_CUDA: {versionData[VERSION_CUDA]}')
-      # Return a response contaning the attempt data
-      return Response({'data': messageToReturn})
+          # Start background thread for additional calculations
+          # thread = threading.Thread(target=self.collectObjectsData,
+          #                           args=(request, userData, versionData, xmippData, returnCode, logTail))
+          # thread.start()
+
+          messageToReturn = (f'USER_ID: {userData[USER_ID]}  '
+                             f'XMIPP_BRANCH: {xmippData[XMIPP_BRANCH]} '
+                             f'XMIPP_INSTALLED: {xmippData[XMIPP_INSTALLED]} '
+                             f'VERSION_OS: {versionData[VERSION_OS]}  '
+                             f'VERSION_GCC: {versionData[VERSION_GCC]}  '
+                             f'VERSION_CUDA: {versionData[VERSION_CUDA]}')
+          # Return a response contaning the attempt data
+
+          logger.info(f'ATTEMPT PROCESSED')
+          return Response({'data': messageToReturn})
+      except Exception as e:
+          logger.error(f'There was an error saving data', exc_info=e)
+
+
     else:
       # In case received data does not validate, return a response with some info
-      print('ERRORS: {}\n'.format(serializer.errors))
+      logger.error('ERRORS: {}\n'.format(serializer.errors))
       return Response(
         {
           'isValid': serializer.is_valid(),
@@ -349,6 +361,7 @@ class AttemptsView(APIView):
 
   def collectObjectsData(self, request, userData, versionData, xmippData, returnCode, logTail):
       # Obtaining country from sender's ip
+
       country = getCountryFromIp(getClientIp(request))
 
       # Creating user object
