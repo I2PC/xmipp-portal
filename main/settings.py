@@ -90,17 +90,32 @@ TEMPLATES = [
 		},
 	},
 ]
-
 LOGGING = {
-	'version': 1,  # Este campo es obligatorio
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {message}',
+            'style': '{',
+        },
+    },
     'handlers': {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': '/var/log/django/django.log',
+            'filename': '/var/log/django/xmipp-portal.log',
+            'formatter': 'verbose',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
         },
     },
 }
+
 
 
 WSGI_APPLICATION = 'main.wsgi.application'
