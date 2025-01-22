@@ -326,12 +326,12 @@ class AttemptsView(APIView):
                                 args=(request, userData, versionData, xmippData, returnCode, logTail))
       thread.start()
 
-      messageToReturn = (f'{userData[USER_ID]}, '
-                         f'{xmippData[XMIPP_BRANCH]},'
-                         f' {xmippData[XMIPP_INSTALLED]},'
-                         f' {versionData[VERSION_OS]},'
-                         f'{versionData[VERSION_GCC]},'
-                         f'{versionData[VERSION_CUDA]}')
+      messageToReturn = (f'USER_ID: {userData[USER_ID]}\n '
+                         f'XMIPP_BRANCH: {xmippData[XMIPP_BRANCH]}\n'
+                         f'XMIPP_INSTALLED: {xmippData[XMIPP_INSTALLED]}\n'
+                         f'VERSION_OS: {versionData[VERSION_OS]}\n'
+                         f'VERSION_GCC: {versionData[VERSION_GCC]}\n'
+                         f'VERSION_CUDA: {versionData[VERSION_CUDA]}')
       # Return a response contaning the attempt data
       return Response({'data': messageToReturn})
     else:
