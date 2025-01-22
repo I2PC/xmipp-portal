@@ -91,6 +91,17 @@ TEMPLATES = [
 	},
 ]
 
+LOGGING = {
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/var/log/django/django.log',
+        },
+    },
+}
+
+
 WSGI_APPLICATION = 'main.wsgi.application'
 
 # Internationalization
