@@ -28,15 +28,16 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from rest_framework import status
 from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
+import threading
 
 # Self imports
 from .models import User, Xmipp, Version, Attempt
 from .serializers import AttemptSerializer, XmippSerializer
 from .utils import getClientIp, getCountryFromIp
 from .constants import USER_ID, USER_COUNTRY, XMIPP_BRANCH, XMIPP_UPDATED, XMIPP_INSTALLED, VERSION_OS, VERSION_CUDA,\
-	VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
-	ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
-	VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
+    VERSION_CMAKE, VERSION_GCC, VERSION_GPP, ATTEMPT_USER, ATTEMPT_VERSION, ATTEMPT_XMIPP,\
+    ATTEMPT_RETCODE, ATTEMPT_LOGTAIL, VERSION_ARCHITECTURE, VERSION_MPI, VERSION_PYTHON,\
+    VERSION_SQLITE, VERSION_JAVA, VERSION_HDF5, VERSION_JPEG
 
 class InstalledBranchesPieChartView(APIView):
 
@@ -138,14 +139,14 @@ class InstalledBranchesTimeChartView(APIView):
             result.append({
                 "xmipp__branch": branch_name,
                 "date": attempt_date,
-	            "returnCode": returnCode
+                "returnCode": returnCode
             })
         else:
             # Sum all non-release branches under 'devel'
             result.append({
                 "xmipp__branch": "devel",
                 "date": attempt_date,
-	            "returnCode": returnCode
+                "returnCode": returnCode
             })
 
     # Return the final JSON response
@@ -273,8 +274,8 @@ class CountryBarChartView(APIView):
   
 class AttemptsView(APIView):
   """
-	### This class performs a custom processing of the requests received.
-	"""
+    ### This class performs a custom processing of the requests received.
+    """
   serializer_class = AttemptSerializer
 
   def get(self, request, format: str=None) -> Response:
@@ -320,52 +321,19 @@ class AttemptsView(APIView):
       returnCode = validatedData.get(ATTEMPT_RETCODE)
       logTail = validatedData.get(ATTEMPT_LOGTAIL)
 
-      # Obtaining country from sender's ip
-      country = getCountryFromIp(getClientIp(request))
+      # Start background thread for additional calculations
+      thread = threading.Thread(target=self.collectObjectsData,
+                                args=(request, userData, versionData, xmippData, returnCode, logTail))
+      thread.start()
 
-      # Creating user object
-      userObj = User.objects.update_or_create(
-        userId=userData[USER_ID],
-        defaults={USER_COUNTRY: country}
-      )[0]
-
-      # Creating xmipp object
-      xmippObj = Xmipp.objects.get_or_create(
-        branch=xmippData[XMIPP_BRANCH],
-        updated=xmippData[XMIPP_UPDATED],
-        installedByScipion=xmippData[XMIPP_INSTALLED]
-      )[0]
-
-      # Creating version object
-      versionsObj = Version.objects.get_or_create(
-        os=versionData[VERSION_OS],
-        architecture=versionData[VERSION_ARCHITECTURE],
-        cuda=versionData[VERSION_CUDA],
-        cmake=versionData[VERSION_CMAKE],
-        gcc=versionData[VERSION_GCC],
-        gpp=versionData[VERSION_GPP],
-        mpi=versionData[VERSION_MPI],
-        python=versionData[VERSION_PYTHON],
-        sqlite=versionData[VERSION_SQLITE],
-        java=versionData[VERSION_JAVA],
-        hdf5=versionData[VERSION_HDF5],
-        jpeg=versionData[VERSION_JPEG],      
-      )[0]
-
-      # Creating installation attempt object
-      attempt = Attempt(user=userObj,
-        version=versionsObj,
-        xmipp=xmippObj,
-        #date=date,
-        returnCode=returnCode,
-        logTail=logTail
-      )
-
-      # Saving attempt
-      attempt.save()
-
+      messageToReturn = (f'USER_ID: {userData[USER_ID]}\n '
+                         f'XMIPP_BRANCH: {xmippData[XMIPP_BRANCH]}\n'
+                         f'XMIPP_INSTALLED: {xmippData[XMIPP_INSTALLED]}\n'
+                         f'VERSION_OS: {versionData[VERSION_OS]}\n'
+                         f'VERSION_GCC: {versionData[VERSION_GCC]}\n'
+                         f'VERSION_CUDA: {versionData[VERSION_CUDA]}')
       # Return a response contaning the attempt data
-      return Response({'data': AttemptSerializer(attempt).data})
+      return Response({'data': messageToReturn})
     else:
       # In case received data does not validate, return a response with some info
       print('ERRORS: {}\n'.format(serializer.errors))
@@ -376,6 +344,55 @@ class AttemptsView(APIView):
         },
         status=status.HTTP_400_BAD_REQUEST
       )
+
+
+
+  def collectObjectsData(self, request, userData, versionData, xmippData, returnCode, logTail):
+      # Obtaining country from sender's ip
+      country = getCountryFromIp(getClientIp(request))
+
+      # Creating user object
+      userObj = User.objects.update_or_create(
+          userId=userData[USER_ID],
+          defaults={USER_COUNTRY: country}
+      )[0]
+
+      # Creating xmipp object
+      xmippObj = Xmipp.objects.get_or_create(
+          branch=xmippData[XMIPP_BRANCH],
+          updated=xmippData[XMIPP_UPDATED],
+          installedByScipion=xmippData[XMIPP_INSTALLED]
+      )[0]
+
+      # Creating version object
+      versionsObj = Version.objects.get_or_create(
+          os=versionData[VERSION_OS],
+          architecture=versionData[VERSION_ARCHITECTURE],
+          cuda=versionData[VERSION_CUDA],
+          cmake=versionData[VERSION_CMAKE],
+          gcc=versionData[VERSION_GCC],
+          gpp=versionData[VERSION_GPP],
+          mpi=versionData[VERSION_MPI],
+          python=versionData[VERSION_PYTHON],
+          sqlite=versionData[VERSION_SQLITE],
+          java=versionData[VERSION_JAVA],
+          hdf5=versionData[VERSION_HDF5],
+          jpeg=versionData[VERSION_JPEG],
+      )[0]
+
+      # Creating installation attempt object
+      attempt = Attempt(user=userObj,
+                        version=versionsObj,
+                        xmipp=xmippObj,
+                        # date=date,
+                        returnCode=returnCode,
+                        logTail=logTail
+                        )
+
+      # Saving attempt
+      attempt.save()
+
+
 
 '''
  curl --header "Content-Type: application/json" -X POST --data '{
@@ -404,9 +421,8 @@ class AttemptsView(APIView):
 "returnCode": 0, 
 "logTail": null
 }' --request POST http://127.0.0.1:8000/api/attempts/ > file.html
-
-
 '''
+#https://xmipp.i2pc.es/api/attempts/
 
 class XmippView(APIView):
 
