@@ -92,6 +92,7 @@ TEMPLATES = [
 ]
 
 LOGGING = {
+	'version': 1,  # Este campo es obligatorio
     'handlers': {
         'file': {
             'level': 'DEBUG',
