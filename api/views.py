@@ -348,7 +348,7 @@ class AttemptsView(APIView):
 
     else:
       # In case received data does not validate, return a response with some info
-      logger.error('ERRORS: {}\n'.format(serializer.errors))
+      logger.error('if serializer.is_valid() and format == json: False: {}\n'.format(serializer.errors))
       return Response(
         {
           'isValid': serializer.is_valid(),
