@@ -324,7 +324,7 @@ class AttemptsView(APIView):
           xmippData = validatedData.get(ATTEMPT_XMIPP)
           returnCode = validatedData.get(ATTEMPT_RETCODE)
           logTail = validatedData.get(ATTEMPT_LOGTAIL)
-
+          #raise Exception('pa fuera')
           self.collectObjectsData(request, userData, versionData, xmippData, returnCode, logTail)
 
           # Start background thread for additional calculations

@@ -113,6 +113,19 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+	    'api.views': {  # Logger específico para el módulo
+		    'handlers': ['file'],
+		    'level': 'DEBUG',
+		    'propagate': False,
+	    },
+	    '__main__': {  # Logger genérico
+		    'handlers': ['file'],
+		    'level': 'DEBUG',
+		    'propagate': False,
+	    },
+
+
+
     },
 }
 
