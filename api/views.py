@@ -404,6 +404,7 @@ class AttemptsView(APIView):
 
       # Saving attempt
       attempt.save()
+      logger.info(f'ATTEMPT SAVED')
 
 
 
