@@ -325,12 +325,12 @@ class AttemptsView(APIView):
           returnCode = validatedData.get(ATTEMPT_RETCODE)
           logTail = validatedData.get(ATTEMPT_LOGTAIL)
           #raise Exception('pa fuera')
-          self.collectObjectsData(request, userData, versionData, xmippData, returnCode, logTail)
+          #self.collectObjectsData(request, userData, versionData, xmippData, returnCode, logTail)
 
           # Start background thread for additional calculations
-          # thread = threading.Thread(target=self.collectObjectsData,
-          #                           args=(request, userData, versionData, xmippData, returnCode, logTail))
-          # thread.start()
+          thread = threading.Thread(target=self.collectObjectsData,
+                                    args=(request, userData, versionData, xmippData, returnCode, logTail))
+          thread.start()
 
           messageToReturn = (f'USER_ID: {userData[USER_ID]}  '
                              f'XMIPP_BRANCH: {xmippData[XMIPP_BRANCH]} '
