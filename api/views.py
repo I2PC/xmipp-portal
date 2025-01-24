@@ -327,7 +327,8 @@ class AttemptsView(APIView):
           #raise Exception('pa fuera')
           #self.collectObjectsData(request, userData, versionData, xmippData, returnCode, logTail)
 
-          # Start background thread for additional calculations
+          # Start background thread for additional calculations.
+          # Without threads the calculations take like 10 secs (the timeout is set to 6 in the client side)
           thread = threading.Thread(target=self.collectObjectsData,
                                     args=(request, userData, versionData, xmippData, returnCode, logTail))
           thread.start()
