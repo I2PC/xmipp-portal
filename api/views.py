@@ -213,9 +213,7 @@ class DetailedReleasePieChartView(APIView):
         (Response): HTTP response with count info.
         """
         # Step 1: Get all attempts for the given release_id, ordered by date
-        attempts = Attempt.objects.filter(
-        	  xmipp__id=release_id).order_by('user',
-                                               'date')  # Ordered by user and date
+        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('user','date')  # Ordered by user and date
 
         # Initialize a dictionary to store counts by user
         user_results = {}
@@ -262,7 +260,7 @@ class DetailedReleasePieChartView(APIView):
 
             # Log the final counts for each user
             logger.info(
-        		  f"User: {user} - Full Success Count: {result['full_success']}, "
+        		  f"User: {user.username} - Full Success Count: {result['full_success']}, "
         		  f"Success After Fails Count: {result['success_after_fails']}, "
         		  f"Fail Count: {result['fail']}")
 
@@ -270,7 +268,7 @@ class DetailedReleasePieChartView(APIView):
         result_data = []
         for user, result in user_results.items():
             result_data.append({
-        		  'user': user,
+        		  'user': user.username,
         		  'full_success': result['full_success'],
         		  'success_after_fails': result[
         			  'success_after_fails'],
