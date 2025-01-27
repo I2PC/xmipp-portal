@@ -275,18 +275,15 @@ class DetailedReleasePieChartView(APIView):
 		result_data = [
 			{
 				'category': 'full_success',
-				'users': [user.id for user in
-				          user_results['full_success']],
+				'user_count': user_results['full_success']
 			},
 			{
 				'category': 'success_after_fails',
-				'users': [user.id for user in
-				          user_results['success_after_fails']],
+				'user_count': user_results['success_after_fails'],
 			},
 			{
 				'category': 'fail',
-				'users': [user.id for user in
-				          user_results['fail']],
+				'user_count': user_results['fail'],
 			}
 		]
 
