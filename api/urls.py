@@ -31,7 +31,7 @@ urlpatterns = [
 	path('attempts/', AttemptsView.as_view()),
     path('installations/releases-stats-pie-chart/', AllReleasesPieChartView.as_view()),
     path('installations/releases-stats-pie-chart/<int:release_id>/', ReleasePieChartView.as_view()),
-    path('installations/releases-stats-pie/<int:release_id>/', DetailedReleasePieChartView.as_view()),
+    path('installations/releases-stats-pie/<int:r_id>/', DetailedReleasePieChartView.as_view()),
     path('users/country-bar-chart/', CountryBarChartView.as_view()),
     path('xmipp/', XmippView.as_view()),
     path('xmipp/installed-branches-pie-chart/', InstalledBranchesPieChartView.as_view()),

@@ -197,7 +197,7 @@ class ReleasePieChartView(APIView):
 
 class DetailedReleasePieChartView(APIView):
 
-  def get(self, release_id) -> Response:
+  def get(self, r_id) -> Response:
     """
     ### This function receives a GET request and returns xmipp metrics (installations with no errors,
     # installation with 1 previous error, ...) for a specific release branch.
@@ -213,7 +213,7 @@ class DetailedReleasePieChartView(APIView):
 
     try:
         successfull_attempts = Attempt.objects.filter(
-		    xmipp__id=release_id,
+		    xmipp__id=r_id,
 		    returnCode=0,
 	).count()
         logger.info(successfull_attempts)
