@@ -268,7 +268,6 @@ class DetailedReleasePieChartView(APIView):
         result_data = []
         for user, result in user_results.items():
             result_data.append({
-        		  'user': user,
         		  'full_success': result['full_success'],
         		  'success_after_fails': result[
         			  'success_after_fails'],
