@@ -6,6 +6,8 @@ function getDataAndDrawCharts(){
     getInstallationOverTimeChart(XMIPP_URL);
     installationsReleasesDevel(XMIPP_URL);
     installationsMetricsPerReleaseDevel(XMIPP_URL);
+    installationsMetricsPerReleaseDevelDetail(XMIPP_URL);
+
 }
 ;
 
@@ -81,5 +83,25 @@ function installationsMetricsPerReleaseDevel(XMIPP_URL){
         console.log( "Request Failed: " + err );
     }).always(function() {
         console.log( "complete installationsMetricsPerReleaseDevel" );
+    });
+}
+
+function installationsMetricsPerReleaseDevelDetail(XMIPP_URL){
+
+    // Installation over time Chart
+    var installed_branches_list_URL = XMIPP_URL + "/api/xmipp/";
+    var release_pie_chart_URL = XMIPP_URL + "api/installations/releases-stats-pie-detail/";
+
+    $.getJSON(installed_branches_list_URL).done(function( data ) {
+
+        const preparedList = prepareXmippReleasesList(data); // Filter and keep only branches which names start with "release"
+        // TODO: sum two version of release counts
+        loadPieChartPerRelease("installationsMetricsPerReleaseDevelDetail", preparedList, release_pie_chart_URL, "Installations for ");
+
+    }).fail(function( jqxhr, textStatus, error ) {
+        var err = textStatus + ", " + error;
+        console.log( "Request Failed: " + err );
+    }).always(function() {
+        console.log( "complete installationsMetricsPerReleaseDevelDetail" );
     });
 }
