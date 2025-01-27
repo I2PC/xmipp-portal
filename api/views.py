@@ -221,40 +221,40 @@ class DetailedReleasePieChartView(APIView):
         returnCode=0,
     )
 
-
-    # Step 4: Count previous failures before each latest successful attempt
-    previous_failures_counts = []
-    for attempt in latest_attempts:
-        previous_failures = Attempt.objects.filter(
-            user=attempt.user,
-            date__lt=attempt.date
-        ).exclude(returnCode=0).count()
-
-        previous_failures_counts.append({
-            'xmipp__id': attempt.xmipp.id,
-            'previous_failures': previous_failures,
-        })
-
-
-
-    # Step 2: Get successful attempts
-    successfull_attempts = latest_attempt_dates.objects.filter(returnCode=0).count()
-
-    fail_attempts = Attempt.objects.exclude(returnCode=0).count()
-
-    successfullAfterFail_attempts = ''
-
-
-    # Step 5: Aggregate counts across all releases
-    summary = {}
-    for entry in previous_failures_counts:
-        failures = entry['previous_failures']
-        summary[failures] = summary.get(failures, 0) + 1
-
-    # Convert the result to the format expected by the Response
-    formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
-
-
+    #
+    # # Step 4: Count previous failures before each latest successful attempt
+    # previous_failures_counts = []
+    # for attempt in latest_attempts:
+    #     previous_failures = Attempt.objects.filter(
+    #         user=attempt.user,
+    #         date__lt=attempt.date
+    #     ).exclude(returnCode=0).count()
+    #
+    #     previous_failures_counts.append({
+    #         'xmipp__id': attempt.xmipp.id,
+    #         'previous_failures': previous_failures,
+    #     })
+    #
+    #
+    #
+    # # Step 2: Get successful attempts
+    # successfull_attempts = latest_attempt_dates.objects.filter(returnCode=0).count()
+    #
+    # fail_attempts = Attempt.objects.exclude(returnCode=0).count()
+    #
+    # successfullAfterFail_attempts = ''
+    #
+    #
+    # # Step 5: Aggregate counts across all releases
+    # summary = {}
+    # for entry in previous_failures_counts:
+    #     failures = entry['previous_failures']
+    #     summary[failures] = summary.get(failures, 0) + 1
+    #
+    # # Convert the result to the format expected by the Response
+    # formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
+    #
+    #
 
     result = []
     result.append({
