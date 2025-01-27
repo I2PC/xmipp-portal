@@ -455,7 +455,7 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
             title: {
                 text: `${title}${branchName}`
             },
-            colors: ['#c12e2a','#111111', '#623CEA' ],
+            colors: ['#c12e2a','#222222', '#623CEA' ],
             series: [{
                 name: 'Count',
                 colorByPoint: true,
