@@ -15,6 +15,7 @@ function prepareSeriesForBarChart(data, name){
     return series;
 }
 
+
 function loadBarChart(container, title, data){
 
     let options = {
@@ -81,6 +82,7 @@ function loadBarChart(container, title, data){
     Highcharts.chart(container, options);
     // $(container).highcharts(options);
 }
+
 
 function prepareSeriesForTimeChart(data, name) {
     console.log(data);
@@ -252,7 +254,6 @@ function loadTimeChart(container, title, data){
 }
 
 
-
 function prepareSeriesForReleaseDevelPieChart(data, name){
     const series = {
         name: name,
@@ -272,6 +273,7 @@ function prepareSeriesForReleaseDevelPieChart(data, name){
 
     return series;
 }
+
 
 function loadReleaseDevelPieChart(container, title, data){
 
@@ -307,7 +309,6 @@ function loadReleaseDevelPieChart(container, title, data){
     // Build the bar
     Highcharts.chart(container, options);
 }
-
 
 
 async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_URL, title) {

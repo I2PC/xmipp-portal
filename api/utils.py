@@ -24,6 +24,7 @@
 
 import requests, concurrent.futures, pycountry
 from typing import Union
+#from ip2geotools.databases.noncommercial import DbIpCity
 
 def getClientIp(request) -> str:
 	"""
@@ -88,6 +89,7 @@ def getCountryFromIp(ip: str) -> str:
 	#### Returns:
 	(str): Country name. If there were any errors, default is 'Unknown'.
 	"""
+
 	# Defining list of urls to lookup from, for resiliency
 	urls = [
 		f"https://ipapi.co/{ip}/json/",
@@ -106,3 +108,11 @@ def getCountryFromIp(ip: str) -> str:
 
 	# If there were errors, return default value
 	return 'Unknown'
+
+# def getCountryFromIp2(ip: str) -> str:
+#
+#
+#
+# 	result = DbIpCity(ip)
+# 	country_code = result.country # ES
+# 	country_name = pycountry.countries.get(alpha_2=country_code).name # España
