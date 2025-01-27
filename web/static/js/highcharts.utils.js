@@ -421,13 +421,13 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
 
             // Sume data
             releaseData.forEach(item => {
-                if (item.successfull_installations !== undefined) {
+                if (item.successfull_installations === full_success) {
                     combinedData['full_success'] += item.full_success;
                 }
-                if (item.failed_installations !== undefined) {
+                if (item.failed_installations === success_after_fails) {
                     combinedData['success_after_fails'] += item.success_after_fails;
                 }
-                if (item.failed_installations !== undefined) {
+                if (item.failed_installations === fail) {
                     combinedData['fail'] += item.fail;
                 }
             });
