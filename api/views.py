@@ -198,10 +198,6 @@ class ReleasePieChartView(APIView):
 
 
 class DetailedReleasePieChartView(APIView):
-	import logging
-
-	# Configuración del logger
-	logger = logging.getLogger(__name__)
 
 	def get(self, request, release_id, format: str = None) -> Response:
 		"""
@@ -220,14 +216,14 @@ class DetailedReleasePieChartView(APIView):
 		attempts = Attempt.objects.filter(
 			xmipp__id=release_id).order_by('user', 'date')
 
-		# Initialize a dictionary to store the final result for each user
+		# Initialize a dictionary to store the final result for each category
 		user_results = {
-			'full_success': [],
-			'success_after_fails': [],
-			'fail': []
+			'full_success': 0,
+			'success_after_fails': 0,
+			'fail': 0
 		}
 
-		# Step 2: Iterate through attempts to classify each user's results
+		# Step 2: Group attempts by user
 		user_attempts = {}
 
 		for attempt in attempts:
@@ -258,14 +254,14 @@ class DetailedReleasePieChartView(APIView):
 
 			# Classify the user based on their attempts
 			if all_successful:
-				user_results['full_success'].append(
-					user)  # User only had successful attempts
+				user_results[
+					'full_success'] += 1  # Increment count for full success
 			elif success_after_fail:
-				user_results['success_after_fails'].append(
-					user)  # Last was successful, but there were failures before
+				user_results[
+					'success_after_fails'] += 1  # Increment count for success after fail
 			else:
-				user_results['fail'].append(
-					user)  # Last attempt was a failure
+				user_results[
+					'fail'] += 1  # Increment count for fail
 
 			# Log the classification of the user
 			logger.info(
@@ -275,11 +271,12 @@ class DetailedReleasePieChartView(APIView):
 		result_data = [
 			{
 				'category': 'full_success',
-				'user_count': user_results['full_success']
+				'user_count': user_results['full_success'],
 			},
 			{
 				'category': 'success_after_fails',
-				'user_count': user_results['success_after_fails'],
+				'user_count': user_results[
+					'success_after_fails'],
 			},
 			{
 				'category': 'fail',
