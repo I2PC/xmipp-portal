@@ -199,62 +199,87 @@ class ReleasePieChartView(APIView):
 
 class DetailedReleasePieChartView(APIView):
 
-  def get(self, request, release_id, format: str=None) -> Response:
+     def get(self, request, release_id, format: str=None) -> Response:
         """
-        ### This function receives a GET request and returns xmipp metrics (installations with no errors,
-        # installation with 1 previous error, ...) for a specific release branch.
+        This function receives a GET request and returns xmipp metrics (installations with no errors,
+        installation with 1 previous error, ...) for a specific release branch, separated by user.
 
-        #### Params:
+        Params:
         - request (Any): Django request.
         - release_id (int): Release id.
         - format (str): Optional. Request format.
 
-        #### Returns:
+        Returns:
         (Response): HTTP response with count info.
         """
         # Step 1: Get all attempts for the given release_id, ordered by date
-        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('date')
-        logger.info(f"Found {len(attempts)} attempts for release_id {release_id}")
-        # Initialize counters
-        full_success_count = 0
-        success_after_fails_count = 0
-        fail_count = 0
+        attempts = Attempt.objects.filter(
+        	  xmipp__id=release_id).order_by('user',
+                                               'date')  # Ordered by user and date
 
-        # Flags to track status
-        all_successful = True  # Flag to check if all attempts are successful
-        last_was_failed = False  # Flag to track if the last attempt was a failure
+        # Initialize a dictionary to store counts by user
+        user_results = {}
 
-        # Iterate through attempts
+        # Step 2: Iterate through attempts to classify each user's results
         for attempt in attempts:
+            user = attempt.user  # Assuming there's a 'user' field in the 'Attempt' model
+            logger.info(
+            	  f"User: {user}, Attempt ID: {attempt.id}, ReturnCode: {attempt.returnCode}, Date: {attempt.date}")
+
+            # Initialize user entry if not exists
+            if user not in user_results:
+                user_results[user] = {
+        			  'full_success': 0,
+        			  'success_after_fails': 0,
+        			  'fail': 0,
+        			  'all_successful': True,
+        			  # Flag to track if all attempts are successful
+        			  'last_was_failed': False,
+        			  # Flag to track if the last attempt was a failure
+        		  }
+
+            # Process the current attempt for the user
             if attempt.returnCode == 0:
-                  # This is a successful attempt
-                  if last_was_failed:
-                      success_after_fails_count += 1  # If the last was a failure, count it as success_after_fails
-                  else:
-                      # If all previous were successful, continue
-                      pass
+                # Successful attempt
+                if user_results[user]['last_was_failed']:
+                    user_results[user]['success_after_fails'] += 1  # If the last was a failure, count as success_after_fails
+                else:
+                    pass  # Continue if all previous were successful
             else:
-                # This is a failed attempt
-                all_successful = False
-                last_was_failed = True  # Mark that the last attempt was a failure
+                # Failed attempt
+                user_results[user]['all_successful'] = False
+                user_results[user][
+               	  'last_was_failed'] = True  # Mark that the last attempt was a failure
 
-        # After iterating over all attempts, classify the results
-        if all_successful:
-            full_success_count += 1  # All attempts were successful
-        elif last_was_failed:
-            fail_count += 1  # Last attempt was a failure
-        else:
-            success_after_fails_count += 1  # There was at least one failure, but the last was successful
+        # Step 3: After processing all attempts, classify the results for each user
+        for user, result in user_results.items():
+            if result['all_successful']:
+               result['full_success'] += 1  # All attempts were successful
+            elif result['last_was_failed']:
+                result['fail'] += 1  # Last attempt was a failure
+            else:
+                result['success_after_fails'] += 1  # There was at least one failure, but the last was successful
 
-        # Prepare the result in a list
-        result = [
-        	  {"full_success": full_success_count},
-        	  {"success_after_fails": success_after_fails_count},
-        	  {"fail": fail_count},
-        ]
+            # Log the final counts for each user
+            logger.info(
+        		  f"User: {user} - Full Success Count: {result['full_success']}, "
+        		  f"Success After Fails Count: {result['success_after_fails']}, "
+        		  f"Fail Count: {result['fail']}")
+
+        # Step 4: Prepare the result to return as a JSON response
+        result_data = []
+        for user, result in user_results.items():
+            result_data.append({
+        		  'user': user,
+        		  'full_success': result['full_success'],
+        		  'success_after_fails': result[
+        			  'success_after_fails'],
+        		  'fail': result['fail'],
+        	  })
 
         # Return the result as a JSON response
-        return Response(result)
+        return Response(result_data)
+
 
 class AllReleasesPieChartView(APIView):
 
