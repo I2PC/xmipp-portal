@@ -389,6 +389,91 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
     }
 }
 
+async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_chart_URL, title) {
+    // Group releases per name and consolidate IDs
+    const branchesMap = preparedList.reduce((acc, branch) => {
+        if (!acc[branch.branch]) {
+            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Initialize with IDs list
+        } else {
+            acc[branch.branch].ids.push(branch.id); // Add ID to the list if release already exists
+        }
+        return acc;
+    }, {});
+
+    // Get container
+    const chartsContainer = document.getElementById(chartId);
+
+    // Create graphs for unique branches
+    for (const branchName in branchesMap) {
+        const branch = branchesMap[branchName];
+
+        let combinedData = {
+            'Successful': 0,
+            'Failed': 0,
+            'SuccessAfterFails': 0
+        };
+
+        // Combine date per each release
+        for (const id of branch.ids) {
+            // Llamada al endpoint
+            const response = await fetch(`${release_pie_chart_URL}${id}`);
+            const releaseData = await response.json();
+
+            // Sume data
+            releaseData.forEach(item => {
+                if (item.successfull_installations !== undefined) {
+                    combinedData['Successful'] += item.full_success;
+                }
+                if (item.failed_installations !== undefined) {
+                    combinedData['SuccessAfterFails'] += item.success_after_fails;
+                }
+                if (item.failed_installations !== undefined) {
+                    combinedData['Failed'] += item.fail;
+                }
+            });
+        }
+
+        // Formate data
+        const chartData = Object.keys(combinedData).map(key => ({
+            name: key,
+            y: combinedData[key]
+        }));
+
+        // Create div to include graph
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '300px';
+        chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
+        chartDiv.className = 'px-2'; // Espacio
+        chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
+        chartsContainer.appendChild(chartDiv);
+
+        // Create graph
+        Highcharts.chart(chartDiv.id, {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: `${title}${branchName}`
+            },
+            colors: ['#c12e2a','#c1002a', '#623CEA' ],
+            series: [{
+                name: 'Count',
+                colorByPoint: true,
+                data: chartData,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '10px',
+                    }
+                }
+            }]
+        });
+    }
+}
+
+
+
+
 
 function prepareXmippReleasesList(data){
     const releaseBranches = data.filter(item => item.branch.startsWith("v3."));
