@@ -5,7 +5,7 @@ function getDataAndDrawCharts(){
     getCountryBarChart(XMIPP_URL);
     getInstallationOverTimeChart(XMIPP_URL);
     installationsReleasesDevel(XMIPP_URL);
-    installationsMetricsPerReleaseDevel(XMIPP_URL);
+    // installationsMetricsPerReleaseDevel(XMIPP_URL);
     installationsMetricsPerReleaseDevelDetail(XMIPP_URL);
 
 }
