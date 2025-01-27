@@ -212,9 +212,8 @@ class DetailedReleasePieChartView(APIView):
         (Response): HTTP response with count info.
         """
         # Step 1: Get all attempts for the given release_id, ordered by date
-        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by(
-        	  'date')
-
+        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('date')
+        logger.info(f"Found {len(attempts)} attempts for release_id {release_id}")
         # Initialize counters
         full_success_count = 0
         success_after_fails_count = 0
