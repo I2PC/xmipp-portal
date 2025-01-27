@@ -213,7 +213,7 @@ class DetailedReleasePieChartView(APIView):
     """
 
     try:
-        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('time')
+        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('date')
 
         successful_only_count = 0
         failed_last_count = 0
