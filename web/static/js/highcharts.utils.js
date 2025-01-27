@@ -421,14 +421,14 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
 
             // Sume data
             releaseData.forEach(item => {
-                if (item.successfull_installations === full_success) {
-                    combinedData['full_success'] += item.full_success;
+                if (item.category === 'full_success') {
+                    combinedData['full_success'] += item.user_count;
                 }
-                if (item.failed_installations === success_after_fails) {
-                    combinedData['success_after_fails'] += item.success_after_fails;
+                if (item.category === 'success_after_fails') {
+                    combinedData['success_after_fails'] += item.user_count;
                 }
-                if (item.failed_installations === fail) {
-                    combinedData['fail'] += item.fail;
+                if (item.category === 'fail') {
+                    combinedData['fail'] += item.user_count;
                 }
             });
         }
