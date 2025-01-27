@@ -211,66 +211,72 @@ class DetailedReleasePieChartView(APIView):
     (Response): HTTP response with count info.
     """
 
-    latest_attempt_dates = Attempt.objects.filter(
-	xmipp__id=release_id,
-    ).values('user').annotate(latest_date=Max('date'))
-    logger.info("latest_attempt_dates: ")
-    logger.info(latest_attempt_dates)
-    latest_attempts = Attempt.objects.filter(
-        Q(date__in=[item['latest_date'] for item in latest_attempt_dates]),
-        returnCode=0,
-    )
+    try:
+        latest_attempt_dates = Attempt.objects.filter(
+        	xmipp__id=release_id,
+        ).values('user').annotate(latest_date=Max('date'))
+        logger.info("latest_attempt_dates: ")
+        logger.info(latest_attempt_dates)
+        latest_attempts = Attempt.objects.filter(
+            Q(date__in=[item['latest_date'] for item in latest_attempt_dates]),
+            returnCode=0,
+        )
 
-    #
-    # # Step 4: Count previous failures before each latest successful attempt
-    # previous_failures_counts = []
-    # for attempt in latest_attempts:
-    #     previous_failures = Attempt.objects.filter(
-    #         user=attempt.user,
-    #         date__lt=attempt.date
-    #     ).exclude(returnCode=0).count()
-    #
-    #     previous_failures_counts.append({
-    #         'xmipp__id': attempt.xmipp.id,
-    #         'previous_failures': previous_failures,
-    #     })
-    #
-    #
-    #
-    # # Step 2: Get successful attempts
-    # successfull_attempts = latest_attempt_dates.objects.filter(returnCode=0).count()
-    #
-    # fail_attempts = Attempt.objects.exclude(returnCode=0).count()
-    #
-    # successfullAfterFail_attempts = ''
-    #
-    #
-    # # Step 5: Aggregate counts across all releases
-    # summary = {}
-    # for entry in previous_failures_counts:
-    #     failures = entry['previous_failures']
-    #     summary[failures] = summary.get(failures, 0) + 1
-    #
-    # # Convert the result to the format expected by the Response
-    # formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
-    #
-    #
+        #
+        # # Step 4: Count previous failures before each latest successful attempt
+        # previous_failures_counts = []
+        # for attempt in latest_attempts:
+        #     previous_failures = Attempt.objects.filter(
+        #         user=attempt.user,
+        #         date__lt=attempt.date
+        #     ).exclude(returnCode=0).count()
+        #
+        #     previous_failures_counts.append({
+        #         'xmipp__id': attempt.xmipp.id,
+        #         'previous_failures': previous_failures,
+        #     })
+        #
+        #
+        #
+        # # Step 2: Get successful attempts
+        # successfull_attempts = latest_attempt_dates.objects.filter(returnCode=0).count()
+        #
+        # fail_attempts = Attempt.objects.exclude(returnCode=0).count()
+        #
+        # successfullAfterFail_attempts = ''
+        #
+        #
+        # # Step 5: Aggregate counts across all releases
+        # summary = {}
+        # for entry in previous_failures_counts:
+        #     failures = entry['previous_failures']
+        #     summary[failures] = summary.get(failures, 0) + 1
+        #
+        # # Convert the result to the format expected by the Response
+        # formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
+        #
+        #
 
-    result = []
-    result.append({
-        "successfull_installations": successfull_attempts,
-    })
+        # result = []
+        # result.append({
+        #     "successfull_installations": successfull_attempts,
+        # })
+        #
+        # result.append({
+        #     "failed_installations": fail_attempts,
+        # })
+        #
+        # result.append({
+        	#     "successfull_afterfailed_installations": successfullAfterFail_attempts,
+        # })
+        #
+        # Return the result as a JSON response
+        return Response('')
 
-    result.append({
-        "failed_installations": fail_attempts,
-    })
-
-    result.append({
-	    "successfull_afterfailed_installations": successfullAfterFail_attempts,
-    })
-
-    # Return the result as a JSON response
-    return Response(result)
+    except Attempt.DoesNotExist:
+		logger.error("No attempts found for the given release_id.")
+		return Response({"error": "Release ID not found or no attempts available."},
+	                status=404)
 
 
 class AllReleasesPieChartView(APIView):
