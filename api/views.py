@@ -268,24 +268,17 @@ class DetailedReleasePieChartView(APIView):
 				f"User: {user.id} - Classification: {'full_success' if all_successful else 'success_after_fails' if success_after_fail else 'fail'}")
 
 		# Step 4: Prepare the result to return as a JSON response
-		result_data = [
-			{
-				'category': 'full_success',
-				'user_count': user_results['full_success'],
-			},
-			{
-				'category': 'success_after_fails',
-				'user_count': user_results[
-					'success_after_fails'],
-			},
-			{
-				'category': 'fail',
-				'user_count': user_results['fail'],
-			}
-		]
+
+		result = []
+		result.append({'category': 'full_success',
+				'user_count': user_results['full_success']})
+		result.append({'category': 'success_after_fails',
+				'user_count': user_results['success_after_fails']})
+		result.append({'category': 'fail',
+				'user_count': user_results['fail']})
 
 		# Return the result as a JSON response
-		return Response(result_data)
+		return Response(result)
 
 
 class AllReleasesPieChartView(APIView):
