@@ -170,6 +170,7 @@ class ReleasePieChartView(APIView):
     (Response): HTTP response with count info.
     """
     # Step 1: Get all attempts for the given release_id
+    logger.info(f"Attempts for release_id {release_id}")
 
     attempts = Attempt.objects.filter(xmipp__id=release_id)
 
