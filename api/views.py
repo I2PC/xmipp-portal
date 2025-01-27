@@ -216,6 +216,7 @@ class DetailedReleasePieChartView(APIView):
 		    xmipp__id=release_id,
 		    returnCode=0,
 	).count()
+        logger.info('successfull_attempts')
         logger.info(successfull_attempts)
         # latest_attempt_dates = Attempt.objects.filter(
         # 	xmipp__id=release_id,
