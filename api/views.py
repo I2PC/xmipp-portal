@@ -274,8 +274,8 @@ class DetailedReleasePieChartView(APIView):
         return Response('')
 
     except Attempt.DoesNotExist:
-		logger.error("No attempts found for the given release_id.")
-		return Response({"error": "Release ID not found or no attempts available."},
+        logger.error("No attempts found for the given release_id.")
+        return Response({"error": "Release ID not found or no attempts available."},
 	                status=404)
 
 
