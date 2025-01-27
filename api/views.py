@@ -170,6 +170,7 @@ class ReleasePieChartView(APIView):
     (Response): HTTP response with count info.
     """
     # Step 1: Get all attempts for the given release_id
+
     attempts = Attempt.objects.filter(xmipp__id=release_id)
 
     # Step 2: Get successful attempts
@@ -212,68 +213,45 @@ class DetailedReleasePieChartView(APIView):
     """
 
     try:
-        latest_attempt_dates = Attempt.objects.filter(
-        	xmipp__id=release_id,
-        ).values('user')#.annotate(latest_date=Max('date'))
-        attempts = Attempt.objects.filter(xmipp__id=release_id)
+        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('time')
 
-        logger.info("!!!!!!!!!!!!!!!!latest_attempt_dates: ")
-        logger.info(attempts)
-        # latest_attempts = Attempt.objects.filter(
-        #     Q(date__in=[item['latest_date'] for item in latest_attempt_dates]),
-        #     returnCode=0,
-        # )
+        successful_only_count = 0
+        failed_last_count = 0
+        successful_last_count = 0
 
-        #
-        # # Step 4: Count previous failures before each latest successful attempt
-        # previous_failures_counts = []
-        # for attempt in latest_attempts:
-        #     previous_failures = Attempt.objects.filter(
-        #         user=attempt.user,
-        #         date__lt=attempt.date
-        #     ).exclude(returnCode=0).count()
-        #
-        #     previous_failures_counts.append({
-        #         'xmipp__id': attempt.xmipp.id,
-        #         'previous_failures': previous_failures,
-        #     })
-        #
-        #
-        #
-        # # Step 2: Get successful attempts
-        # successfull_attempts = latest_attempt_dates.objects.filter(returnCode=0).count()
-        #
-        # fail_attempts = Attempt.objects.exclude(returnCode=0).count()
-        #
-        # successfullAfterFail_attempts = ''
-        #
-        #
-        # # Step 5: Aggregate counts across all releases
-        # summary = {}
-        # for entry in previous_failures_counts:
-        #     failures = entry['previous_failures']
-        #     summary[failures] = summary.get(failures, 0) + 1
-        #
-        # # Convert the result to the format expected by the Response
-        # formatted_result = [{'previous_failures': k, 'total_count': v} for k, v in summary.items()]
-        #
-        #
+        # Step 2: Loop through attempts to calculate the counters
+        all_successful = True  # Flag to check if all attempts are successful
+        last_was_failed = False  # Flag to track if the last attempt was a failure
 
-        # result = []
-        # result.append({
-        #     "successfull_installations": successfull_attempts,
-        # })
-        #
-        # result.append({
-        #     "failed_installations": fail_attempts,
-        # })
-        #
-        # result.append({
-        	#     "successfull_afterfailed_installations": successfullAfterFail_attempts,
-        # })
-        #
+        # Iterate through attempts
+        for attempt in attempts:
+            if attempt.returnCode == 0:
+                # This is a successful attempt
+                if last_was_failed:
+                     successful_last_count += 1  # If the last was a failure, count it as successful_last
+                else:
+                     # If all previous were successful, just continue
+                     continue
+            else:
+                # This is a failed attempt
+                all_successful = False
+                last_was_failed = True  # Mark that the last attempt was a failure
+
+        # After iterating over all attempts, classify the results
+        if all_successful:
+            successful_only_count += 1
+        elif last_was_failed:
+            failed_last_count += 1
+
+        # Prepare the result in a list
+        result = [
+      	    {"successful_only": successful_only_count},
+      	    {"failed_last": failed_last_count},
+      	    {"successful_last": successful_last_count}
+        ]
+
         # Return the result as a JSON response
-        return Response('')
+        return Response(result)
 
     except Attempt.DoesNotExist:
         logger.error("No attempts found for the given release_id.")
