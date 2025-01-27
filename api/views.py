@@ -274,7 +274,8 @@ class CountryBarChartView(APIView):
 
     # Return users as JSON
     return Response(queryset)
-  
+
+
 class AttemptsView(APIView):
   """
     ### This class performs a custom processing of the requests received.
