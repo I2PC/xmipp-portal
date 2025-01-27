@@ -222,7 +222,7 @@ class DetailedReleasePieChartView(APIView):
         for attempt in attempts:
             user = attempt.user  # Assuming there's a 'user' field in the 'Attempt' model
             logger.info(
-            	  f"User: {user}, Attempt ID: {attempt.id}, ReturnCode: {attempt.returnCode}, Date: {attempt.date}")
+            	  f"User: {user.id}, Attempt ID: {attempt.id}, ReturnCode: {attempt.returnCode}, Date: {attempt.date}")
 
             # Initialize user entry if not exists
             if user not in user_results:
@@ -260,7 +260,7 @@ class DetailedReleasePieChartView(APIView):
 
             # Log the final counts for each user
             logger.info(
-        		  f"User: {user.username} - Full Success Count: {result['full_success']}, "
+        		  f"User: {user.id} - Full Success Count: {result['full_success']}, "
         		  f"Success After Fails Count: {result['success_after_fails']}, "
         		  f"Fail Count: {result['fail']}")
 
@@ -268,7 +268,7 @@ class DetailedReleasePieChartView(APIView):
         result_data = []
         for user, result in user_results.items():
             result_data.append({
-        		  'user': user.username,
+        		  'user': user,
         		  'full_success': result['full_success'],
         		  'success_after_fails': result[
         			  'success_after_fails'],
