@@ -96,7 +96,7 @@ function installationsMetricsPerReleaseDevelDetail(XMIPP_URL){
 
         const preparedList = prepareXmippReleasesList(data); // Filter and keep only branches which names start with "release"
         // TODO: sum two version of release counts
-        loadPieChartPerRelease("installationsMetricsPerReleaseDevelDetail", preparedList, release_pie_chart_URL, "Installations for ");
+        loadPieChartPerReleaseDetail("installationsMetricsPerReleaseDevelDetail", preparedList, release_pie_chart_URL, "Installations for ");
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
