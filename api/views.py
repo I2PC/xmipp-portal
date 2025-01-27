@@ -217,7 +217,7 @@ class DetailedReleasePieChartView(APIView):
         latest_attempt_dates = Attempt.objects.filter(
         	xmipp__id=release_id,
         ).values('user').annotate(latest_date=Max('date'))
-        logger.info("latest_attempt_dates: ")
+        logger.info("!!!!!!!!!!!!!!!!\n\nlatest_attempt_dates: ")
         logger.info(latest_attempt_dates)
         # latest_attempts = Attempt.objects.filter(
         #     Q(date__in=[item['latest_date'] for item in latest_attempt_dates]),
