@@ -199,39 +199,40 @@ class ReleasePieChartView(APIView):
 class DetailedReleasePieChartView(APIView):
 
   def get(self, request, release_id, format: str=None) -> Response:
-    """
-    ### This function receives a GET request and returns xmipp metrics (installations with no errors,
-    # installation with 1 previous error, ...) for a specific release branch.
+        """
+        ### This function receives a GET request and returns xmipp metrics (installations with no errors,
+        # installation with 1 previous error, ...) for a specific release branch.
 
-    #### Params:
-    - request (Any): Django request.
-    - release_id (int): Release id.
-    - format (str): Optional. Request format.
+        #### Params:
+        - request (Any): Django request.
+        - release_id (int): Release id.
+        - format (str): Optional. Request format.
 
-    #### Returns:
-    (Response): HTTP response with count info.
-    """
+        #### Returns:
+        (Response): HTTP response with count info.
+        """
+        # Step 1: Get all attempts for the given release_id, ordered by date
+        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by(
+        	  'date')
 
-    try:
-        attempts = Attempt.objects.filter(xmipp__id=release_id).order_by('date')
+        # Initialize counters
+        full_success_count = 0
+        success_after_fails_count = 0
+        fail_count = 0
 
-        successful_only_count = 0
-        failed_last_count = 0
-        successful_last_count = 0
-
-        # Step 2: Loop through attempts to calculate the counters
+        # Flags to track status
         all_successful = True  # Flag to check if all attempts are successful
         last_was_failed = False  # Flag to track if the last attempt was a failure
 
         # Iterate through attempts
         for attempt in attempts:
             if attempt.returnCode == 0:
-                # This is a successful attempt
-                if last_was_failed:
-                     successful_last_count += 1  # If the last was a failure, count it as successful_last
-                else:
-                     # If all previous were successful, just continue
-                     continue
+                  # This is a successful attempt
+                  if last_was_failed:
+                      success_after_fails_count += 1  # If the last was a failure, count it as success_after_fails
+                  else:
+                      # If all previous were successful, continue
+                      pass
             else:
                 # This is a failed attempt
                 all_successful = False
@@ -239,25 +240,21 @@ class DetailedReleasePieChartView(APIView):
 
         # After iterating over all attempts, classify the results
         if all_successful:
-            successful_only_count += 1
+            full_success_count += 1  # All attempts were successful
         elif last_was_failed:
-            failed_last_count += 1
+            fail_count += 1  # Last attempt was a failure
+        else:
+            success_after_fails_count += 1  # There was at least one failure, but the last was successful
 
         # Prepare the result in a list
         result = [
-      	    {"successful_only": successful_only_count},
-      	    {"failed_last": failed_last_count},
-      	    {"successful_last": successful_last_count}
+        	  {"full_success": full_success_count},
+        	  {"success_after_fails": success_after_fails_count},
+        	  {"fail": fail_count},
         ]
 
         # Return the result as a JSON response
         return Response(result)
-
-    except Attempt.DoesNotExist:
-        logger.error("No attempts found for the given release_id.")
-        return Response({"error": "Release ID not found or no attempts available."},
-	                status=404)
-
 
 class AllReleasesPieChartView(APIView):
 
