@@ -422,13 +422,13 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
             // Sume data
             releaseData.forEach(item => {
                 if (item.successfull_installations !== undefined) {
-                    combinedData['Successful'] += item.full_success;
+                    combinedData['full_success'] += item.full_success;
                 }
                 if (item.failed_installations !== undefined) {
-                    combinedData['SuccessAfterFails'] += item.success_after_fails;
+                    combinedData['success_after_fails'] += item.success_after_fails;
                 }
                 if (item.failed_installations !== undefined) {
-                    combinedData['Failed'] += item.fail;
+                    combinedData['fail'] += item.fail;
                 }
             });
         }
@@ -455,7 +455,7 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
             title: {
                 text: `${title}${branchName}`
             },
-            colors: ['#c12e2a','#ffffff', '#623CEA' ],
+            colors: ['#c12e2a','#000000', '#623CEA' ],
             series: [{
                 name: 'Count',
                 colorByPoint: true,
