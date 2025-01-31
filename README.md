@@ -37,9 +37,14 @@ Activate the environment and run migrations:
 mkdir /var/log/django
 sudo chmod go+w /var/log/xmipp-portal.log
 ```
+### 6. Create logger folder and privilege
+```bash
+ CREATE DATABASE xmippportal;
+ CREATE USER 'xmipp'@'localhost' IDENTIFIED BY 'pass';
+ GRANT ALL PRIVILEGES ON xmippportal.* TO 'xmipp'@'localhost';
+```
 
-
-### 6. Apply Database Migrations
+### 7. Apply Database Migrations
 Activate the environment and run migrations:
 ```bash
 conda activate xmipp-portal
