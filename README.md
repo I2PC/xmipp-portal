@@ -38,6 +38,7 @@ mkdir /var/log/django
 sudo chmod go+w /var/log/django
 ```
 ### 6. Create xmipp user for the mariaDB
+Acces mysql service from an admin user (mysql -u 'user' -p)
 ```bash
  CREATE DATABASE xmippportal;
  CREATE USER 'xmipp'@'localhost' IDENTIFIED BY 'pass';
@@ -56,7 +57,7 @@ Run the local server:
 ```bash
 python manage.py createsuperuser
 user: superuser
-mail: xmipp.cnb.csic.es
+mail: xmipp@cnb.csic.es
 password: 
 ```
 
