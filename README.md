@@ -31,15 +31,31 @@ sudo apt install mariadb-client-core-10.6
 sudo apt-get install mariadb-server
 ```
 
-### 5. Apply Database Migrations
+### 5. Create logger folder and privilege
+Activate the environment and run migrations:
+```bash
+mkdir /var/log/django
+sudo chmod 777 /var/log/xmipp-portal.log
+```
+
+
+### 6. Apply Database Migrations
 Activate the environment and run migrations:
 ```bash
 conda activate xmipp-portal
 python manage.py makemigrations
 python manage.py migrate
 ```
+### 8. Create superuser
+Run the local server:
+```bash
+python manage.py createsuperuser
+user: superuser
+mail: xmipp.cnb.csic.es
+password: 
+```
 
-### 6. Start Development Server
+### 7. Start Development Server
 Run the local server:
 ```bash
 python manage.py runserver
