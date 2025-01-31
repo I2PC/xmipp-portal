@@ -12,6 +12,7 @@ dependencies:
   - django-cors-headers
   - requests==2.31
   - python-dotenv
+  - PyMySQL
   - pip:
     - dj-database-url==2
     - django-extensions==3
