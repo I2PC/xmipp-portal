@@ -16,7 +16,7 @@ cd xmipp-portal
 ```
 
 ### 2. Configure Environment
-- Copy the `.env` file provided (refer to the documentation for details).
+- Copy the `.env` file provided (refer to the documentation for details), a template is available on the repo as .env.template.
 
 ### 3. Create Environment
 - Use the provided `xmipp-portal.yml` file to set up the Conda environment:
