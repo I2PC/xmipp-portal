@@ -35,9 +35,9 @@ sudo apt-get install mariadb-server
 Activate the environment and run migrations:
 ```bash
 mkdir /var/log/django
-sudo chmod go+w /var/log/xmipp-portal.log
+sudo chmod go+w /var/log/django
 ```
-### 6. Create logger folder and privilege
+### 6. Create xmipp user for the mariaDB
 ```bash
  CREATE DATABASE xmippportal;
  CREATE USER 'xmipp'@'localhost' IDENTIFIED BY 'pass';
