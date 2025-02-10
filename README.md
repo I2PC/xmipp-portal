@@ -37,6 +37,7 @@ Activate the environment and run migrations:
 mkdir /var/log/django
 sudo chmod go+w /var/log/django
 ```
+
 ### 6. Create xmipp user for the mariaDB
 Acces mysql service from an admin user (mysql -u 'user' -p)
 ```bash
@@ -44,15 +45,22 @@ Acces mysql service from an admin user (mysql -u 'user' -p)
  CREATE USER 'xmipp'@'localhost' IDENTIFIED BY 'pass';
  GRANT ALL PRIVILEGES ON xmippportal.* TO 'xmipp'@'localhost';
 ```
+### 7. For develope propose
+Add this lines in the setting.py :
+```bash
+import pymysql
+pymysql.install_as_MySQLdb()
+```
 
-### 7. Apply Database Migrations
+### 8. Apply Database Migrations
 Activate the environment and run migrations:
 ```bash
 conda activate xmipp-portal
 python manage.py makemigrations
 python manage.py migrate
 ```
-### 8. Create superuser
+
+### 9. Create superuser
 Run the local server:
 ```bash
 python manage.py createsuperuser
@@ -61,7 +69,7 @@ mail: xmipp@cnb.csic.es
 password: 
 ```
 
-### 7. Start Development Server
+### 10. Start Development Server
 Run the local server:
 ```bash
 python manage.py runserver
