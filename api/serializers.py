@@ -52,18 +52,18 @@ class VersionsSerializer(ModelSerializer):
 			VERSION_GCC, VERSION_GPP, VERSION_MPI, VERSION_PYTHON, VERSION_SQLITE, \
 			VERSION_JAVA, VERSION_HDF5, VERSION_JPEG]
 
-	os = CharField(allow_null=True, required=False)
-	cuda = CharField(allow_null=True, required=False)
-	cmake = CharField(allow_null=True, required=False)
-	gcc = CharField(allow_null=True, required=False)
-	gpp = CharField(allow_null=True, required=False)
+	os = CharField(allow_blank=True, required=False)
+	cuda = CharField(allow_blank=True, required=False)
+	cmake = CharField(allow_blank=True, required=False)
+	gcc = CharField(allow_blank=True, required=False)
+	gpp = CharField(allow_blank=True, required=False)
 	architecture = CharField(allow_null=True, required=False)
-	mpi = CharField(allow_null=True, required=False)
-	python = CharField(allow_null=True, required=False)
-	sqlite = CharField(allow_null=True, required=False)
-	java = CharField(allow_null=True, required=False)
-	hdf5 = CharField(allow_null=True, required=False)
-	jpeg = CharField(allow_null=True, required=False)
+	mpi = CharField(allow_blank=True, required=False)
+	python = CharField(allow_blank=True, required=False)
+	sqlite = CharField(allow_blank=True, required=False)
+	java = CharField(allow_blank=True, required=False)
+	hdf5 = CharField(allow_blank=True, required=False)
+	jpeg = CharField(allow_blank=True, required=False)
 
 class AttemptSerializer(ModelSerializer):
 	user = UserSerializer()
