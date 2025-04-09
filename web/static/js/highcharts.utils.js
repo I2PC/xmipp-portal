@@ -105,16 +105,24 @@ function prepareSeriesForTimeChart(data, name) {
         return d;
     }
 
+    function getStartOfMonth(date) {
+        const d = new Date(date);
+        d.setDate(1); // Set the date to the first day of the month
+        d.setHours(0, 0, 0, 0); // Set time to 00:00:00
+        return d;
+    }
+
+
     function lightenColor(hex, factor) {
-    let r = parseInt(hex.slice(1, 3), 16);
-    let g = parseInt(hex.slice(3, 5), 16);
-    let b = parseInt(hex.slice(5, 7), 16);
+        let r = parseInt(hex.slice(1, 3), 16);
+        let g = parseInt(hex.slice(3, 5), 16);
+        let b = parseInt(hex.slice(5, 7), 16);
 
-    r = Math.min(255, r + factor);
-    g = Math.min(255, g + factor);
-    b = Math.min(255, b + factor);
+        r = Math.min(255, r + factor);
+        g = Math.min(255, g + factor);
+        b = Math.min(255, b + factor);
 
-    return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
+        return `#${(1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1).toUpperCase()}`;
     }
 
     let series = {};
@@ -124,10 +132,15 @@ function prepareSeriesForTimeChart(data, name) {
         const returnCode = item.returnCode;
         const weekStart = getStartOfWeek(item.date);
         const weekStamp = weekStart.getTime();
+        const monthStart = getStartOfMonth(item.date);
+        const monthStamp = monthStart.getTime();
 
         const branchKey = branch;
-
+        if (branch === 'devel' && returnCode !== 0) {
+            continue;
+        }
         if (!series[branchKey]) {
+
             const successColor = colors[colorIndex % colors.length];
             series[branchKey] = {
                 success: {
@@ -153,7 +166,7 @@ function prepareSeriesForTimeChart(data, name) {
 
         let found = false;
         for (let [index, entry] of targetSeries.data.entries()) {
-            if (entry.x === weekStamp) {
+            if (entry.x === monthStamp) {
                 targetSeries.data[index].y += 1;
                 found = true;
                 break;
@@ -161,7 +174,7 @@ function prepareSeriesForTimeChart(data, name) {
         }
 
         if (!found) {
-            targetSeries.data.push({ x: weekStamp, y: 1 });
+            targetSeries.data.push({ x: monthStamp, y: 1 });
         }
     }
 
@@ -196,7 +209,9 @@ function loadTimeChart(container, title, data){
         xAxis: {
             type: "datetime",
 //            minRange:  3600 * 1000, // Intervalo mínimo de una semana
+            minRange: 30 * 24 * 3600 * 1000,  // Un mes en milisegundos (30 días)
 //            tickInterval:  3600 * 1000,
+            tickInterval: 30 * 24 * 3600 * 1000, // Intervalo entre las marcas de tiempo (un mes)
             labels: {
                 style: {
                     fontSize: '12px', 
