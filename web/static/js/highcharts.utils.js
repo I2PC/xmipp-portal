@@ -186,7 +186,7 @@ function prepareSeriesForTimeChart(data, name) {
     let resultSeries = [];
     for (const branchKey in series) {
         resultSeries.push(series[branchKey].success);
-        resultSeries.push(series[branchKey].fails);
+//        resultSeries.push(series[branchKey].fails);
     }
 
     console.log(resultSeries);
