@@ -499,6 +499,19 @@ class AttemptsView(APIView):
       logger.info(f'ATTEMPT SAVED')
 
 
+class FailedAttemptsView(APIView):
+    def get(self, request, format=None):
+        failed_attempts = Attempt.objects.exclude(returnCode=0).order_by('-date')
+        data = [
+            {
+                "id": attempt.id,
+                "date": attempt.date,
+                "returnCode": attempt.returnCode,
+                "logTail": attempt.logTail,
+            }
+            for attempt in failed_attempts
+        ]
+        return Response(data)
 
 '''
  curl --header "Content-Type: application/json" -X POST --data '{

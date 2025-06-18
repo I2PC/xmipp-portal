@@ -24,11 +24,12 @@
 
 from django.urls import path
 from .views import AttemptsView, XmippView, CountryBarChartView, AllReleasesPieChartView, ReleasePieChartView, InstalledBranchesPieChartView, \
-    InstalledBranchesTimeChartView, DetailedReleasePieChartView
+    InstalledBranchesTimeChartView, DetailedReleasePieChartView, FailedAttemptsView
 
 
 urlpatterns = [
 	path('attempts/', AttemptsView.as_view()),
+	path('logs/failed/', FailedAttemptsView.as_view(), name='failed-attempts'),
     path('installations/releases-stats-pie-chart/', AllReleasesPieChartView.as_view()),
     path('installations/releases-stats-pie-chart/<int:release_id>/', ReleasePieChartView.as_view()),
     path('installations/releases-stats-pie-detail/<int:release_id>/', DetailedReleasePieChartView.as_view()),
