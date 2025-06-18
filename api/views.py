@@ -507,6 +507,7 @@ class FailedAttemptsView(APIView):
                 "id": attempt.id,
                 "date": attempt.date,
                 "returnCode": attempt.returnCode,
+	            "branch": attempt.xmipp.branch,
                 "logTail": attempt.logTail,
             }
             for attempt in failed_attempts
