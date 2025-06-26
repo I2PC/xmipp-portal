@@ -105,31 +105,41 @@
 
     <br><br>
 
-    <!-- Releases and devel charts -->
+    <style>
+        /* Usamos una media query para aplicar estos estilos solo en pantallas pequeñas (móviles) */
+        @media (max-width: 767.98px) {
+            /* Le damos un nombre de clase único a la fila ("fila-graficos-problema")
+             para aplicar la corrección sin afectar a otras filas de tu web.
+            */
+            .fila-graficos-problema {
+                /* Forzamos que los elementos hijos (las columnas) se apilen verticalmente */
+                flex-direction: column;
+            }
+        }
+    </style>
+
     <div class="row justify-content-center" style="overflow-y: auto;">
-        <!-- Releases/devel percentage pie chart -->
-            <div class="chart" id="installationsOverTime" style="width: 95%;  height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
-            <p id="chartExplanation">The graph shows Xmipp installation attempts by month, separated into "release" and "devel" branches (any branch not tagged as "release").</p>
+        <div class="chart" id="installationsOverTime" style="width: 95%; height: 400px; margin-top: 30px; margin-bottom: 30px;"></div>
+        <p id="chartExplanation">The graph shows Xmipp installation attempts by month, separated into "release" and "devel" branches (any branch not tagged as "release").</p>
     </div>
-        <br><br>
+    <br><br>
 
-
-    <!-- Installations metrics pie charts (one per releases/devel) -->
     <div class="container">
-        <div class="row" style="display: flex; align-items: flex-start;">
-            <div class="col-md-4">
-                <div class="chart" id="installationsReleasesDevel" style="width: 80%; margin: 0 auto; margin-top: 20px; height: 400px;"></div>
+        <div class="row align-items-start fila-graficos-problema">
+
+            <div class="col-12 col-md-4">
+                <div class="chart" id="installationsReleasesDevel" style="width: 90%; margin: 20px auto; height: 400px;"></div>
                 <p id="chartExplanation">This pie chart displays the different installed releases and the devel branch (along with all the work branches derived from devel). There is just one installation per user (always the last one successfully installed).</p>
             </div>
-            <div class="col-md-8">
+
+            <div class="col-12 col-md-8">
                 <div id="charts-scroll-container" class="overflow-scroll" style="width: 100%; overflow-x: auto; white-space: nowrap; margin-top: 30px; margin-bottom: 30px;">
                     <div id="installationsMetricsPerReleaseDevelDetail" class="d-flex flex-row"></div>
                 </div>
                 <p id="chartExplanation">Number of user that install Xmipp successfully, failed and succesfully after fails installations for each release (grouped by users).</p>
-
             </div>
+
         </div>
-    </div>
     </div>
 
 
@@ -137,8 +147,8 @@
     <h1 style="margin-top: 50px;">Other installation statistics</h1>
         <h3>
           <a href="https://pypistats.org/packages/scipion-em-xmipp">
-            <span class="glyphicon glyphicon-stats" aria-hidden="true" style="font-size: 18px; vertical-align: middle;"></span>
-            PyPI Stats statistics
+            <span class="glyphicon glyphicon-stats" aria-hidden="true" style="font-size: 17px; vertical-align: middle;"></span>
+             PyPI Stats statistics
           </a>
         </h3>
 
@@ -146,7 +156,7 @@
 
 <h3 style="margin-bottom: 40px;">
   <a href="https://github.com/I2PC/scipion-containers">
-    <i class="fab fa-docker" style="font-size: 18px; vertical-align: middle;"></i>
+    <i class="fab fa-docker" style="font-size: 17px; vertical-align: middle;"></i>
     Docker [Scipion+Xmipp] image pulls
   </a>
 </h3>
