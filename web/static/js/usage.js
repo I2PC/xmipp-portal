@@ -39,7 +39,7 @@ function getInstallationOverTimeChart(XMIPP_URL){
         const preparedData = prepareSeriesForTimeChart(data, "Installations over time");
         console.log("preparedData: ")
         console.log(preparedData)   
-        loadTimeChart('installationsOverTime', 'Monthly Number of Users Installing Xmipp: Success vs. Failure', preparedData);
+        loadTimeChart('installationsOverTime', 'Monthly Number of Users Installing Xmipp, preparedData);
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
