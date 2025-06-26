@@ -144,7 +144,7 @@ function prepareSeriesForTimeChart(data, name) {
             const successColor = colors[colorIndex % colors.length];
             series[branchKey] = {
                 success: {
-                    name: `${branch} success`,
+                    name: `${branch}`,
                     dataSorting: { enabled: false },
                     data: [],
                     color: successColor,
@@ -152,7 +152,7 @@ function prepareSeriesForTimeChart(data, name) {
                     marker: { symbol: 'circle' }
                 },
                 fails: {
-                    name: `${branch} fails`,
+                    name: `${branch}`,
                     dataSorting: { enabled: false },
                     data: [],
                     color: lightenColor(successColor, 50),
