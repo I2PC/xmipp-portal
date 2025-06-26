@@ -1,4 +1,5 @@
 function getDataAndDrawCharts(){
+    //const XMIPP_URL = "http://127.0.0.1:8000/"
     const XMIPP_URL = "https://xmipp.i2pc.es/"
 
     // Country Bar Chart
@@ -19,7 +20,18 @@ function getCountryBarChart(XMIPP_URL){
     $.getJSON( xmippUsageDataURL).done(function( data ) {
 
         const preparedData = prepareSeriesForBarChart(data, "users by country"); 
-        loadBarChart('usersByCountry', 'Number of users per country', preparedData);
+        let totalUsers = 0;
+        console.log("preparedData: ", preparedData)
+
+        if (preparedData && Array.isArray(preparedData.data)) {
+            preparedData.data.forEach(point => {
+                if (typeof point === 'object' && point.y !== undefined) {
+                    totalUsers += point.y;
+                }
+            });
+        }
+        const chartTitle = `Number of Users per Country (Total: ${totalUsers} since 2025)`;
+        loadBarChart('usersByCountry', chartTitle, preparedData);
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
@@ -35,11 +47,11 @@ function getInstallationOverTimeChart(XMIPP_URL){
     var xmippUsageDataURL = XMIPP_URL + "/api/xmipp/installed-branches-time-chart/"; 
 
     $.getJSON( xmippUsageDataURL).done(function( data ) {
-
         const preparedData = prepareSeriesForTimeChart(data, "Installations over time");
         console.log("preparedData: ")
-        console.log(preparedData)   
-        loadTimeChart('installationsOverTime', 'Monthly Number of Users Installing Xmipp, preparedData);
+        console.log(preparedData)
+        const chartTitle = `Monthly Number of Users Installing Xmipp`;
+        loadTimeChart('installationsOverTime', chartTitle, preparedData);
 
     }).fail(function( jqxhr, textStatus, error ) {
         var err = textStatus + ", " + error;
