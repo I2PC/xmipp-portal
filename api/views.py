@@ -371,7 +371,7 @@ class AttemptsFiltersAPIView(generics.ListAPIView):
     queryset = Attempt.objects.all()
     serializer_class = AttemptSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user__userId', 'returnCode', 'xmipp__branch']
+    filterset_fields = ['userId', 'returnCode', 'xmipp__branch']
 
 
 class AttemptsView(APIView):
