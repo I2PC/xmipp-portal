@@ -12,8 +12,8 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from dotenv import load_dotenv
-# import pymysql
-# pymysql.install_as_MySQLdb()
+#import pymysql
+#pymysql.install_as_MySQLdb()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 	"django_extensions",
 	'web',
     'rest_framework',
+	'django_filters',
     'api',
 ]
 
@@ -56,6 +57,12 @@ MIDDLEWARE = [
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 	#'django.middleware.clickjacking.XContentOptionsMiddleware'
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_FILTER_BACKENDS': [
+        'django_filters.rest_framework.DjangoFilterBackend',
+    ],
+}
 
 #CORS_ORIGIN_ALLOW_ALL = True
 #CORS_ALLOW_CREDENTIALS = False
@@ -160,4 +167,7 @@ STATICFILES_DIRS = (
 )
 
 #Configuracion de origenes de confianza en tu proyecto Django.
+# CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
+# CORS_ALLOW_ALL_ORIGINS = True
+# CORS_ALLOWED_ORIGINS = ["https://127.0.0.1:8000"]
 CSRF_TRUSTED_ORIGINS = ['https://xmipp.i2pc.es']

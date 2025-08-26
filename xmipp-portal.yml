@@ -5,6 +5,7 @@ channels:
 dependencies:
   - python=3.12
   - Django==4
+  - django-filter
   - gunicorn>=19.6.0
   - djangorestframework>=3.14
   - mysqlclient

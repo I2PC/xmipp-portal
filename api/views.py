@@ -27,6 +27,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import generics
 import threading
 import logging
 logger=logging.getLogger(__name__)
@@ -364,11 +366,20 @@ class CountryBarChartView(APIView):
     # Return users as JSON
     return Response(queryset)
 
+
+class AttemptsFiltersAPIView(generics.ListAPIView):
+    queryset = Attempt.objects.all()
+    serializer_class = AttemptSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['user__userId', 'returnCode', 'xmipp__branch']
+
+
 class AttemptsView(APIView):
   """
     ### This class performs a custom processing of the requests received.
     """
   serializer_class = AttemptSerializer
+  filterset_fields = ['userId', 'returnCode', 'xmipp__branch']
 
   def get(self, request, format: str=None) -> Response:
     """
@@ -383,6 +394,12 @@ class AttemptsView(APIView):
     """
     # Get queryset with all the attempts in database and serialize it
     queryset = Attempt.objects.all()
+    for field in self.filterset_fields:
+        value = request.query_params.get(field, None)
+        if value is not None:
+            # Soporte para relaciones (user__userId, xmipp__branch)
+            queryset = queryset.filter(**{field: value})
+
     serializer = AttemptSerializer(queryset, many = True)
 
     # Return attempts as JSON
