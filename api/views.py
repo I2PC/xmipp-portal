@@ -28,6 +28,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from django.db.models import Count, OuterRef, Subquery, F, IntegerField, Max, Q
 from django_filters.rest_framework import DjangoFilterBackend
+import django_filters
 from rest_framework import generics
 import threading
 import logging
@@ -367,12 +368,27 @@ class CountryBarChartView(APIView):
     return Response(queryset)
 
 
+class AttemptFilter(django_filters.FilterSet):
+    returnCode = django_filters.NumberFilter(field_name="returnCode", lookup_expr="exact")
+    returnCode_not = django_filters.NumberFilter(
+        field_name="returnCode",
+        lookup_expr="ne",
+        label="Return code (≠)"
+    )
+
+    class Meta:
+        model = Attempt
+        fields = [
+            'user__userId',
+	        'xmipp__branch',
+	        'returnCode',
+            'returnCode_not',
+        ]
 class AttemptsFiltersAPIView(generics.ListAPIView):
     queryset = Attempt.objects.all()
     serializer_class = AttemptSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['user__userId', 'returnCode', 'xmipp__branch']
-
+    filterset_class = AttemptFilter
 
 class AttemptsView(APIView):
   """
