@@ -389,7 +389,13 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
             title: {
                 text: `${title}${branchName}`
             },
-            colors: ['#c12e2a', '#623CEA'], 
+            colors: ['#c12e2a', '#623CEA'],
+            tooltip: {
+                formatter: function () {
+                    return '<b style="font-size:16px;">' + this.y + '</b>';
+                }
+            },
+
             series: [{
                 name: 'Count',
                 colorByPoint: true,
@@ -476,6 +482,12 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
                 text: `${title}${branchName}`
             },
             colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
+            tooltip: {
+                pointFormat: '<b>{point.percentage:.1f}%</b>',
+                style: {
+                    fontSize: '14px' // más grande que el default
+                }
+            },
             series: [{
                 name: 'Count',
                 colorByPoint: true,
