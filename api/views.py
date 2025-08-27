@@ -370,9 +370,9 @@ class CountryBarChartView(APIView):
 
 class AttemptFilter(django_filters.FilterSet):
     returnCode = django_filters.NumberFilter(field_name="returnCode", lookup_expr="exact")
+
     returnCode_not = django_filters.NumberFilter(
-        field_name="returnCode",
-        lookup_expr="ne",
+        method="filter_returnCode_not",
         label="Return code (≠)"
     )
 
@@ -384,6 +384,11 @@ class AttemptFilter(django_filters.FilterSet):
 	        'returnCode',
             'returnCode_not',
         ]
+
+    def filter_returnCode_not(self, queryset, name, value):
+        return queryset.exclude(returnCode=value)
+
+
 class AttemptsFiltersAPIView(generics.ListAPIView):
     queryset = Attempt.objects.all()
     serializer_class = AttemptSerializer
