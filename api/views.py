@@ -221,16 +221,19 @@ class DetailedReleasePieChartView(APIView):
 		# Step 1: Get all attempts for the given release_id, ordered by user and date
 		attempts = Attempt.objects.filter(
 			xmipp__id=release_id).order_by('user', 'date')
-
+		attemptsDevel = Attempt.objects.exclude(
+			xmipp__id__contains="v3.").order_by("user", "date")
 		# Initialize a dictionary to store the final result for each category
 		user_results = {
 			'full_success': 0,
 			'success_after_fails': 0,
-			'fail': 0
+			'fail': 0,
+			'success_in_devel': 0
 		}
 
-		# Step 2: Group attempts by user
+		# Step 2: Group attempts (release and devel) by user
 		user_attempts = {}
+		user_attemptsDevel = {}
 
 		for attempt in attempts:
 			user = attempt.user  # Access the related User model through the ForeignKey
@@ -244,11 +247,27 @@ class DetailedReleasePieChartView(APIView):
 			# Append the attempt to the user's list of attempts
 			user_attempts[user].append(attempt)
 
+		for attempt in attemptsDevel:
+			user = attempt.user  # Access the related User model through the ForeignKey
+			logger.info(
+				f"User (in devel): {user.id}, Attempt ID: {attempt.id}, ReturnCode: {attempt.returnCode}, Date: {attempt.date}")
+
+			# Group attempts by user
+			if user not in user_attemptsDevel:
+				user_attemptsDevel[user] = []
+
+			# Append the attempt to the user's list of attempts
+			user_attemptsDevel[user].append(attempt)
+
+
 		# Step 3: Classify users based on their attempts
 		for user, attempts_list in user_attempts.items():
+			last_release_attempt_date = attempts_list[
+				-1].date if attempts_list else None
 			all_successful = True
 			last_was_failed = False
 			success_after_fail = False
+			devel_candidate = False
 
 			# Check if the last attempt is successful or failed, and if there are any previous failures
 			for attempt in attempts_list:
@@ -258,20 +277,26 @@ class DetailedReleasePieChartView(APIView):
 				elif last_was_failed:  # If there were previous failures and now it's successful
 					success_after_fail = True
 
+
 			# Classify the user based on their attempts
 			if all_successful:
-				user_results[
-					'full_success'] += 1  # Increment count for full success
+				user_results['full_success'] += 1  # Increment count for full success
 			elif success_after_fail:
-				user_results[
-					'success_after_fails'] += 1  # Increment count for success after fail
-			else:
-				user_results[
-					'fail'] += 1  # Increment count for fail
+				user_results['success_after_fails'] += 1  # Increment count for success after fail
+			elif last_was_failed:
+				later_devel_attempts = [a for a in user_attemptsDevel[user]
+				                        if a.date > last_release_attempt_date]
+				if later_devel_attempts:
+					latest_devel_attempt = max(later_devel_attempts, key=lambda x: x.date)
+					if latest_devel_attempt.returnCode == 0:
+						user_results['success_in_devel'] += 1
+					else:
+						user_results['fail'] += 1
+				else:
+					user_results['fail'] += 1
 
 			# Log the classification of the user
-			logger.info(
-				f"User: {user.id} - Classification: {'full_success' if all_successful else 'success_after_fails' if success_after_fail else 'fail'}")
+			logger.info(f"User: {user.id} - Classification: {'full_success' if all_successful else 'success_after_fails' if success_after_fail else 'fail'}")
 
 		# Step 4: Prepare the result to return as a JSON response
 
@@ -280,6 +305,8 @@ class DetailedReleasePieChartView(APIView):
 				'user_count': user_results['full_success']})
 		result.append({'category': 'success_after_fails',
 				'user_count': user_results['success_after_fails']})
+		result.append({'category': 'success_in_devel',
+				'user_count': user_results['success_in_devel']})
 		result.append({'category': 'fail',
 				'user_count': user_results['fail']})
 

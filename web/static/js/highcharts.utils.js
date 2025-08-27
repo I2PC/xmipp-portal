@@ -87,6 +87,7 @@ function loadBarChart(container, title, data){
 function prepareSeriesForTimeChart(data, name) {
     console.log(data);
     let colors= ['#878787','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
+    //[Gris medio, Rojo oscuro, Amarillo mostaza, Morado oscuro, Verde menta claro, Rojo vino, Rojo muy oscuro, Rojo coral, Gris estándar]
     let colorIndex = 0;
     // Sort by date
     data.sort((a, b) => {
@@ -425,7 +426,8 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
         let combinedData = {
             'Successful': 0,
             'Failed': 0,
-            'SuccessAfterFails': 0
+            'SuccessAfterFails': 0,
+            'SuccessCheckingOutDevel': 0
         };
 
         // Combine date per each release
@@ -444,6 +446,9 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
                 }
                 if (item.category === 'fail') {
                     combinedData['Failed'] += item.user_count;
+                }
+                if (item.category === 'success_in_devel') {
+                    combinedData['SuccessCheckingOutDevel'] += item.user_count;
                 }
             });
         }
@@ -470,7 +475,7 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
             title: {
                 text: `${title}${branchName}`
             },
-            colors: ['#c12e2a','#222222', '#623CEA' ],
+            colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
             series: [{
                 name: 'Count',
                 colorByPoint: true,
