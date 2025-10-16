@@ -425,13 +425,11 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
             'SuccessCheckingOutDevel': 0
         };
 
-        // Combine date per each release
-        for (const id of branch.ids) {
-            // Llamada al endpoint
-            const response = await fetch(`${release_pie_chart_URL}${id}`);
-            const releaseData = await response.json();
+        const responses = await Promise.all(
+            branch.ids.map(id => fetch(`${release_pie_chart_URL}${id}`).then(res => res.json()))
+        );
 
-            // Sume data
+        responses.forEach(releaseData => {
             releaseData.forEach(item => {
                 if (item.category === 'full_success') {
                     combinedData['Successful'] += item.user_count;
@@ -446,7 +444,7 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
                     combinedData['SuccessCheckingOutDevel'] += item.user_count;
                 }
             });
-        }
+        });
 
         // Formate data
         const chartData = Object.keys(combinedData).map(key => ({
