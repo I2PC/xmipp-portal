@@ -201,7 +201,7 @@ function loadTimeChart(container, title, data){
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false,
-            type: 'line',
+            type: 'column', // 🔹 CAMBIADO de 'line' a 'column'
             zoomType: 'x',
         },
         title: {
@@ -209,13 +209,11 @@ function loadTimeChart(container, title, data){
         },
         xAxis: {
             type: "datetime",
-//            minRange:  3600 * 1000, // Intervalo mínimo de una semana
             minRange: 30 * 24 * 3600 * 1000,  // Un mes en milisegundos (30 días)
-//            tickInterval:  3600 * 1000,
-            tickInterval: 30 * 24 * 3600 * 1000, // Intervalo entre las marcas de tiempo (un mes)
+            tickInterval: 30 * 24 * 3600 * 1000,
             labels: {
                 style: {
-                    fontSize: '12px', 
+                    fontSize: '12px',
                 },
             }
         },
@@ -227,46 +225,37 @@ function loadTimeChart(container, title, data){
                     fontFamily: 'Verdana, sans-serif'
                 }
             },
-            //minTickInterval: 1,  // Esto asegura que el intervalo mínimo entre marcas de ticks es 1
-            allowDecimals: false,  // Esto evitará que los valores del eje Y tengan decimales
-
+            allowDecimals: false,
         },
-        // tooltip: {
-        //     pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
-        // },
         legend: {
             itemStyle: {
-                fontSize: '12px', // Ajusta el tamaño del texto de la leyenda
+                fontSize: '12px',
                 fontFamily: 'Verdana, sans-serif',
             },
             itemHoverStyle: {
-                color: '#333333', // Cambia el color al pasar el mouse (opcional)
+                color: '#333333',
             }
         },
         plotOptions: {
-            series: {
-                connectNulls: false,
+            column: { // 🔹 Configuración específica de columnas
                 color: '#8e1919',
+                borderWidth: 0,
                 dataLabels: {
                     enabled: true,
-                    rotation: 0,
-                    color: '#000000',
-                    align: 'left',
-                    //format: '{point.y}', // one decimal
-                    y: -10, // 10 pixels down from the top
-                    x: 0, // 0 pixels
                     style: {
                         fontSize: '12px',
                         fontFamily: 'Verdana, sans-serif'
                     }
                 }
+            },
+            series: {
+                connectNulls: false
             }
         },
         series: data
     };
-    // Build the bar
+
     Highcharts.chart(container, options);
-    // $(container).highcharts(options);
 }
 
 

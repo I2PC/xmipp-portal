@@ -30,7 +30,7 @@ function getCountryBarChart(XMIPP_URL){
                 }
             });
         }
-        const chartTitle = `Number of Users per Country (Total: ${totalUsers} since 2025)`;
+        const chartTitle = `Number of Users per Country (Total: ${totalUsers} since January 2025)`;
         loadBarChart('usersByCountry', chartTitle, preparedData);
 
     }).fail(function( jqxhr, textStatus, error ) {
