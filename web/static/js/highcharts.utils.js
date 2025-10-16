@@ -401,96 +401,56 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
 }
 
 async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_chart_URL, title) {
-    // Group releases per name and consolidate IDs
-    const branchesMap = preparedList.reduce((acc, branch) => {
-        if (!acc[branch.branch]) {
-            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Initialize with IDs list
-        } else {
-            acc[branch.branch].ids.push(branch.id); // Add ID to the list if release already exists
-        }
-        return acc;
-    }, {});
+  const chartsContainer = document.getElementById(chartId);
+  const branchesMap = preparedList.reduce((acc, branch) => {
+    if (!acc[branch.branch]) acc[branch.branch] = { ...branch, ids: [branch.id] };
+    else acc[branch.branch].ids.push(branch.id);
+    return acc;
+  }, {});
 
-    // Get container
-    const chartsContainer = document.getElementById(chartId);
+  // Construir array de promesas: por cada branch, pedir todas sus ids en paralelo
+  const branchPromises = Object.keys(branchesMap).map(async branchName => {
+    const branch = branchesMap[branchName];
+    const combinedData = { Successful: 0, Failed: 0, SuccessAfterFails: 0, SuccessCheckingOutDevel: 0 };
 
-    // Create graphs for unique branches
-    for (const branchName in branchesMap) {
-        const branch = branchesMap[branchName];
+    // Peticiones en paralelo para las ids de esta rama
+    const responses = await Promise.all(branch.ids.map(id =>
+      fetch(`${release_pie_chart_URL}${id}`).then(r => r.ok ? r.json() : Promise.resolve([]))
+    ));
 
-        let combinedData = {
-            'Successful': 0,
-            'Failed': 0,
-            'SuccessAfterFails': 0,
-            'SuccessCheckingOutDevel': 0
-        };
+    responses.forEach(releaseData => {
+      (releaseData || []).forEach(item => {
+        if (item.category === 'full_success') combinedData.Successful += item.user_count;
+        if (item.category === 'success_after_fails') combinedData.SuccessAfterFails += item.user_count;
+        if (item.category === 'fail') combinedData.Failed += item.user_count;
+        if (item.category === 'success_in_devel') combinedData.SuccessCheckingOutDevel += item.user_count;
+      });
+    });
 
-        const responses = await Promise.all(
-            branch.ids.map(id => fetch(`${release_pie_chart_URL}${id}`).then(res => res.json()))
-        );
+    return { branchName, combinedData };
+  });
 
-        responses.forEach(releaseData => {
-            releaseData.forEach(item => {
-                if (item.category === 'full_success') {
-                    combinedData['Successful'] += item.user_count;
-                }
-                if (item.category === 'success_after_fails') {
-                    combinedData['SuccessAfterFails'] += item.user_count;
-                }
-                if (item.category === 'fail') {
-                    combinedData['Failed'] += item.user_count;
-                }
-                if (item.category === 'success_in_devel') {
-                    combinedData['SuccessCheckingOutDevel'] += item.user_count;
-                }
-            });
-        });
+  // Esperar todas las ramas y luego renderizar
+  const allBranchesData = await Promise.all(branchPromises);
 
-        // Formate data
-        const chartData = Object.keys(combinedData).map(key => ({
-            name: key,
-            y: combinedData[key]
-        }));
+  allBranchesData.forEach(({ branchName, combinedData }) => {
+    const chartData = Object.keys(combinedData).map(key => ({ name: key, y: combinedData[key] }));
+    const chartDiv = document.createElement('div');
+    chartDiv.style.width = '300px';
+    chartDiv.style.display = 'inline-flex';
+    chartDiv.className = 'px-2';
+    chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
+    chartsContainer.appendChild(chartDiv);
 
-        // Create div to include graph
-        const chartDiv = document.createElement('div');
-        chartDiv.style.width = '300px';
-        chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
-        chartDiv.className = 'px-2'; // Espacio
-        chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
-        chartsContainer.appendChild(chartDiv);
-
-        // Create graph
-        Highcharts.chart(chartDiv.id, {
-            chart: {
-                type: 'pie'
-            },
-            title: {
-                text: `${title}${branchName}`
-            },
-            colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
-            tooltip: {
-                pointFormat: '<b>{point.percentage:.1f}%</b>',
-                style: {
-                    fontSize: '14px' // más grande que el default
-                }
-            },
-            series: [{
-                name: 'Count',
-                colorByPoint: true,
-                data: chartData,
-                dataLabels: {
-                    enabled: true,
-                    style: {
-                        fontSize: '10px',
-                    }
-                }
-            }]
-        });
-    }
+    Highcharts.chart(chartDiv.id, {
+      chart: { type: 'pie' },
+      title: { text: `${title}${branchName}` },
+      colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
+      tooltip: { pointFormat: '<b>{point.percentage:.1f}%</b>', style: { fontSize: '14px' } },
+      series: [{ name: 'Count', colorByPoint: true, data: chartData, dataLabels: { enabled: true, style: { fontSize: '10px' } } }]
+    });
+  });
 }
-
-
 
 
 
