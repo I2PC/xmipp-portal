@@ -152,7 +152,7 @@ function GPPMetricsPerReleaseDevelDetail(XMIPP_URL) {
             "GPPMetricsPerReleaseDevelDetail",
             preparedList,
             gpp_chart_URL,
-            "GPP versions for "
+            "Compiler GPP versions for "
         );
 
     }).fail(function(jqxhr, textStatus, error) {

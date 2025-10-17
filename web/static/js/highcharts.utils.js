@@ -586,8 +586,6 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
 
 
 async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_chart_URL, title) {
-    console.log("Dentro de loadGPPDonutChartPerReleaseDetail");
-
     const chartsContainer = document.getElementById(chartId);
 
     let allData = [];
@@ -601,17 +599,17 @@ async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_char
     const releasesToShow = preparedList.map(b => b.branch);
 
     const purplePalette = [
-    '#E1BEE7', // 1 - morado muy claro
-    '#CE93D8', // 2
-    '#BA68C8', // 3
-    '#AB47BC', // 4
-    '#9C27B0', // 5 - morado medio
-    '#8E24AA', // 6
-    '#7B1FA2', // 7
-    '#6A1B9A', // 8
-    '#4A148C', // 9 - morado muy oscuro
-    '#311B92'  // 10 - casi índigo, máximo contraste
-];
+    '#F8BBD0', // 1 - rosa muy claro
+    '#F48FB1', // 2
+    '#F06292', // 3
+    '#EC407A', // 4
+    '#E91E63', // 5 - rosa medio
+    '#9C27B0', // 6 - violeta intermedio
+    '#7B1FA2', // 7 - violeta oscuro
+    '#5E35B1', // 8 - azul violeta
+    '#3949AB', // 9 - azul intenso
+    '#1A237E',  // 10 - azul oscuro, máximo contraste
+    ];
 
     releasesToShow.forEach(branchName => {
         const branchData = allData.filter(item => item.release === branchName);
