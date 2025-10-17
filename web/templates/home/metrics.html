@@ -198,6 +198,13 @@
         font-size: 10px;
         color: #555;
     }
+    #charts-scroll-container {
+        width: 100%;
+        overflow-x: auto; /* Activa el scroll horizontal si es necesario */
+        white-space: nowrap; /* Evita que los elementos internos salten de línea */
+        margin-top: 20px;
+        margin-bottom: 30px;
+    }
     #cudaMetricsPerReleaseDevelDetail {
         display: inline-flex; /* Hace que el ancho del contenedor se ajuste a su contenido */
         justify-content: flex-start; /* Alinea las gráficas a la izquierda (comportamiento por defecto) */
