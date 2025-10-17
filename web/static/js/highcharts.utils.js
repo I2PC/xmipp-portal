@@ -599,18 +599,22 @@ async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_char
     const releasesToShow = preparedList.map(b => b.branch);
 
     const purplePalette = [
-    '#F8BBD0', // 1 - rosa muy claro
-    '#F48FB1', // 2
-    '#F06292', // 3
-    '#EC407A', // 4
-    '#E91E63', // 5 - rosa medio
-    '#9C27B0', // 6 - violeta intermedio
-    '#7B1FA2', // 7 - violeta oscuro
-    '#5E35B1', // 8 - azul violeta
-    '#3949AB', // 9 - azul intenso
-    '#1A237E',  // 10 - azul oscuro, máximo contraste
-    ];
-
+    '#FADADD', // 1 - rosa muy claro
+    '#F8C8D8', // 2
+    '#F6B6D2', // 3
+    '#F3A4CD', // 4
+    '#F092C8', // 5
+    '#ED80C3', // 6
+    '#EA6EBE', // 7
+    '#E75CB9', // 8
+    '#D850B0', // 9 - violeta medio
+    '#C94BB1', // 10 - violeta-azulado
+    '#B447B3', // 11 - violeta más oscuro
+    '#9D42B4', // 12 - azul violeta
+    '#813EB6', // 13 - azul medio
+    '#5F39B8', // 14 - azul intenso
+    '#3C34BA'  // 15 - azul oscuro
+];
     releasesToShow.forEach(branchName => {
         const branchData = allData.filter(item => item.release === branchName);
 
