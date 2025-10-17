@@ -541,7 +541,8 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
         }));
 
         const chartDiv = document.createElement('div');
-        chartDiv.style.width = '250px';
+        chartDiv.style.width = '280px';
+        chartDiv.style.height = '280px';
         chartDiv.style.display = 'inline-flex';
         chartDiv.className = 'px-1';
         chartDiv.id = `cuda-chart-${branchName.replace(/\s+/g, '-')}`;
@@ -550,6 +551,7 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
         Highcharts.chart(chartDiv.id, {
             chart: {
                 type: 'pie',
+                spacing: [0,0,0,0], // top, right, bottom, left
                 backgroundColor: null
             },
             title: {
@@ -557,7 +559,7 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
             },
             plotOptions: {
                 pie: {
-                    innerSize: '60%',
+                    innerSize: '50%',
                     dataLabels: {
                         enabled: true,
                         style: {
