@@ -599,42 +599,50 @@ class VersionCUDAView(APIView):
 
 class VersionGPPView(APIView):
 
-	def get(self, request, format=None) -> Response:
-		queryset = (
-			Attempt.objects.filter(
-				returnCode=0,
-				xmipp__branch__startswith="v3."  # <-- filtro añadido
-			)
-			.values(
-				"xmipp__branch",  # release (rama de Xmipp)
-				"version__gpp",  # versión G++
-			)
-			.annotate(count=Count("id", distinct=True))
-			.order_by("xmipp__branch", "version__gpp")
-		)
+    def get(self, request, format=None) -> Response:
+        queryset = (
+            Attempt.objects.filter(
+                returnCode=0,
+                xmipp__branch__startswith="v3."
+            )
+            .values(
+                "xmipp__branch",
+                "version__gpp",
+            )
+            .annotate(count=Count("id", distinct=True))
+        )
 
-		grouped = {}
+        grouped = {}
 
-		for item in queryset:
-			release = item["xmipp__branch"]
-			gpp_full = item["version__gpp"] or "Unknown"
+        for item in queryset:
+            release = item["xmipp__branch"]
+            gpp_full = item["version__gpp"] or "Unknown"
 
-			parts = gpp_full.split("-")
-			gpp_short = parts[-1]
-			parts = gpp_short.split(".")
-			gpp_short = ".".join(parts[:2]) if len(parts) >= 2 else gpp_full
+            # Extraer versión corta (solo los dos primeros números)
+            parts = gpp_full.split("-")
+            gpp_short = parts[-1]
+            parts = gpp_short.split(".")
+            gpp_short = ".".join(parts[:2]) if len(parts) >= 2 else gpp_full
 
-			key = (release, gpp_short)
-			grouped[key] = grouped.get(key, 0) + 1  # contar ocurrencias
+            key = (release, gpp_short)
+            grouped[key] = grouped.get(key, 0) + 1
 
-		data = [
-			{"release": release, "gpp": gpp, "count": count}
-			for (release, gpp), count in grouped.items()
-		]
+        data = [
+            {"release": release, "gpp": gpp, "count": count}
+            for (release, gpp), count in grouped.items()
+        ]
 
-		data.sort(key=lambda x: (x["release"], x["gpp"]))
+        # Ordenar primero por release y luego numéricamente por versión GPP
+        def gpp_to_tuple(gpp):
+            try:
+                parts = gpp.split(".")
+                return tuple(int(p) for p in parts)
+            except ValueError:
+                return (0, 0)  # colocar Unknown al principio
 
-		return Response(data)
+        data.sort(key=lambda x: (x["release"], gpp_to_tuple(x["gpp"])))
+
+        return Response(data)
 
 class FailedAttemptsView(APIView):
     def get(self, request, format=None):
