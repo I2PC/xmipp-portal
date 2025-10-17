@@ -508,14 +508,21 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
 
     // Definir gama de verdes tipo CUDA
     const greenPalette = [
-    '#66BB6A', // verde medio
-    '#43A047',
-    '#2E7D32',
-    '#1B5E20',
-    '#555555', // gris medio
-    '#444444',
-    '#333333',
-    '#222222'  // gris oscuro
+    '#C8E6C9', // 1 - verde muy claro
+    '#A5D6A7', // 2
+    '#81C784', // 3
+    '#66BB6A', // 4
+    '#4CAF50', // 5
+    '#43A047', // 6
+    '#388E3C', // 7
+    '#2E7D32', // 8
+    '#1B5E20', // 9
+    '#6E7F6E', // 10 - gris verdoso claro
+    '#555555', // 11 - gris medio con verde
+    '#444444', // 12
+    '#383838', // 13
+    '#2A2A2A', // 14
+    '#222222'  // 15 - gris oscuro
 ];
 
     releasesToShow.forEach(branchName => {
