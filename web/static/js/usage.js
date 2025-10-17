@@ -8,9 +8,9 @@ function getDataAndDrawCharts(){
     installationsReleasesDevel(XMIPP_URL);
     // installationsMetricsPerReleaseDevel(XMIPP_URL);
     installationsMetricsPerReleaseDevelDetail(XMIPP_URL);
+    cudaMetricsPerReleaseDevelDetail(XMIPP_URL);
 
 }
-;
 
 function getCountryBarChart(XMIPP_URL){
 
@@ -21,7 +21,7 @@ function getCountryBarChart(XMIPP_URL){
 
         const preparedData = prepareSeriesForBarChart(data, "users by country"); 
         let totalUsers = 0;
-        console.log("preparedData: ", preparedData)
+        // console.log("preparedData: ", preparedData)
 
         if (preparedData && Array.isArray(preparedData.data)) {
             preparedData.data.forEach(point => {
@@ -48,8 +48,8 @@ function getInstallationOverTimeChart(XMIPP_URL){
 
     $.getJSON( xmippUsageDataURL).done(function( data ) {
         const preparedData = prepareSeriesForTimeChart(data, "Installations over time");
-        console.log("preparedData: ")
-        console.log(preparedData)
+        // console.log("preparedData: ")
+        // console.log(preparedData)
         const chartTitle = `Monthly Number of Users Installing Xmipp`;
         loadTimeChart('installationsOverTime', chartTitle, preparedData);
 
@@ -115,5 +115,28 @@ function installationsMetricsPerReleaseDevelDetail(XMIPP_URL){
         console.log( "Request Failed: " + err );
     }).always(function() {
         console.log( "complete installationsMetricsPerReleaseDevelDetail" );
+    });
+}
+
+function cudaMetricsPerReleaseDevelDetail(XMIPP_URL) {
+    console.log("Inside cudaMetricsPerReleaseDevelDetail")
+    var installed_branches_list_URL = XMIPP_URL + "/api/xmipp/";
+    var cuda_chart_URL = XMIPP_URL + "api/xmipp/version-CUDA/";
+
+    $.getJSON(installed_branches_list_URL).done(function(data) {
+        const preparedList = prepareXmippReleasesList(data);
+        // 4️⃣ Llama a tu función de gráficas (puede ser una función general)
+        loadCudaDonutChartPerReleaseDetail(
+            "cudaMetricsPerReleaseDevelDetail", // id del contenedor HTML
+            preparedList,                       // releases filtrados
+            cuda_chart_URL,                     // endpoint con datos CUDA
+            "CUDA versions for "                // texto del título
+        );
+
+    }).fail(function(jqxhr, textStatus, error) {
+        var err = textStatus + ", " + error;
+        console.log("Request Failed: " + err);
+    }).always(function() {
+        console.log("complete cudaMetricsPerReleaseDevelDetail");
     });
 }

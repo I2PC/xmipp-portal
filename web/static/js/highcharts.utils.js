@@ -85,7 +85,7 @@ function loadBarChart(container, title, data){
 
 
 function prepareSeriesForTimeChart(data, name) {
-    console.log(data);
+    // console.log(data);
     let colors= ['#878787','#c12e2a', '#F6AE2D','#4F1271', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'];
     //[Gris medio, Rojo oscuro, Amarillo mostaza, Morado oscuro, Verde menta claro, Rojo vino, Rojo muy oscuro, Rojo coral, Gris estándar]
     let colorIndex = 0;
@@ -190,7 +190,7 @@ function prepareSeriesForTimeChart(data, name) {
 //        resultSeries.push(series[branchKey].fails);
     }
 
-    console.log(resultSeries);
+    // console.log(resultSeries);
     return resultSeries;
 }
 
@@ -400,56 +400,183 @@ async function loadPieChartPerRelease(chartId, preparedList, release_pie_chart_U
     }
 }
 
+
 async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_chart_URL, title) {
-  const chartsContainer = document.getElementById(chartId);
-  const branchesMap = preparedList.reduce((acc, branch) => {
-    if (!acc[branch.branch]) acc[branch.branch] = { ...branch, ids: [branch.id] };
-    else acc[branch.branch].ids.push(branch.id);
-    return acc;
-  }, {});
+    // Group releases per name and consolidate IDs
+    const branchesMap = preparedList.reduce((acc, branch) => {
+        if (!acc[branch.branch]) {
+            acc[branch.branch] = { ...branch, ids: [branch.id] }; // Initialize with IDs list
+        } else {
+            acc[branch.branch].ids.push(branch.id); // Add ID to the list if release already exists
+        }
+        return acc;
+    }, {});
 
-  // Construir array de promesas: por cada branch, pedir todas sus ids en paralelo
-  const branchPromises = Object.keys(branchesMap).map(async branchName => {
-    const branch = branchesMap[branchName];
-    const combinedData = { Successful: 0, Failed: 0, SuccessAfterFails: 0, SuccessCheckingOutDevel: 0 };
+    // Get container
+    const chartsContainer = document.getElementById(chartId);
 
-    // Peticiones en paralelo para las ids de esta rama
-    const responses = await Promise.all(branch.ids.map(id =>
-      fetch(`${release_pie_chart_URL}${id}`).then(r => r.ok ? r.json() : Promise.resolve([]))
-    ));
+    // Create graphs for unique branches
+    for (const branchName in branchesMap) {
+        const branch = branchesMap[branchName];
 
-    responses.forEach(releaseData => {
-      (releaseData || []).forEach(item => {
-        if (item.category === 'full_success') combinedData.Successful += item.user_count;
-        if (item.category === 'success_after_fails') combinedData.SuccessAfterFails += item.user_count;
-        if (item.category === 'fail') combinedData.Failed += item.user_count;
-        if (item.category === 'success_in_devel') combinedData.SuccessCheckingOutDevel += item.user_count;
-      });
+        let combinedData = {
+            'Successful': 0,
+            'Failed': 0,
+            'SuccessAfterFails': 0,
+            'SuccessCheckingOutDevel': 0
+        };
+
+        const responses = await Promise.all(
+            branch.ids.map(id => fetch(`${release_pie_chart_URL}${id}`).then(res => res.json()))
+        );
+
+        responses.forEach(releaseData => {
+            releaseData.forEach(item => {
+                if (item.category === 'full_success') {
+                    combinedData['Successful'] += item.user_count;
+                }
+                if (item.category === 'success_after_fails') {
+                    combinedData['SuccessAfterFails'] += item.user_count;
+                }
+                if (item.category === 'fail') {
+                    combinedData['Failed'] += item.user_count;
+                }
+                if (item.category === 'success_in_devel') {
+                    combinedData['SuccessCheckingOutDevel'] += item.user_count;
+                }
+            });
+        });
+
+        // Formate data
+        const chartData = Object.keys(combinedData).map(key => ({
+            name: key,
+            y: combinedData[key]
+        }));
+
+        // Create div to include graph
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '300px';
+        chartDiv.style.display = 'inline-flex'; // Todos los gráficos en una fila
+        chartDiv.className = 'px-2'; // Espacio
+        chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
+        chartsContainer.appendChild(chartDiv);
+
+        // Create graph
+        Highcharts.chart(chartDiv.id, {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: `${title}${branchName}`
+            },
+            colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
+            tooltip: {
+                pointFormat: '<b>{point.percentage:.1f}%</b>',
+                style: {
+                    fontSize: '14px' // más grande que el default
+                }
+            },
+            series: [{
+                name: 'Count',
+                colorByPoint: true,
+                data: chartData,
+                dataLabels: {
+                    enabled: true,
+                    style: {
+                        fontSize: '10px',
+                    }
+                }
+            }]
+        });
+    }
+}
+
+async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_chart_URL, title) {
+    console.log("Dentro de loadCudaDonutChartPerReleaseDetail");
+
+    const chartsContainer = document.getElementById(chartId);
+
+    let allData = [];
+    try {
+        allData = await fetch(cuda_chart_URL).then(res => res.json());
+    } catch (error) {
+        console.error("Error fetching CUDA data:", error);
+        return;
+    }
+
+    const releasesToShow = preparedList.map(b => b.branch);
+
+    // Definir gama de verdes tipo CUDA
+    const greenPalette = [
+    '#66BB6A', // verde medio
+    '#43A047',
+    '#2E7D32',
+    '#1B5E20',
+    '#555555', // gris medio
+    '#444444',
+    '#333333',
+    '#222222'  // gris oscuro
+];
+
+    releasesToShow.forEach(branchName => {
+        const branchData = allData.filter(item => item.release === branchName);
+
+        const combinedData = {};
+        branchData.forEach(item => {
+            const cudaVersion = item.cuda || "Unknown";
+            combinedData[cudaVersion] = (combinedData[cudaVersion] || 0) + item.count;
+        });
+
+        const chartData = Object.keys(combinedData).map((cudaVersion, index) => ({
+            name: cudaVersion,
+            y: combinedData[cudaVersion],
+            color: greenPalette[index % greenPalette.length] // asignar color de la gama
+        }));
+
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '300px';
+        chartDiv.style.display = 'inline-flex';
+        chartDiv.className = 'px-2';
+        chartDiv.id = `cuda-chart-${branchName.replace(/\s+/g, '-')}`;
+        chartsContainer.appendChild(chartDiv);
+
+        Highcharts.chart(chartDiv.id, {
+            chart: {
+                type: 'pie',
+                backgroundColor: null
+            },
+            title: {
+                text: `${title}${branchName}`
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: '60%',
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            color: '#000000',      // negro
+                            textOutline: '1px 1px rgba(255,255,255,0.7)', // sombra ligera
+                            fontSize: '11px'
+                        },
+                        formatter: function() {
+                            // '12.7.64' -> '12.7'
+                            const parts = this.point.name.split('.');
+                            return parts.length >= 2 ? parts[0] + '.' + parts[1] : this.point.name;
+                        }
+                    }
+                }
+            },
+            tooltip: {
+                pointFormat: '<b>{point.y}</b> ({point.percentage:.1f}%)',
+                style: { fontSize: '13px' }
+            },
+            series: [{
+                name: 'Installations',
+                colorByPoint: true,
+                data: chartData
+            }]
+        });
     });
-
-    return { branchName, combinedData };
-  });
-
-  // Esperar todas las ramas y luego renderizar
-  const allBranchesData = await Promise.all(branchPromises);
-
-  allBranchesData.forEach(({ branchName, combinedData }) => {
-    const chartData = Object.keys(combinedData).map(key => ({ name: key, y: combinedData[key] }));
-    const chartDiv = document.createElement('div');
-    chartDiv.style.width = '300px';
-    chartDiv.style.display = 'inline-flex';
-    chartDiv.className = 'px-2';
-    chartDiv.id = `chart-${branchName.replace(/\s+/g, '-')}`;
-    chartsContainer.appendChild(chartDiv);
-
-    Highcharts.chart(chartDiv.id, {
-      chart: { type: 'pie' },
-      title: { text: `${title}${branchName}` },
-      colors: ['#c12e2a','#222222', '#623CEA' , '#878787'],
-      tooltip: { pointFormat: '<b>{point.percentage:.1f}%</b>', style: { fontSize: '14px' } },
-      series: [{ name: 'Count', colorByPoint: true, data: chartData, dataLabels: { enabled: true, style: { fontSize: '10px' } } }]
-    });
-  });
 }
 
 

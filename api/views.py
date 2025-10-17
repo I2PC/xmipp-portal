@@ -599,7 +599,7 @@ class VersionCUDAView(APIView):#TODO
 		return Response(data)
 
 
-class VersionGPPView(APIView):#TODO
+class VersionGPPView(APIView):
 	"""
 	### Returns the count of CUDA and GPP versions per Xmipp release (branch),
 	filtered to only include branches starting with 'v3'.
