@@ -541,9 +541,9 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
         }));
 
         const chartDiv = document.createElement('div');
-        chartDiv.style.width = '300px';
+        chartDiv.style.width = '250px';
         chartDiv.style.display = 'inline-flex';
-        chartDiv.className = 'px-2';
+        chartDiv.className = 'px-1';
         chartDiv.id = `cuda-chart-${branchName.replace(/\s+/g, '-')}`;
         chartsContainer.appendChild(chartDiv);
 
