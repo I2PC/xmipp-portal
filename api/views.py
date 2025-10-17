@@ -563,6 +563,77 @@ class AttemptsView(APIView):
       attempt.save()
       logger.info(f'ATTEMPT SAVED')
 
+class VersionCUDAView(APIView):#TODO
+	"""
+	### Returns the count of CUDA and GPP versions per Xmipp release (branch),
+	filtered to only include branches starting with 'v3'.
+
+	#### Example response:
+	[
+	    {"release": "v3.22", "cuda": "11.2", "gpp": "9.3", "count": 15},
+	    {"release": "v3.23", "cuda": "12.1", "gpp": "10.2", "count": 4}
+	]
+	"""
+	def get(self, request, format=None) -> Response:
+		queryset = (
+			Attempt.objects.filter(
+				returnCode=0,
+				xmipp__branch__startswith="v3."  # <-- filtro añadido
+			)
+			.values(
+				"xmipp__branch",  # release (rama de Xmipp)
+				"version__cuda",  # versión CUDA
+			)
+			.annotate(count=Count("id", distinct=True))
+			.order_by("xmipp__branch", "version__cuda")
+		)
+
+		data = [
+			{
+				"release": item["xmipp__branch"],
+				"cuda": item["version__cuda"],
+				"count": item["count"],
+			}
+			for item in queryset
+		]
+		return Response(data)
+
+
+class VersionGPPView(APIView):#TODO
+	"""
+	### Returns the count of CUDA and GPP versions per Xmipp release (branch),
+	filtered to only include branches starting with 'v3'.
+
+	#### Example response:
+	[
+	    {"release": "v3.22", "cuda": "11.2", "gpp": "9.3", "count": 15},
+	    {"release": "v3.23", "cuda": "12.1", "gpp": "10.2", "count": 4}
+	]
+	"""
+	def get(self, request, format=None) -> Response:
+		queryset = (
+			Attempt.objects.filter(
+				returnCode=0,
+				xmipp__branch__startswith="v3."  # <-- filtro añadido
+			)
+			.values(
+				"xmipp__branch",  # release (rama de Xmipp)
+				"version__gpp",  # versión G++
+			)
+			.annotate(count=Count("id", distinct=True))
+			.order_by("xmipp__branch", "version__gpp")
+		)
+
+		data = [
+			{
+				"release": item["xmipp__branch"],
+				"gpp": item["version__gpp"],
+				"count": item["count"],
+			}
+			for item in queryset
+		]
+
+		return Response(data)
 
 class FailedAttemptsView(APIView):
     def get(self, request, format=None):
@@ -578,6 +649,7 @@ class FailedAttemptsView(APIView):
             for attempt in failed_attempts
         ]
         return Response(data)
+
 
 '''
  curl --header "Content-Type: application/json" -X POST --data '{

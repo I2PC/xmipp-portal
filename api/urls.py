@@ -24,7 +24,7 @@
 
 from django.urls import path
 from .views import AttemptsView, AttemptsFiltersAPIView, XmippView, CountryBarChartView, AllReleasesPieChartView, ReleasePieChartView, InstalledBranchesPieChartView, \
-    InstalledBranchesTimeChartView, DetailedReleasePieChartView, FailedAttemptsView
+    InstalledBranchesTimeChartView, DetailedReleasePieChartView, FailedAttemptsView, VersionCUDAView, VersionGPPView
 
 
 urlpatterns = [
@@ -38,5 +38,7 @@ urlpatterns = [
     path('xmipp/', XmippView.as_view()),
     path('xmipp/installed-branches-pie-chart/', InstalledBranchesPieChartView.as_view()),
     path('xmipp/installed-branches-time-chart/', InstalledBranchesTimeChartView.as_view()),
-    
+	path('xmipp/version-CUDA/', VersionCUDAView.as_view()),
+	path('xmipp/version-GPP/', VersionGPPView.as_view()),
+
 ]
