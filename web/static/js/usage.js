@@ -9,6 +9,7 @@ function getDataAndDrawCharts(){
     // installationsMetricsPerReleaseDevel(XMIPP_URL);
     installationsMetricsPerReleaseDevelDetail(XMIPP_URL);
     cudaMetricsPerReleaseDevelDetail(XMIPP_URL);
+    GPPMetricsPerReleaseDevelDetail(XMIPP_URL);
 
 }
 
@@ -125,7 +126,6 @@ function cudaMetricsPerReleaseDevelDetail(XMIPP_URL) {
 
     $.getJSON(installed_branches_list_URL).done(function(data) {
         const preparedList = prepareXmippReleasesList(data);
-        // 4️⃣ Llama a tu función de gráficas (puede ser una función general)
         loadCudaDonutChartPerReleaseDetail(
             "cudaMetricsPerReleaseDevelDetail", // id del contenedor HTML
             preparedList,                       // releases filtrados
@@ -138,5 +138,27 @@ function cudaMetricsPerReleaseDevelDetail(XMIPP_URL) {
         console.log("Request Failed: " + err);
     }).always(function() {
         console.log("complete cudaMetricsPerReleaseDevelDetail");
+    });
+}
+
+function GPPMetricsPerReleaseDevelDetail(XMIPP_URL) {
+    console.log("Inside GPPMetricsPerReleaseDevelDetail")
+    var installed_branches_list_URL = XMIPP_URL + "/api/xmipp/";
+    var gpp_chart_URL = XMIPP_URL + "api/xmipp/version-GPP/";
+
+    $.getJSON(installed_branches_list_URL).done(function(data) {
+        const preparedList = prepareXmippReleasesList(data);
+        loadGPPDonutChartPerReleaseDetail(
+            "GPPMetricsPerReleaseDevelDetail",
+            preparedList,
+            gpp_chart_URL,
+            "GPP versions for "
+        );
+
+    }).fail(function(jqxhr, textStatus, error) {
+        var err = textStatus + ", " + error;
+        console.log("Request Failed: " + err);
+    }).always(function() {
+        console.log("complete gppMetricsPerReleaseDevelDetail");
     });
 }

@@ -585,6 +585,97 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
 }
 
 
+async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_chart_URL, title) {
+    console.log("Dentro de loadGPPDonutChartPerReleaseDetail");
+
+    const chartsContainer = document.getElementById(chartId);
+
+    let allData = [];
+    try {
+        allData = await fetch(gpp_chart_URL).then(res => res.json());
+    } catch (error) {
+        console.error("Error fetching GPP data:", error);
+        return;
+    }
+
+    const releasesToShow = preparedList.map(b => b.branch);
+
+    const purplePalette = [
+    '#E1BEE7', // 1 - morado muy claro
+    '#CE93D8', // 2
+    '#BA68C8', // 3
+    '#AB47BC', // 4
+    '#9C27B0', // 5 - morado medio
+    '#8E24AA', // 6
+    '#7B1FA2', // 7
+    '#6A1B9A', // 8
+    '#4A148C', // 9 - morado muy oscuro
+    '#311B92'  // 10 - casi índigo, máximo contraste
+];
+
+    releasesToShow.forEach(branchName => {
+        const branchData = allData.filter(item => item.release === branchName);
+
+        const combinedData = {};
+        branchData.forEach(item => {
+            const gppVersion = item.gpp || "Unknown";
+            combinedData[gppVersion] = (combinedData[gppVersion] || 0) + item.count;
+        });
+
+        const chartData = Object.keys(combinedData).map((gppVersion, index) => ({
+            name: gppVersion,
+            y: combinedData[gppVersion],
+            color: purplePalette[index % purplePalette.length] // asignar color de la gama
+        }));
+
+        const chartDiv = document.createElement('div');
+        chartDiv.style.width = '280px';
+        chartDiv.style.height = '280px';
+        chartDiv.style.display = 'inline-flex';
+        chartDiv.className = 'px-1';
+        chartDiv.id = `gpp-chart-${branchName.replace(/\s+/g, '-')}`;
+        console.log(chartDiv.id )
+        chartsContainer.appendChild(chartDiv);
+
+        Highcharts.chart(chartDiv.id, {
+            chart: {
+                type: 'pie',
+                spacing: [0,0,0,0], // top, right, bottom, left
+                backgroundColor: null
+            },
+            title: {
+                text: `${title}${branchName}`
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: '50%',
+                    dataLabels: {
+                        enabled: true,
+                        style: {
+                            color: '#000000',      // negro
+                            textOutline: '1px 1px rgba(255,255,255,0.7)', // sombra ligera
+                            fontSize: '11px'
+                        },
+                        format: '{point.name}'
+                    }
+                }
+            },
+            tooltip: {
+                pointFormat: '<b>{point.y}</b> ({point.percentage:.1f}%)',
+                style: { fontSize: '13px' }
+            },
+            series: [{
+                name: 'Installations',
+                colorByPoint: true,
+                data: chartData
+            }]
+        });
+    });
+}
+
+
+
+
 
 function prepareXmippReleasesList(data){
     const releaseBranches = data.filter(item => item.branch.startsWith("v3."));

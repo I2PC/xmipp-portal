@@ -562,12 +562,8 @@ class AttemptsView(APIView):
       # Saving attempt
       attempt.save()
       logger.info(f'ATTEMPT SAVED')
-class VersionCUDAView(APIView):
-    """
-    ### Returns the count of CUDA versions per Xmipp release (branch),
-    filtered to only include branches starting with 'v3', grouped by major.minor.
-    """
 
+class VersionCUDAView(APIView):
     def get(self, request, format=None) -> Response:
         queryset = (
             Attempt.objects.filter(
@@ -601,18 +597,8 @@ class VersionCUDAView(APIView):
 
         return Response(data)
 
-
 class VersionGPPView(APIView):
-	"""
-	### Returns the count of CUDA and GPP versions per Xmipp release (branch),
-	filtered to only include branches starting with 'v3'.
 
-	#### Example response:
-	[
-	    {"release": "v3.22", "cuda": "11.2", "gpp": "9.3", "count": 15},
-	    {"release": "v3.23", "cuda": "12.1", "gpp": "10.2", "count": 4}
-	]
-	"""
 	def get(self, request, format=None) -> Response:
 		queryset = (
 			Attempt.objects.filter(
@@ -627,14 +613,26 @@ class VersionGPPView(APIView):
 			.order_by("xmipp__branch", "version__gpp")
 		)
 
+		grouped = {}
+
+		for item in queryset:
+			release = item["xmipp__branch"]
+			gpp_full = item["version__gpp"] or "Unknown"
+
+			parts = gpp_full.split("-")
+			gpp_short = parts[-1]
+			parts = gpp_short.split(".")
+			gpp_short = ".".join(parts[:2]) if len(parts) >= 2 else gpp_full
+
+			key = (release, gpp_short)
+			grouped[key] = grouped.get(key, 0) + 1  # contar ocurrencias
+
 		data = [
-			{
-				"release": item["xmipp__branch"],
-				"gpp": item["version__gpp"],
-				"count": item["count"],
-			}
-			for item in queryset
+			{"release": release, "gpp": gpp, "count": count}
+			for (release, gpp), count in grouped.items()
 		]
+
+		data.sort(key=lambda x: (x["release"], x["gpp"]))
 
 		return Response(data)
 
