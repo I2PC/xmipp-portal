@@ -165,7 +165,7 @@
                      style="width: 100%; overflow-x: auto; white-space: nowrap; margin-top: 20px; margin-bottom: 30px;">
                     <div id="cudaMetricsPerReleaseDevelDetail" class="d-flex flex-row" style="min-width: 100%;"></div>
                 </div>
-                <p id="chartExplanation2">Distribution of CUDA and GCC/GPP versions for each Xmipp release.</p>
+                <p id="chartCUDA">Distribution of CUDA and GCC/GPP versions for each Xmipp release.</p>
             </div>
         </div>
     </div>
@@ -198,13 +198,10 @@
         font-size: 10px;
         color: #555;
     }
-    #chartExplanation2 {
-    width: 100%;                /* un poco más ancho */
-    margin: 5px auto 20px;     /* menos arriba, más abajo */
-    text-align: left;
-    font-size: 11px;           /* un poco más legible */
-    color: #555;
-}
+    #cudaMetricsPerReleaseDevelDetail {
+        display: inline-flex; /* Hace que el ancho del contenedor se ajuste a su contenido */
+        justify-content: flex-start; /* Alinea las gráficas a la izquierda (comportamiento por defecto) */
+    }
 </style>
 
 
