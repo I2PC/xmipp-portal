@@ -562,41 +562,44 @@ class AttemptsView(APIView):
       # Saving attempt
       attempt.save()
       logger.info(f'ATTEMPT SAVED')
+class VersionCUDAView(APIView):
+    """
+    ### Returns the count of CUDA versions per Xmipp release (branch),
+    filtered to only include branches starting with 'v3', grouped by major.minor.
+    """
 
-class VersionCUDAView(APIView):#TODO
-	"""
-	### Returns the count of CUDA and GPP versions per Xmipp release (branch),
-	filtered to only include branches starting with 'v3'.
+    def get(self, request, format=None) -> Response:
+        queryset = (
+            Attempt.objects.filter(
+                returnCode=0,
+                xmipp__branch__startswith="v3."
+            )
+            .values(
+                "xmipp__branch",  # release
+                "version__cuda",  # versión CUDA completa
+            )
+        )
 
-	#### Example response:
-	[
-	    {"release": "v3.22", "cuda": "11.2", "gpp": "9.3", "count": 15},
-	    {"release": "v3.23", "cuda": "12.1", "gpp": "10.2", "count": 4}
-	]
-	"""
-	def get(self, request, format=None) -> Response:
-		queryset = (
-			Attempt.objects.filter(
-				returnCode=0,
-				xmipp__branch__startswith="v3."  # <-- filtro añadido
-			)
-			.values(
-				"xmipp__branch",  # release (rama de Xmipp)
-				"version__cuda",  # versión CUDA
-			)
-			.annotate(count=Count("id", distinct=True))
-			.order_by("xmipp__branch", "version__cuda")
-		)
+        grouped = {}
 
-		data = [
-			{
-				"release": item["xmipp__branch"],
-				"cuda": item["version__cuda"],
-				"count": item["count"],
-			}
-			for item in queryset
-		]
-		return Response(data)
+        for item in queryset:
+            release = item["xmipp__branch"]
+            cuda_full = item["version__cuda"] or "Unknown"
+
+            parts = cuda_full.split(".")
+            cuda_short = ".".join(parts[:2]) if len(parts) >= 2 else cuda_full
+
+            key = (release, cuda_short)
+            grouped[key] = grouped.get(key, 0) + 1  # contar ocurrencias
+
+        data = [
+            {"release": release, "cuda": cuda, "count": count}
+            for (release, cuda), count in grouped.items()
+        ]
+
+        data.sort(key=lambda x: (x["release"], x["cuda"]))
+
+        return Response(data)
 
 
 class VersionGPPView(APIView):

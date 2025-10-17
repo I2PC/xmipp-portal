@@ -558,11 +558,7 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
                             textOutline: '1px 1px rgba(255,255,255,0.7)', // sombra ligera
                             fontSize: '11px'
                         },
-                        formatter: function() {
-                            // '12.7.64' -> '12.7'
-                            const parts = this.point.name.split('.');
-                            return parts.length >= 2 ? parts[0] + '.' + parts[1] : this.point.name;
-                        }
+                        format: '{point.name}' // 🔹 SOLO la versión de CUDA
                     }
                 }
             },
