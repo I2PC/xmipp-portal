@@ -618,31 +618,31 @@ class VersionGPPView(APIView):
             release = item["xmipp__branch"]
             gpp_full = item["version__gpp"] or "Unknown"
 
-            # Extraer versión corta (solo los dos primeros números)
+            # Extraer versión corta (dos primeros números)
             parts = gpp_full.split("-")
             gpp_short = parts[-1]
             parts = gpp_short.split(".")
             gpp_short = ".".join(parts[:2]) if len(parts) >= 2 else gpp_full
 
             key = (release, gpp_short)
-            grouped[key] = grouped.get(key, 0) + 1
+            grouped[key] = grouped.get(key, 0) + item["count"]
 
         data = [
             {"release": release, "gpp": gpp, "count": count}
             for (release, gpp), count in grouped.items()
         ]
 
-        # Ordenar primero por release y luego numéricamente por versión GPP
+        # Ordenar por release y versión GPP numéricamente
         def gpp_to_tuple(gpp):
             try:
-                parts = gpp.split(".")
-                return tuple(int(p) for p in parts)
+                return tuple(int(p) for p in gpp.split("."))
             except ValueError:
-                return (0, 0)  # colocar Unknown al principio
+                return (0, 0)
 
         data.sort(key=lambda x: (x["release"], gpp_to_tuple(x["gpp"])))
 
         return Response(data)
+
 
 class FailedAttemptsView(APIView):
     def get(self, request, format=None):
