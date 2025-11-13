@@ -32,6 +32,8 @@ import django_filters
 from rest_framework import generics
 import threading
 import logging
+import re
+
 logger=logging.getLogger(__name__)
 
 # Self imports
@@ -68,11 +70,11 @@ class InstalledBranchesPieChartView(APIView):
     # Separate querysets for 'release' and 'devel'
     release_attempts = latest_attempts.filter(
         returnCode=0,
-        xmipp__branch__iregex=r'v3.'
+        xmipp__branch__iregex=r'^v\d+\.'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
     devel_attempts = latest_attempts.exclude(
-        xmipp__branch__iregex=r'v3.'
+        xmipp__branch__iregex=r'^v\d+\.'
     ).values("xmipp__branch").annotate(release_count=Count('id'))
 
     # Combine both querysets into one
@@ -87,7 +89,7 @@ class InstalledBranchesPieChartView(APIView):
         branch_name = attempt['xmipp__branch']
         count = attempt['release_count']
 
-        if 'v3.' in branch_name:
+        if re.match(r'^v\d+\.', branch_name):
             # Add release branches as they are
             result.append({
                 "xmipp__branch": branch_name,
@@ -141,7 +143,7 @@ class InstalledBranchesTimeChartView(APIView):
         if branch_name == 'devel' and returnCode != 0:
             continue
 
-        if 'v3.' in branch_name:
+        if re.match(r'^v\d+\.', branch_name):
             # Add release branches as they are
             result.append({
                 "xmipp__branch": branch_name,
@@ -222,7 +224,8 @@ class DetailedReleasePieChartView(APIView):
 		attempts = Attempt.objects.filter(
 			xmipp__id=release_id).order_by('user', 'date')
 		attemptsDevel = Attempt.objects.exclude(
-			xmipp__id__contains="v3.").order_by("user", "date")
+			xmipp__id__iregex=r'^v\d+\.'
+		).order_by("user", "date")
 		# Initialize a dictionary to store the final result for each category
 		user_results = {
 			'full_success': 0,
@@ -568,7 +571,7 @@ class VersionCUDAView(APIView):
         queryset = (
             Attempt.objects.filter(
                 returnCode=0,
-                xmipp__branch__startswith="v3."
+                xmipp__branch__iregex=r'^v\d+\.'
             )
             .values(
                 "xmipp__branch",  # release
@@ -603,7 +606,7 @@ class VersionGPPView(APIView):
         queryset = (
             Attempt.objects.filter(
                 returnCode=0,
-                xmipp__branch__startswith="v3."
+                xmipp__branch__iregex=r'^v\d+\.'
             )
             .values(
                 "xmipp__branch",

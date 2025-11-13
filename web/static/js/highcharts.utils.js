@@ -680,6 +680,6 @@ async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_char
 
 
 function prepareXmippReleasesList(data){
-    const releaseBranches = data.filter(item => item.branch.startsWith("v3."));
+    const releaseBranches = data.filter(item => /^v\d+\./.test(item.branch));
     return releaseBranches;
 }
