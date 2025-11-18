@@ -521,51 +521,54 @@ class AttemptsView(APIView):
 
 
   def collectObjectsData(self, request, userData, versionData, xmippData, returnCode, logTail):
-      # Obtaining country from sender's ip
+        try:
+            # Obtaining country from sender's ip
 
-      country = getCountryFromIp(getClientIp(request))
+            country = getCountryFromIp(getClientIp(request))
 
-      # Creating user object
-      userObj = User.objects.update_or_create(
-          userId=userData[USER_ID],
-          defaults={USER_COUNTRY: country}
-      )[0]
+            # Creating user object
+            userObj = User.objects.update_or_create(
+                userId=userData[USER_ID],
+                defaults={USER_COUNTRY: country}
+            )[0]
 
-      # Creating xmipp object
-      xmippObj = Xmipp.objects.get_or_create(
-          branch=xmippData[XMIPP_BRANCH],
-          updated=xmippData[XMIPP_UPDATED],
-          installedByScipion=xmippData[XMIPP_INSTALLED]
-      )[0]
+            # Creating xmipp object
+            xmippObj = Xmipp.objects.get_or_create(
+                branch=xmippData[XMIPP_BRANCH],
+                updated=xmippData[XMIPP_UPDATED],
+                installedByScipion=xmippData[XMIPP_INSTALLED]
+            )[0]
 
-      # Creating version object
-      versionsObj = Version.objects.get_or_create(
-          os=versionData[VERSION_OS],
-          architecture=versionData[VERSION_ARCHITECTURE],
-          cuda=versionData[VERSION_CUDA],
-          cmake=versionData[VERSION_CMAKE],
-          gcc=versionData[VERSION_GCC],
-          gpp=versionData[VERSION_GPP],
-          mpi=versionData[VERSION_MPI],
-          python=versionData[VERSION_PYTHON],
-          sqlite=versionData[VERSION_SQLITE],
-          java=versionData[VERSION_JAVA],
-          hdf5=versionData[VERSION_HDF5],
-          jpeg=versionData[VERSION_JPEG],
-      )[0]
+            # Creating version object
+            versionsObj = Version.objects.get_or_create(
+                os=versionData[VERSION_OS],
+                architecture=versionData[VERSION_ARCHITECTURE],
+                cuda=versionData[VERSION_CUDA],
+                cmake=versionData[VERSION_CMAKE],
+                gcc=versionData[VERSION_GCC],
+                gpp=versionData[VERSION_GPP],
+                mpi=versionData[VERSION_MPI],
+                python=versionData[VERSION_PYTHON],
+                sqlite=versionData[VERSION_SQLITE],
+                java=versionData[VERSION_JAVA],
+                hdf5=versionData[VERSION_HDF5],
+                jpeg=versionData[VERSION_JPEG],
+            )[0]
 
-      # Creating installation attempt object
-      attempt = Attempt(user=userObj,
-                        version=versionsObj,
-                        xmipp=xmippObj,
-                        # date=date,
-                        returnCode=returnCode,
-                        logTail=logTail
-                        )
+            # Creating installation attempt object
+            attempt = Attempt(user=userObj,
+                              version=versionsObj,
+                              xmipp=xmippObj,
+                              # date=date,
+                              returnCode=returnCode,
+                              logTail=logTail
+                              )
 
-      # Saving attempt
-      attempt.save()
-      logger.info(f'ATTEMPT SAVED')
+            # Saving attempt
+            attempt.save()
+            logger.info(f'ATTEMPT SAVED')
+        except Exception as e:
+            logger.error(f'Error saving attempt: {e}', exc_info=True)
 
 class VersionCUDAView(APIView):
     def get(self, request, format=None) -> Response:
