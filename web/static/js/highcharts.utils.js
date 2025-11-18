@@ -526,7 +526,9 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
     '#222222'  // 15 - gris oscuro
 ];
 
-    releasesToShow.forEach(branchName => {
+    const releasesToShowInverted = [...preparedList].reverse().map(b => b.branch);
+
+    releasesToShowInverted.forEach(branchName => {
         const branchData = allData.filter(item => item.release === branchName);
 
         const combinedData = {};
@@ -616,7 +618,10 @@ async function loadGPPDonutChartPerReleaseDetail(chartId, preparedList, gpp_char
     '#5F39B8', // 14 - azul intenso
     '#3C34BA'  // 15 - azul oscuro
 ];
-    releasesToShow.forEach(branchName => {
+
+    const releasesToShowInverted = [...preparedList].reverse().map(b => b.branch);
+
+    releasesToShowInverted.forEach(branchName => {
         const branchData = allData.filter(item => item.release === branchName);
 
         const combinedData = {};
