@@ -413,11 +413,14 @@ async function loadPieChartPerReleaseDetail(chartId, preparedList, release_pie_c
         return acc;
     }, {});
 
+    const uniqueBranchesInOrder = [...new Set(preparedList.map(b => b.branch))].reverse()
+        .filter(branchName => branchesMap[branchName]);
+
     // Get container
     const chartsContainer = document.getElementById(chartId);
 
     // Create graphs for unique branches
-    for (const branchName in branchesMap) {
+    for (const branchName of uniqueBranchesInOrder) {
         const branch = branchesMap[branchName];
 
         let combinedData = {
