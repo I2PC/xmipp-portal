@@ -501,6 +501,7 @@ class AttemptsView(APIView):
           # Return a response contaning the attempt data
 
           logger.info(f'ATTEMPT PROCESSED')
+          logger.info(f'{messageToReturn}')
           return Response({'data': messageToReturn})
       except Exception as e:
           logger.error(f'There was an error saving data', exc_info=e)
