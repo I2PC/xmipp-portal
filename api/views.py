@@ -541,18 +541,18 @@ class AttemptsView(APIView):
 
             # Creating version object
             versionsObj = Version.objects.get_or_create(
-                os=versionData[VERSION_OS],
-                architecture=versionData[VERSION_ARCHITECTURE],
-                cuda=versionData[VERSION_CUDA],
-                cmake=versionData[VERSION_CMAKE],
-                gcc=versionData[VERSION_GCC],
-                gpp=versionData[VERSION_GPP],
-                mpi=versionData[VERSION_MPI],
-                python=versionData[VERSION_PYTHON],
-                sqlite=versionData[VERSION_SQLITE],
-                java=versionData[VERSION_JAVA],
-                hdf5=versionData[VERSION_HDF5],
-                jpeg=versionData[VERSION_JPEG],
+	            os=versionData.get(VERSION_OS, ''),
+	            architecture=versionData.get(VERSION_ARCHITECTURE, ''),
+	            cuda=versionData.get(VERSION_CUDA, ''),
+	            cmake=versionData.get(VERSION_CMAKE, ''),
+	            gcc=versionData.get(VERSION_GCC, ''),
+	            gpp=versionData.get(VERSION_GPP, ''),
+	            mpi=versionData.get(VERSION_MPI, ''),
+	            python=versionData.get(VERSION_PYTHON, ''),
+	            sqlite=versionData.get(VERSION_SQLITE, ''),
+	            java=versionData.get(VERSION_JAVA, ''),
+	            hdf5=versionData.get(VERSION_HDF5, ''),
+	            jpeg=versionData.get(VERSION_JPEG, ''),
             )[0]
 
             # Creating installation attempt object
