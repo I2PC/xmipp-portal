@@ -536,7 +536,7 @@ async function loadCudaDonutChartPerReleaseDetail(chartId, preparedList, cuda_ch
 
         const combinedData = {};
         branchData.forEach(item => {
-            if (!item.cuda) return;
+            if (!item.cuda || item.cuda.toLowerCase() === "unknown") return;
             const cudaVersion = item.cuda;
             combinedData[cudaVersion] = (combinedData[cudaVersion] || 0) + item.count;
         });
