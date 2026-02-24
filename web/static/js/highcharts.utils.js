@@ -307,7 +307,7 @@ function loadReleaseDevelPieChart(container, title, data){
                 }
             }
         },
-        colors: ['#c12e2a', '#F6AE2D', '#4F1271', '#878787', '#B8E2C8', '#8e1919', '#540000', '#d9534f', '#808080'],
+        colors: ['#c12e2a', '#F6AE2D', '#4F1271', '#B8E2C8', '#878787', '#8e1919', '#540000', '#d9534f', '#808080'],
          //move 1 position right the gray #878787 if new release appear
 
         series: [data]
