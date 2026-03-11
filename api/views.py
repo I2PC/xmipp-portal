@@ -629,7 +629,7 @@ class VersionGPPView(APIView):
             parts = gpp_full.split("-")
             gpp_short = parts[-1]
             parts = gpp_short.split(".")
-            gpp_short = ".".join(parts[:2]) if len(parts) >= 2 else gpp_full
+            gpp_short = ".".join(parts[:1]) if len(parts) >= 2 else gpp_full
 
             key = (release, gpp_short)
             grouped[key] = grouped.get(key, 0) + item["count"]
