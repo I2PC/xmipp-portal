@@ -61,7 +61,7 @@ def fetchCountryName(url: str) -> Union[str, None]:
 		response = requests.get(url, timeout=5)
 		response.raise_for_status()
 		data = response.json()
-
+		print(f'RESPONSE API!!!: {response.json()})
 		# Defining possible key names
 		countryKeyList = ['country_name', 'country']
 
